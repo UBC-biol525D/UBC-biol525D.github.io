@@ -1,0 +1,43 @@
+# configuration
+# fill in the course details
+
+courseName: "UBC Biol525D -- Summer 2019"
+
+# small title that is at the top of every page
+subtitle: "Topics in Systematics and Evolution: Bioinformatics for Evolutionary Biology"
+
+# baseurl: /
+
+# url where the required reading is available to download
+docsUrl: ""
+
+# url where the student's grading info is kept
+gradingUrl: ""
+
+# change only if you know what you are doing
+collections:
+  syllabus:
+    output: true
+defaults:
+  - scope:
+      path: ""
+      type: syllabus
+    values:
+      layout: unit
+
+exclude:
+  - ".*"
+  - "#*"
+
+highlighter: rouge
+
+markdown: kramdown
+
+# The parse_block_html allows converting markdown which is
+# passed inside <details> </details> blocks which we use
+# for presending code inside hidden/collapsible question/answer
+# blocks.
+kramdown:
+  parse_block_html: true
+  
+  
