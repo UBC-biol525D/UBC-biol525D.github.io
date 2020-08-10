@@ -64,7 +64,7 @@ update the files this way (by downloading the whole repo again).
 
 To obtain to all the files via git, type:
 
-    git clone https://github.com/owensgl/biol525D.git
+    git clone https://github.com/UBC-biol525D/UBC-biol525D.github.io.git
 
 To update the all the files at any point in the future, change to the **biol525D** directory that was created by the previous command and type:
 
