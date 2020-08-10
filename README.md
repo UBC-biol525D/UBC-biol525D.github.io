@@ -3,7 +3,7 @@ Biol525D
 
 We recommend that you browse the course content from the following webpage:
 
->> https://owensgl.github.io/biol525D/
+>> https://ubc-biol525d.github.io/
 
 
 This repository contains all the files used to generate the website.
