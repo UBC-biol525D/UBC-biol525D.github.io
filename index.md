@@ -13,7 +13,7 @@ menuPosition: 1
 The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic and phylogenomic approaches. The course will be presented as a series of short lectures and lab exercises over a one week period in August.
 
 ## Instructors
-Dr. Gregory Owens, Dr. Kathryn Hodgins, Dr. Jean-Sebastien Legare
+Dr. Kathryn Hodgins, Dr. Tom Booker, Julia Kreiner
 
 ## Format
 A mix of lecture and lab exercises, running in a 2-hour block.
@@ -30,7 +30,7 @@ Consult [Grading Information](resources/grading.md).
 Consult [Daily Assignments](resources/daily_assignments.md)
 
 ## Lectures/seminars
-July 29th to August 2nd, 2019.
+November 2020 -
 
 SCRF 1328, 10am to Noon, 1pm to 3pm.
 
@@ -82,6 +82,8 @@ Copyright (C) 2015 S. Evan Staton, Sariel Hubner, Sam Yeaman
 Modified work (c) 2016, 2017, 2018 Gregory Owens, Kathryn Hodgins
 
 Modified work (c) 2019 Gregory Owens, Kathryn Hodgins, J.S. Legare
+
+Modified work (c) 2020 Kathryn Hodgins, Julia Kreiner, Tom Booker
 
 This program is distributed under the MIT (X11) License, which should be distributed with the package.
 If not, it can be found here: http://www.opensource.org/licenses/mit-license.php
