@@ -1,2 +1,2 @@
-# biol525D.github.io
+# UBC-biol525D.github.io
 course materials
