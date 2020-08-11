@@ -41,16 +41,16 @@ The course material is organized in several topics, with slides and coding examp
 To get up to speed on working with a Unix system, take a look at the [unix help](resources/unix_ref.pdf) file. There are some resources there that will help you find the specific command you need for each task.
 
 ## Syllabus
-1. [Topic 1](./Topic_1/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics, and the future of sequencing [Greg, JS]
-2. [Topic 2](./Topic_2/) Programming for biologists [JS]
-3. [Topic 3](./Topic_3/) Fastq files and quality checking/trimming [Kay]
-4. [Topic 4](./Topic_4/) Alignment: algorithms and tools [GREG]
-5. [Topic 5](./Topic_5/) Assembly: transcriptome and genome assembly [KAY]
-6. [Topic 6](./Topic_6/) RNAseq + differential expression analysis [KAY]
-7. [Topic 7](./Topic_7/) SNP and variant calling [GREG]
-8. [Topic 8](./Topic_8-9/) Population genomics and plotting in R (Part 1) [GREG]
-9. [Topic 9](./Topic_8-9/) Population genomics and plotting in R (Part 2) [GREG]
-10. [Topic 10](./Topic_10/) Phylogenetic inference [GREG]
+1. [Topic 1](./Topic_1/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics, and the future of sequencing [Booker,T]
+2. [Topic 2](./Topic_2/) Programming for biologists [Booker, T]
+3. [Topic 3](./Topic_3/) Fastq files and quality checking/trimming [Kay, H]
+4. [Topic 4](./Topic_4/) Alignment: algorithms and tools [Booker, T]
+5. [Topic 5](./Topic_5/) Assembly: transcriptome and genome assembly [Kay, H]
+6. [Topic 6](./Topic_6/) RNAseq + differential expression analysis [Kay, H]
+7. [Topic 7](./Topic_7/) SNP and variant calling [Kreiner, J]
+8. [Topic 8](./Topic_8-9/) Population genomics and plotting in R (Part 1) [Kreiner, J]
+9. [Topic 9](./Topic_8-9/) Population genomics and plotting in R (Part 2) [Kreiner, J]
+10. [Topic 10](./Topic_10/) Case studies [Kreiner,J/Booker,T]
 
 ## Obtaining all the files on this site
 
