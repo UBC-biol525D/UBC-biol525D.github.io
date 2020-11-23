@@ -34,12 +34,12 @@ Once that is done, we have to index our reference genome.
 ```bash
 #Index the reference for BWA. 
 
-/mnt/bin/bwa-0.7.17/bwa index ref/HanXRQr1.0-20151230.1mb.fa
+bwa index ref/HanXRQr1.0-20151230.1mb.fa
 
 ```
 Now finally we can run BWA and align our data
 ```bash
-/mnt/bin/bwa-0.7.17/bwa mem \
+/usr/bin/bwa mem \
   ref/HanXRQr1.0-20151230.1mb.fa \
   fastq/ANN1133.R1.fastq.gz \
   fastq/ANN1133.R2.fastq.gz \
@@ -49,7 +49,7 @@ Now finally we can run BWA and align our data
   
 ```
 Lets break this command down since it has several parts:
-**/mnt/bin/bwa-0.7.17/bwa** <= We're calling the program _bwa_ from the directory _/mnt/bin/bwa-0.7.17_. This is the full path to that program so you can call this no matter where you are in the file system.
+**/usr/bin/bwa** <= We're calling the program _bwa_ from the directory _/usr/bin/_. This is the full path to that program so you can call this no matter where you are in the file system.
 
 **mem** <= This is the bwa command we are calling. It is specific to bwa and not a unix command.
 
@@ -142,7 +142,7 @@ MORE HINTS:
   #First set up variable names
   bam=~/bam
   fastq=~/fastq
-  bwa=/mnt/bin/bwa-0.7.17/bwa
+  bwa=/usr/bin/bwa
   ref_file=~/ref/HanXRQr1.0-20151230.1mb.fa
 
   #Then get a list of sample names, without suffixes
