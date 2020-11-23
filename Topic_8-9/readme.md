@@ -59,7 +59,7 @@ This produces files with the suffix .nosex, .log, .fam, .bim, .bed. We can use t
 NOTE: When using admixture you should filter your VCF for linkage (i.e. remove highly linked sites). We're going to do this later during the PCA step, so for now we're using our whole set. If you can't filter for linkage, subsetting the site also helps (i.e. selecting every 10th site).
 
 ```bash 
-~/mnt/bin/admixture vcf/full_genome.filtered.bed 2
+/mnt/bin/admixture vcf/full_genome.filtered.bed 2
 ```
 Uh oh that doesn't work, it produces this error message.
 ```bash
@@ -92,12 +92,12 @@ zcat vcf/full_genome.filtered.vcf.gz |\
 	--double-id \
 	--allow-extra-chr
 
-/mnt/bin/admixture_linux-1.3.0/admixture --cv vcf/full_genome.filtered.numericChr.bed 2
+/mnt/bin/admixture --cv vcf/full_genome.filtered.numericChr.bed 2
 ```
 This works! With only 10 samples and ~6500 SNPs it finished almost completely. We only ran it for one value of K (2) but we should also test different K values and select the best K value.
 ```bash 
 for K in 1 2 3 4 5; \
-do /mnt/bin/admixture_linux-1.3.0/admixture --cv vcf/full_genome.filtered.numericChr.bed $K |\
+do /mnt/bin/admixture --cv vcf/full_genome.filtered.numericChr.bed $K |\
 tee full_genome.filtered.numericChr.${K}.out; \
 done
 #NOTE: "tee" takes the output of a command and saves it to a file, while 
@@ -117,7 +117,7 @@ CV error (K=3): 1.26501
 CV error (K=4): 1.48708
 CV error (K=5): 1.61393
 ```
-This shows that the lowest CV error is with K=2, although K=3 is our second choice. To see how this lines up lets look at the .Q file, which shows group assignment for each sample. The Q file doesn't include sample names so we can put those together using "paste"
+This shows that the lowest CV error is with K=2, although K=3(5?) is our second choice. To see how this lines up lets look at the .Q file, which shows group assignment for each sample. The Q file doesn't include sample names so we can put those together using "paste"
 
 ```bash
 paste samplelist.txt analysis/full_genome.filtered.numericChr.2.Q
@@ -132,7 +132,7 @@ ARG0016	0.999990 0.000010
 ARG0018	0.999990 0.000010
 ARG0028	0.999990 0.000010
 ```
-All the ANN samples are one group and all the ARG are a different group, which makes sense, since they are different species. We're going to plot these results, but before we leave the command line, lets also calculate Fst between the groups (or species in this case) using the perl tool vcf2fst.pl. This is a custom script from Greg, since we want to keep the numerator and denominator from the Fst calculations, which is hard to do.
+All the ANN samples are one group and all the ARG are a different group, which makes sense, since they are different species. We're going to plot these results, but before we leave the command line, lets also calculate Fst between the groups (or species in this case) using the perl tool vcf2fst.pl. This is a custom script from Greg Owens, since we want to keep the numerator and denominator from the Fst calculations, which is hard to do. (Lots of other programs calculate Fst - can you think of a reason why might it be important to keep track of both the denominator and numerator?)
 
 We need two files, a sample info file and a group file. The sample info file tells the program which population each sample is in and the group file tells the program which populations to compare. We can make them here:
 
