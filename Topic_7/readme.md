@@ -21,7 +21,7 @@ mkdir vcf
 ```
 We also have a few programs we're going to use. Since we will be calling them repeatedly, its helpful to save their full path to a variable. This will only last for the current session so if you log out you'll have to set them up again.
 ```bash
-gatk=/mnt/bin/gatk-4.1.2.0/gatk
+gatk=/mnt/bin/gatk.jar
 picard=/mnt/bin/picard.jar
 ```
 
@@ -70,14 +70,14 @@ The next step is to use GATK to create a GVCF file for each sample. This file su
 
 This step can take a few minutes so lets first test it with a single sample to make sure it works.
 ```
-for name in `cat ~/samplelist.txt | head -n 1`
-do
-$gatk --java-options "-Xmx15g" HaplotypeCaller \
-   -R ref/HanXRQr1.0-20151230.1mb.fa \
-   -I bam/$name.sort.dedup.bam \
-   --native-pair-hmm-threads 3 \
-   -ERC GVCF \
-   -O gvcf/$name.sort.dedup.g.vcf
+for name in `cat ~/samplelist.txt | head -n 1` 
+do 
+java -Xmx15g -jar $gatk HaplotypeCaller \
+-R ref/HanXRQr1.0-20151230.1mb.fa \
+-I bam/$name.sort.dedup.bam \
+--native-pair-hmm-threads 3 \
+-ERC GVCF \
+-O gvcf/$name.sort.dedup.g.vcf 
 done
 ```
  Check your gvcf file to make sure it has a .idx index file. If the haplotypecaller crashes, it will produce a truncated gvcf file that will eventually crash the genotypegvcf step. Note that if you give genotypegvcf a truncated file without a idx file, it will produce an idx file itself, but it still won't work.
@@ -102,7 +102,7 @@ sample3 \t gvcf/sample3.g.vcf.gz
 
 ```bash
 
-for i in `ls gvcf | grep ".g.vcf" | grep -v ".idx" | sed s/.sort.dedup.g.vcf//g`
+for i in `ls gvcf/*g.vcf | sed 's/.sort.dedup.g.vcf//g' | sed 's/gvcf\///g'`
 do
   echo -e "$i\tgvcf/$i.sort.dedup.g.vcf"
 done > ~/biol525d.sample_map
@@ -113,24 +113,20 @@ Lets break down this loop to understand how its working
 
 **for i in `...`** <= This is going to take the output of the commands in the `...` and loop through it line by line, putting the each line into the variable $i. 
 
-**ls gvcf** <= List all files in the gvcf directory.
-
-**\| grep ".g.vcf"** <= Only keep the files including .g.vcf in their name.
-
-**\| grep -v ".idx"** <= Remove any file including .idx, which are the index files
+**ls gvcf/"*.g.vcf"** <= List all files in the gvcf directory that end with .g.vcf
 
 **\| sed s/.sort.dedup.g.vcf//g** <= Remove the suffix to the filename so that its only the sample name remaining.
 
 **do** <= Starts the part of the script where you put the commands to be repeated.
 
-**echo -e "$i\t$gvcf/$i.sort.dedup.g.vcf"** <= Print out the variable $i (which is the sample name) and then a second column with the full file name.
+**echo -e "$i\t$gvcf/$i.sort.dedup.g.vcf"** <= Print out the variable $i (which is the sample name) and then a second column with the full file name along with the soft path.
 
 **done > ~/biol525d.sample_map** <= Take all the output and put it into a file name _biol525d.sample_map_.
 
 
 Next we call GenomicsDBImport to actually create the database.
 ```bash
-$gatk --java-options "-Xmx10g -Xms10g" \
+java -Xmx10g -Xms10g -jar $gatk \
        GenomicsDBImport \
        --genomicsdb-workspace-path db/HanXRQChr01 \
        --batch-size 50 \
@@ -141,7 +137,7 @@ $gatk --java-options "-Xmx10g -Xms10g" \
 
 With the genomicsDB created, we're finally ready to actually call variants and output a vcf
 ```bash
-$gatk --java-options "-Xmx10g" GenotypeGVCFs \
+java -Xmx10g -jar $gatk GenotypeGVCFs \
    -R ref/HanXRQr1.0-20151230.1mb.fa \
    -V gendb://db/HanXRQChr01 \
    -O vcf/HanXRQChr01.vcf.gz
