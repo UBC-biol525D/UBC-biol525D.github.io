@@ -59,7 +59,7 @@ This produces files with the suffix .nosex, .log, .fam, .bim, .bed. We can use t
 NOTE: When using admixture you should filter your VCF for linkage (i.e. remove highly linked sites). We're going to do this later during the PCA step, so for now we're using our whole set. If you can't filter for linkage, subsetting the site also helps (i.e. selecting every 10th site).
 
 ```bash 
-/mnt/bin/admixture_linux-1.3.0/admixture full_genome.filtered.bed 2
+~/mnt/bin/admixture vcf/full_genome.filtered.bed 2
 ```
 Uh oh that doesn't work, it produces this error message.
 ```bash
