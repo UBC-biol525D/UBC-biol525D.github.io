@@ -141,9 +141,12 @@ for i in `cat samplelist.txt`;
 	do echo -e "$i\t${i/%????/}"; 
 done > sampleinfo.txt
 echo -e "ANN\t1\nARG\t2" > popinfo.txt
+```
 
-zcat vcf/full_genome.filtered.vcf.gz |\
-perl /mnt/bin/vcf2fst.pl sampleinfo.txt popinfo.txt \
+This script was originally made to work with unphased data. That means that genotype calls are depicted by 0/1 or 1/1 values, rather than 0|1 or 1|1 (remember that newer snp calling methods use haplotype-based methods and thus can infer phased). Because we checked and made sure that "|" are only used in this vcf for phased genotype calls (you should quickly check with grep!), as a work around, we can replace all "|" instances with "\". We can pipe the output of this modified file to calculate Fst for each site.
+
+```
+zcat vcf/full_genome.filtered.vcf.gz | sed 's/|/\//g' | perl /mnt/bin/vcf2fst.pl sampleinfo.txt popinfo.txt \
 > analysis/full_genome.filtered.fst.txt
 
 ```
