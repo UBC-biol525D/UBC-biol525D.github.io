@@ -50,7 +50,8 @@ fst %>%
    #Filter to only include the 1st chromosome
    filter(chr == "HanXRQChr01") %>%
    #Create a new column with the window for each position. 
-   #In this case, the window variable is the mid point of the window.
+   #Floor rounds down to the nearest integer, so the floor of pos/windowsize groups snps into the same window
+   #We've also scaled the window variable so it is the mid point of the window (rather than the start).
    mutate(window = (floor(pos/window_size)*window_size)+(window_size/2)) %>%
    #Group by the chromosome and the window.
    group_by(chr,window) %>%
