@@ -30,9 +30,11 @@ Consult [Grading Information](resources/grading.md).
 Consult [Daily Assignments](resources/daily_assignments.md)
 
 ## Lectures/seminars
-November 2020 -
+30th November 2020 - 4th of December 2020.
 
-SCRF 1328, 10am to Noon, 1pm to 3pm.
+There are two sessions a day, from 10am to Noon and from 1pm to 3pm.
+
+The course will be run entirely over Zoom - links to the sessions will be sent to those who registered interest. 
 
 ## Basic course structure
 
