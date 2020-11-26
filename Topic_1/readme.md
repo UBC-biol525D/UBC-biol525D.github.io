@@ -118,7 +118,7 @@ Configuration steps, in sequence :
 Testing it all: _(can be completed early)_{: style="color: darkred"}
 ---------------
 
-Log into WestCloud server using ssh (terminal). Recall that you will find your username and ip address in this [table](https://docs.google.com/spreadsheets/d/1v7k2-XtfiwOoQ3iZHnJyqVXsxgekVGXEtnFIvdk7aqU/edit?usp=sharing). We use `serveruser` and `serverhost` as placeholders for this info.
+Log into ComputeCanada Virtual Machines using ssh (terminal). Recall that you will find your username and ip address in the table you were sent via email. We use `serveruser` and `serverhost` as placeholders for this info.
 
 The information presented by the servers when you connect to them is shown here in [Fingerprints](./fingerprints).
 
