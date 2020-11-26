@@ -104,7 +104,8 @@ configure rapid authentication between your computer and the
 server. The steps are meant to be done in sequence and should take
 about 15 minutes to complete once the software above is installed.
 
-**NOTE, WE ARE NOT USING SSH-KEYS FOR THE WORKSHOP THIS YEAR - PROCEED TO "Testing"**
+**NOTE, WE ARE NOT USING SSH-KEYS FOR THE WORKSHOP THIS YEAR - UNLESS YOU ARE USING PUTTY PROCEED TO "Testing it all"**
+
 Configuration steps, in sequence :
 
 1. Generate a key for authenticating to your assigned server. Follow steps in [Generate A Key](./generate_a_key).
