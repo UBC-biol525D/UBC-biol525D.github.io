@@ -104,7 +104,8 @@ configure rapid authentication between your computer and the
 server. The steps are meant to be done in sequence and should take
 about 15 minutes to complete once the software above is installed.
 
-Configuration steps, in sequence:
+**NOTE, WE ARE NOT USING SSH-KEYS FOR THE WORKSHOP THIS YEAR - PROCEED TO "Testing"**
+Configuration steps, in sequence :
 
 1. Generate a key for authenticating to your assigned server. Follow steps in [Generate A Key](./generate_a_key).
 
@@ -126,10 +127,11 @@ The information presented by the servers when you connect to them is shown here 
 
   ssh -v <serveruser>@<serverhost>
 
+  # FOR REFERENCE ONLY..
   # if you have followed the key authentication steps, you need only to specify
   # the host alias you chose from your `~/.ssh/config`, e.g. b525:
 
-  ssh -v b525
+  # ssh -v b525
   ```
 * MobaXTerm users:
 
@@ -144,8 +146,9 @@ The information presented by the servers when you connect to them is shown here 
   # from the local terminal
   ssh -v <serveruser>@<serverhost>
 
+  # FOR REFERENCE ONLY..
   # or just this if you have configured ~/.ssh/config
-  ssh -v b525
+  # ssh -v b525
   ```
 
 * Putty users:
