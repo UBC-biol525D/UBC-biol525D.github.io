@@ -10,13 +10,9 @@ This repository contains all the files used to generate the website.
 
 ## OBTAINING ALL THE FILES ON THIS SITE
 
-To access the course content offline, you may download an up-to-date
-snapshot archive of the site content from this location:
-https://github.com/owensgl/biol525D/archive/master.zip
+You can use `git` which tracks changes and supports incremental updates:
 
-But the recommended approach is to use `git` which tracks changes and supports incremental updates:
-
-    git clone https://github.com/owensgl/biol525D.git
+    git clone https://github.com/UBC-biol525D/UBC-biol525D.github.io.git
 
 If the course content changes, you can update your local copy by going into to the **biol525D** directory that was created by the previous command and invoking the command:
 
@@ -43,6 +39,8 @@ Copyright (C) 2015 S. Evan Staton, Sariel Hubner, Sam Yeaman
 Modified work (c) 2016, 2017, 2018 Gregory Owens, Kathryn Hodgins
 
 Modified work (c) 2019 Gregory Owens, Kathryn Hodgins, JS Legare
+
+Modified work (c) 2020 Kathryn Hodgins, Julia Kreiner, Tom Booker
 
 This program is distributed under the MIT (X11) License, which should
 be distributed with the package. If not, it can be found here:
