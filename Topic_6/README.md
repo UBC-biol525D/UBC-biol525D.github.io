@@ -181,7 +181,7 @@ ls *genes.results > list_to_add.txt
 Find all lines that have ">" in them, which are the contig names. Then pass these to sed and strip off the ">" character, and save it to a file:
 
 ```bash
-grep ">" Pine_reference_rnaseq_reduced.fa | sed 's/>//' > gene_names.txt
+grep ">" /home/biol525d/Topic_6/data/Pine_reference_rnaseq_reduced.fa | sed 's/>//' > gene_names.txt
 ```
 
 
