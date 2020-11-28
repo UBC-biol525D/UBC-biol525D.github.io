@@ -96,8 +96,6 @@ perl /home/biol525d/Topic_3/scripts/prinseq-lite-0.20.4/prinseq-lite.pl -fastq ~
 
 Note that you can view the log file (log1) to see the command executed and the output (including the default parameters run)
 
-This level of filtering by minimum length is probably overkill for most applications, but it gives you a chance to see how prinseq is changing the data. 
-
 You should see 2 output files called GBS_filter1_#.fastq and two more that have a "_singletons" suffix. These "singleton" files are those that were left unpaired after the corresponding sequence was filtered from the alternate read direction file.
 
 Try running various combinations of these commands, regraph the results, and see how the statistics have been affected. 
