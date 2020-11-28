@@ -65,7 +65,7 @@ download your graph file to your computer using Cyberduck or the following comma
 scp <username@ip.address>:~/Topic_3/*graph.txt <path on your computer where you want the file>
 ```
 
-and upload it to http://edwards.sdsu.edu/cgi-bin/prinseq/prinseq.cgi to view/download your graphs
+and upload it to http://edwards.sdsu.edu/cgi-bin/prinseq/prinseq.cgi to view/download your graphs (click on "Get Report" and select your graph file to upload)
 
 note that you can execute the following line to create these same graphs on the server but you need to install a number of perl modules and the download the files to view anyway:
 
