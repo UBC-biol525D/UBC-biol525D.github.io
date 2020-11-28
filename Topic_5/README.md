@@ -76,10 +76,6 @@ sudo apt-get install velvet
 
 (note I also placed the zipped program in the /home/biol525d/Topic_5/scripts folder just in case, but it would have to be installed)
 
-Step 2. Enter this folder and unpack these data: COMPLETED 
-
-gunzip -d frag_*.fastq.gz
-
 
 ### Question 1) Given the above information, what is the expected coverage?
 
@@ -108,7 +104,7 @@ mkdir ~/Topic_5
 Move into the ~/Topic_5 directory and run velveth
 
 ```bash
-velveth sa_assembly21 21 -shortPaired -fastq  -separate /home/biol525d/Topic_5/data/frag_1.fastq /home/biol525d/Topic_5/data/frag_2.fastq
+velveth sa_assembly21 21 -shortPaired -fastq  -separate /home/biol525d/Topic_5/data/frag_1.fastq.gz /home/biol525d/Topic_5/data/frag_2.fastq.gz
 ```
 
 21 is the kmer length
