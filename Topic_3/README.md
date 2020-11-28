@@ -25,9 +25,9 @@ Hint: for grep ^ indicates the start of the line and $ indicates the end of the 
 
 3) How many sequences contain a base with a Phred score of 2 /home/biol525d/Topic_3/data/GBS12_brds_Pi_197A2_100k_R1.fastq?
 
-# Topic 3: Preprocessing Sequence Data
+To practice unix-based command line, run through some of the examples after the quality trimming section (at the bottom of this page) to learn how to navigate through the file system and do basic file manipulation. There are several handy one liners so I recommend going through it.
 
-To practice unix-based command line, run through some of the examples after the quality trimming section to learn how to navigate through the file system and do basic file manipulation.
+# Topic 3: Preprocessing Sequence Data
 
 1. Run prinseq-lite.pl on the unfiltered data first to examine the quality metrics:
 
