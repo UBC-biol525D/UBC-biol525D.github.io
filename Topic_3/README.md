@@ -5,6 +5,9 @@ topickey: 3
 topictitle: "Preprocess Seq. Data"
 ---
 
+### Recorded lecture
+<iframe src="https://monash.au.panopto.com/Panopto/Pages/Embed.aspx?id=1ed65bb6-c112-4fb2-afb9-ac8201899f60&autoplay=false&offerviewer=true&showtitle=true&showbrand=false&start=0&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay"></iframe>
+
 ### Accompanying material
 
 * [Slides](./quality_trimming2019.pdf)
