@@ -19,7 +19,7 @@ see documentation here for more info:
 
 Typing in "rsem-calculate-expression" or any of the other commands without any arguments will bring up a help screen. In all the RSEM commands below.
 
-Step 1. Install Bowtie. COMPLETED
+Step 1. Install Bowtie. NOTE THAT STEP 1 AND 2 ARE COMPLETED
 
 sudo apt-get install bowtie2
 
@@ -27,19 +27,21 @@ Step 2. Install RSEM (/home/biol525d/Topic_6/scripts/RSEM-1.2.31.tar.gz). COMPLE
 
 First unpack.
 
-    tar -xzf RSEM-1.2.31.tar.gz
+tar -xzf RSEM-1.2.31.tar.gz
 
 Then compile the program.
 
-    cd RSEM-1.2.31
-    sudo make
-    sudo make install
+cd RSEM-1.2.31
+sudo make
+sudo make install
 
 (If the installation fails make sure "make" is installed by running sudo apt install make. Also make sure g++ is installed. This should have been set up on your first day of class.)
 
 RSEM also needs Rscript to run:
 
 sudo apt-get install r-base-core
+
+Step 3. Build the transcript-to-gene map using RSEM. This associates each gene isoform to a gene name.
 
 Make a directory in your home drive for Topic_6
 
@@ -48,8 +50,6 @@ mkdir ~/Topic_6
 ```
 
 Run the remaining commands from this directory. 
-
-Step 3. Build the transcript-to-gene map using RSEM. This associates each gene isoform to a gene name.
 
 command:
 extract-transcript-to-gene-map-from-trinity <fasta_reference> <output_map_name>
