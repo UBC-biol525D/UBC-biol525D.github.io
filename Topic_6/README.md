@@ -23,6 +23,7 @@ Step 1. Install Bowtie. NOTE THAT STEP 1 AND 2 ARE COMPLETED
 
 sudo apt-get install bowtie2
 
+
 Step 2. Install RSEM (/home/biol525d/Topic_6/scripts/RSEM-1.2.31.tar.gz). COMPLETED
 
 First unpack.
@@ -40,6 +41,7 @@ sudo make install
 RSEM also needs Rscript to run:
 
 sudo apt-get install r-base-core
+
 
 Step 3. Build the transcript-to-gene map using RSEM. This associates each gene isoform to a gene name.
 
@@ -59,7 +61,7 @@ example:
 extract-transcript-to-gene-map-from-trinity /home/biol525d/Topic_6/data/Pine_reference_rnaseq_reduced.fa Pine_reference_rnaseq_reduced_map
 ```
 
-Step 2. Prepare the reference, so that RSEM can use it:
+Step 4. Prepare the reference, so that RSEM can use it:
 
 command:
 rsem-prepare-reference --transcript-to-gene-map <map_name_from_step1> <fasta_reference> <outputname>
@@ -69,7 +71,7 @@ example:
 rsem-prepare-reference --transcript-to-gene-map Pine_reference_rnaseq_reduced_map /home/biol525d/Topic_6/data/Pine_reference_rnaseq_reduced.fa Pine_reference_rnaseq_reduced_ref
 ```
 
-Step 3. Prepare a bowtie2 index of the fasta file with the same output_name as the reference output in step #2. Bowtie is the alignment program that will align the reads to the reference:
+Step 5. Prepare a bowtie2 index of the fasta file with the same output_name as the reference output in step #2. Bowtie is the alignment program that will align the reads to the reference:
 
 command:
 bowtie2-build -f <fasta_reference> <output_name>
@@ -79,7 +81,7 @@ example:
 bowtie2-build -f /home/biol525d/Topic_6/data/Pine_reference_rnaseq_reduced.fa Pine_reference_rnaseq_reduced_ref
 ```
 
-Step 4. Calculate expression. Previous versions of RSEM specified the "--no-polyA" flag to be used if the data have already been cleaned to remove polyA tails, but this is now the default, so poly-A tails are not added unless you specify. 
+Step 6. Calculate expression. Previous versions of RSEM specified the "--no-polyA" flag to be used if the data have already been cleaned to remove polyA tails, but this is now the default, so poly-A tails are not added unless you specify. 
 
 I have provided the example command for one of the individuals. Be sure to repeat the alignments and expression counts for all three individuals (PmdT_147, PmdT_191 and PmwT_171).
 
@@ -104,7 +106,7 @@ Use "ls" to discover what the output is called, and use "less" or "head" to see 
 
 Now rerun this command on the other two paired .fq libraries, generating three RSEM alignments. 
 
-Step 5. To plot some quality statistics, run the following command, replacing the <NAME> with the appropriate filename prefix, without the .stat ending (and removing the <> characters):
+Step 7. To plot some quality statistics, run the following command, replacing the <NAME> with the appropriate filename prefix, without the .stat ending (and removing the <> characters):
 
 command:
 rsem-plot-model <name_of_aligned_output_from_step4> outputname.pdf
@@ -129,7 +131,7 @@ Histogram of reads with different number of alignments: x-axis is the number of 
 
 You can download these to your computer to take a look at the graphs.
 
-Step 6. To make a table out of the individual library expression files that you have created, use the custom perl script called "add_RSEM_data_to_table.pl". To run this, you will first have to create a list of the contig names that were in your reference (/home/biol525d/Topic_6/data/Pine_reference_rnaseq_reduced.fa), along with a list of the .genes.results files created by RSEM that you want to put together. The list of names in the reference will have to match the names that you see in the RSEM output files that end in ".genes.results". See if you can figure out how to do these operations using simple bash commands. The commands to do so are listed at the bottom of this document if you run into trouble. Then run the perl script:
+Step 8. To make a table out of the individual library expression files that you have created, use the custom perl script called "add_RSEM_data_to_table.pl". To run this, you will first have to create a list of the contig names that were in your reference (/home/biol525d/Topic_6/data/Pine_reference_rnaseq_reduced.fa), along with a list of the .genes.results files created by RSEM that you want to put together. The list of names in the reference will have to match the names that you see in the RSEM output files that end in ".genes.results". See if you can figure out how to do these operations using simple bash commands. The commands to do so are listed at the bottom of this document if you run into trouble. Then run the perl script:
 
 
 command:
