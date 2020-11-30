@@ -5,11 +5,13 @@ topickey: 5
 topictitle: "Assembly"
 ---
 
+## Recorded lecture
+
+<iframe src="https://monash.au.panopto.com/Panopto/Pages/Embed.aspx?id=835dc4b6-e73c-4892-88cc-ac820189a883&autoplay=false&offerviewer=true&showtitle=true&showbrand=false&start=0&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay"></iframe>
+
 ## Accompanying material
 
-* Slides 2017: [UBC - De novo Assembly 2017](./Assembly2017.pdf)
-* Slides 2018: [UBC - De novo Assembly 2018](./Assembly2018.pdf)
-* Slides 2019: [UBC - De novo Assembly 2019](./Assembly2019.pdf)
+* Slides 2020: [UBC - De novo Assembly 2020](./Assembly2020.pdf)
 * Background reading: Comparison of the two major classes of assembly algorithms: overlap-layout-consensus and de-bruijn-graph [Paper](./background_reading/Briefings in Functional Genomics-2011-Li-bfgp-elr035.pdf). Briefings in Functional Genetics 2011.
 * Sense from sequence reads: methods for alignment and assembly [Paper](./background_reading/Flicek&Birney2009.pdf). Flicek and Birney. Nature methods supplement 2009.
 * [Velvet Manual 1.1](./background_reading/Manual.pdf). Daniel Zerbino, 2008.
@@ -58,12 +60,12 @@ Your goal for today is to assemble a bacterial genome, as best you can, using th
 This genome was downloaded from GAGE (Genome Assembly Gold-Standard Evaluations) website (http://gage.cbcb.umd.edu/data/index.html): 
 
 Details for this dataset are as follows: 
-⋅⋅*Species: Staphylococcus aureus
-⋅⋅*Actual genome size: 2,860,307 bp
-⋅⋅*Type: Paired end
-⋅⋅*Read number (total - including both reads per pair): 1,294,104
-⋅⋅*Read size (each read): 101 bp 
-⋅⋅*Insert length (sd): 180 bp (+/-20 bp) 
+Species: Staphylococcus aureus
+Actual genome size: 2,860,307 bp
+Type: Paired end
+Read number (total - including both reads per pair): 1,294,104
+Read size (each read): 101 bp 
+Insert length (sd): 180 bp (+/-20 bp) 
 
 The data is located in /home/biol525d/Topic_5/data/. One file contains the forward read (frag_1.fastq.gz) and the other file contains the reverse read (frag_2.fastq.gz). Each read has a match from the same fragment in the other file and is in the same order in the matching file.
 
