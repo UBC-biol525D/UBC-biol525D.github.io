@@ -5,6 +5,16 @@ topickey: 6
 topictitle: "RNASeq Analysis"
 ---
 
+## Lecture recordings
+
+PART I - Quantifying gene expression
+
+<iframe src="https://monash.au.panopto.com/Panopto/Pages/Embed.aspx?id=3bb1ba55-aba0-416c-84ea-ac83003646e4&autoplay=false&offerviewer=true&showtitle=true&showbrand=false&start=0&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay"></iframe>
+
+PART II - Statistical analysis of gene expression data
+
+<iframe src="https://monash.au.panopto.com/Panopto/Pages/Embed.aspx?id=7683b7ba-4c52-46c9-8ffb-ac830058057d&autoplay=false&offerviewer=true&showtitle=true&showbrand=false&start=0&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay"></iframe>
+
 ## Accompanying material
 
 * [Slides](./rnaseq_lecture_2019.pdf)
