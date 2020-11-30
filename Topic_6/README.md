@@ -5,6 +5,7 @@ topickey: 6
 topictitle: "RNASeq Analysis"
 ---
 
+
 ## Lecture recordings
 
 PART I - Quantifying gene expression
