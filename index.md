@@ -52,7 +52,12 @@ To get up to speed on working with a Unix system, take a look at the [unix help]
 7. [Topic 7](./Topic_7/) SNP and variant calling [Kreiner, J]
 8. [Topic 8](./Topic_8-9/) Population genomics and plotting in R (Part 1) [Kreiner, J]
 9. [Topic 9](./Topic_8-9/) Population genomics and plotting in R (Part 2) [Kreiner, J]
-10. [Topic 10](./Topic_10/) Case studies [Kreiner,J/Booker,T]
+10. Topic 10 Case studies [Kreiner,J/Booker,T]
+
+In previous years, there has been a short introduction to phylogenetic analysis included in the workshop. We have not included that topic this year, but the slides and materials are available for those who are interested:
+
+11. [Topic 11](./Topic_10/) Phylogenetic analysis
+
 
 ## Obtaining all the files on this site
 
