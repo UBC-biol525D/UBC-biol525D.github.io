@@ -17,7 +17,7 @@ PART II - Statistical analysis of gene expression data
 
 ## Accompanying material
 
-* [Slides](./rnaseq_lecture_2020.pdf)
+* [Slides](./Rnaseq2020.pdf)
 
 ## PART I: RSEM Processing
 
