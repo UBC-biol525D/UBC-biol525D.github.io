@@ -8,7 +8,7 @@ topictitle: "SNP Calling"
 ## Accompanying material
 * [Slides](./Topic 7mod.pdf)
 
-In this tutorial we're going to call SNPs with GATK. BLERG
+In this tutorial we're going to call SNPs with GATK.
 
 The first step is again to set up directories to put our incoming files.
 ```bash
