@@ -30,7 +30,7 @@ see documentation here for more info:
 
 Typing in "rsem-calculate-expression" or any of the other commands without any arguments will bring up a help screen. In all the RSEM commands below.
 
-Step 1. Install Bowtie. NOTE THAT STEP 1 AND 2 ARE COMPLETED
+Step 1. Install Bowtie. NOTE THAT STEPS 1 AND 2 ARE COMPLETED
 
 sudo apt-get install bowtie2
 
