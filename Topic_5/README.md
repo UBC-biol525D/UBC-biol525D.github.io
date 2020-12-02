@@ -136,7 +136,7 @@ Step 4. The next step is to make make the graph, simplify the graph, correct err
 
 velvetg is run as follows:
 
-velvetg <velveth output_directory>
+velvetg <velveth_output_directory>
 
 For all the options simply type velvetg and refer to the velvet manual for more details.
 
