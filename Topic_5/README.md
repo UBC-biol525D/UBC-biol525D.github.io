@@ -154,13 +154,14 @@ Units in Velvet:
 
 Velvet measures and reports lengths in overlapping k-mers. Although not intuitive at first sight, this unit system allows for consistency throughout Velvet’s output. 
 
-The relationship between coverage and k-mer coverage is defined by the following equation:
+It also reports coverage in terms of k-mer coverage. The relationship between coverage (C) and k-mer coverage (Ck) is defined by the following equation:
 
 Ck = C ∗ (L−k+1)/L
 
 Where C=coverage, L=read length, and k=kmer length. 
 
-Similarly, statistics derived from lengths are also subjected to this transformation. It is as simple as adding k-1 to the reported length to recover the length in bp. If the median coverage of an assembly is reported as Ck read k-mers per contig k-mer it is corresponds in fact to roughly CkL/(L + k −1) read basepair per contig basepair (assuming that contigs are significantly longer than the hash length).
+Similarly, statistics derived from lengths are also subjected to this transformation. It is as simple as adding k-1 to the reported length to recover the length in bp. 
+
 
 ### Question 2) For a k-mer of 21 what is the k-mer coverage for this genome assembly?
 
