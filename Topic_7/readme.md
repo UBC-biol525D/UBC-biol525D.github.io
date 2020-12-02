@@ -6,7 +6,7 @@ topictitle: "SNP Calling"
 ---
 
 ## Accompanying material
-* [Slides](./Topic 7.pdf)
+* [Slides](./Topic 7mod.pdf)
 
 In this tutorial we're going to call SNPs with GATK. 
 
