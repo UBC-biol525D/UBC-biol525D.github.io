@@ -76,6 +76,7 @@ Insert length (sd): 180 bp (+/-20 bp)
 
 
 
+
 The data is located in /home/biol525d/Topic_5/data/. One file contains the forward read (frag_1.fastq.gz) and the other file contains the reverse read (frag_2.fastq.gz). Each read has a match from the same fragment in the other file and is in the same order in the matching file.
 
 Step 1. Install Velvet COMPLETED 
@@ -94,7 +95,7 @@ This information will be useful when you are running your genome assemblies.
 
 Step 3. The first program you need to run is velveth
 
-Velveth takes in a number of sequence files, produces a hashtable (i.e. all the kmers), then outputs two files in an output directory (creating it if necessary). These files are called Sequences and Roadmaps, and are necessary to velvetg. 
+Velveth takes in a number of sequence files, produces a hashtable (i.e. all the kmers), then outputs two files in an output directory (creating it if necessary). These files are called Sequences and Roadmaps, and are necessary to run velvetg (the next step). 
 
 The syntax to run velveth is as follows:
 
