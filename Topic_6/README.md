@@ -20,6 +20,10 @@ PART II - Statistical analysis of gene expression data
 
 * [Slides](./Rnaseq2020.pdf)
 
+* For the papers and manuals for RSEM and edgeR click on the link below
+<https://github.com/UBC-biol525D/UBC-biol525D.github.io/tree/master/Topic_6/background_reading>
+
+
 ## PART I: RSEM Processing
 
 Steps for running RSEM:
