@@ -61,11 +61,17 @@ This genome was downloaded from GAGE (Genome Assembly Gold-Standard Evaluations)
 
 Details for this dataset are as follows: 
 Species: Staphylococcus aureus
+
 Actual genome size: 2,860,307 bp
+
 Type: Paired end
+
 Read number (total - including both reads per pair): 1,294,104
+
 Read size (each read): 101 bp 
+
 Insert length (sd): 180 bp (+/-20 bp) 
+
 
 The data is located in /home/biol525d/Topic_5/data/. One file contains the forward read (frag_1.fastq.gz) and the other file contains the reverse read (frag_2.fastq.gz). Each read has a match from the same fragment in the other file and is in the same order in the matching file.
 
