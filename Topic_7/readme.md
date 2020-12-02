@@ -27,7 +27,7 @@ picard=/mnt/bin/picard.jar
 
 There are 10 different samples and we're going to have to run multiple steps on each. To make this easier, we make a list of all the sample names.
 ```bash
-ls bam | grep .sort.bam$ | sed s/.sort.bam//g > samplelist.txt
+ls bam/ | grep .sort.bam$ | sed s/.sort.bam//g > samplelist.txt
 ```
 Lets break this down. 
 
