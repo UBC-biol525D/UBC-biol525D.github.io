@@ -99,7 +99,7 @@ Velveth takes in a number of sequence files, produces a hashtable (i.e. all the 
 
 The syntax to run velveth is as follows:
 
-velveth <output_directory> <hash_length>
+velveth "output_directory" "hash_length"
 
 To ensure that each k-mer cannot be its own reverse complement, k (i.e. hash length or kmer length) must be odd.
 
@@ -136,7 +136,7 @@ Step 4. The next step is to make make the graph, simplify the graph, correct err
 
 velvetg is run as follows:
 
-velvetg <velveth_output_directory>
+velvetg "velveth_output_directory"
 
 For all the options simply type velvetg and refer to the velvet manual for more details.
 
