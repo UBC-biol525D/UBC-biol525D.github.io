@@ -97,4 +97,4 @@ If not, it can be found here: http://www.opensource.org/licenses/mit-license.php
 
 ## About this site:
 
-   This site is powered by GithubPages, and the code backing it is on GitHub [here](https://github.com/owensgl/biol525D/).
+   This site is powered by GithubPages, and the code backing it is on GitHub [here](https://github.com/UBC-biol525D/).
