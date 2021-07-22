@@ -43,7 +43,7 @@ The course material is organized in several topics, with slides and coding examp
 To get up to speed on working with a Unix system, take a look at the [unix help](resources/unix_ref.pdf) file. There are some resources there that will help you find the specific command you need for each task.
 
 ## Syllabus
-1. [Topic 1](./Topic_1/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics, and the future of sequencing [Booker,T]
+1. [Topic 11](./Topic_11/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics, and the future of sequencing [Booker,T]
 2. [Topic 2](./Topic_2/) Programming for biologists [Booker, T]
 3. [Topic 3](./Topic_3/) Fastq files and quality checking/trimming [Kay, H]
 4. [Topic 4](./Topic_4/) Alignment: algorithms and tools [Booker, T]
@@ -92,9 +92,11 @@ Modified work (c) 2019 Gregory Owens, Kathryn Hodgins, J.S. Legare
 
 Modified work (c) 2020 Kathryn Hodgins, Julia Kreiner, Tom Booker
 
+Modified work (c) 2021 Tom Booker, Julia Kreiner
+
 This program is distributed under the MIT (X11) License, which should be distributed with the package.
 If not, it can be found here: http://www.opensource.org/licenses/mit-license.php
 
 ## About this site:
 
-   This site is powered by GithubPages, and the code backing it is on GitHub [here](https://github.com/UBC-biol525D/).
+   This site is powered by GithubPages, and the code backing it is on GitHub [here](https://github.com/UBC-biol525D/UBC-biol525D.github.io).
