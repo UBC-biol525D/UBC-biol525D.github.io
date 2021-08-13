@@ -25,7 +25,7 @@ topictitle: "Genome Assembly"
 
 1) How long are the sequences in /home/biol525d/data/shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.g? what about in /home/biol525d/data/longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz?
 
-|  Hint: One approach could be to subset the fastq file to just retain lines with the actually sequence info. Test out these commands.
+|        Hint: One approach could be to subset the fastq file to just retain lines with the actually sequence info. Test out these commands.
 ```bash
 
 cat SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | head #why doesn't this work?
@@ -37,11 +37,9 @@ awk '{print NR "\t" NF}'  #what is NR and what is NF?
 ```
 2) Given a genome size of 10Mb (10,000,000 bps), what do is your estimate of coverage/bp in just the forward reads?
 
-|  Hint: to get mean of column two you can try:  `awk '{ total += $2 } END { print total/NR }' `
-
-|  Hint:  `wc -l` gives a count of the number of lines
-
-|  Note: math is kind of annoying in command lind. expr works pretty well though for basic purposes (make sure to leave spaces around operators).
+|        Hint: to get mean of column two you can try:  `awk '{ total += $2 } END { print total/NR }' `
+|        Hint:  `wc -l` gives a count of the number of lines
+|        Note: math is kind of annoying in command lind. expr works pretty well though for basic purposes (make sure to leave spaces around operators).
 
 ## Tutorial 
 
