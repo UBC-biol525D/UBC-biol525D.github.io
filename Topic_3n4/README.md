@@ -23,12 +23,7 @@ topictitle: "Genome Assembly"
 # Code break questions
 
 
-1) How many sequences do you have in the fastq file /home/biol525d/data/shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz?
-
-Hint: if you know there were four rows of data for each sequence, how might wc -l help?
-Hint: if you knew each sequence was assigned a header, how could you use grep to help? grep is very powerful and allows for some regex expressions - ^ indicates the start of the line and $ indicates the end of the line (e.g. grep ^H*?$ <filename> would find all the lines starting with H and ending in ?)
-
-2) how long are the sequences in /home/biol525d/data/shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.g?
+1) how long are the sequences in /home/biol525d/data/shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.g? what about in /home/biol525d/data/longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz?
 
 Hint: One approach could be to subset the fastq file to just retain lines with the actually sequence info. Test out these commands.
 ```bash
@@ -40,6 +35,12 @@ zcat SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 #what does 
 awk '{print NR "\t" NF}'  #what is NR and what is NF?
 
 ```
+2) Given a genome size of 10Mb (10,000,000 bps), what do is your estimate of coverage/bp in just the forward reads?
+
+Hint: to get mean of column two you can try:  `awk '{ total += $2 } END { print total/NR }' `
+Hint:  `wc -l` gives a count of the number of lines
+
+Note: math is kind of annoying in command lind. expr works pretty well though for basic purposes (make sure to leave spaces around operators).
 
 ## Tutorial 
 
