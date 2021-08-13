@@ -42,27 +42,20 @@ awk '{print NR "\t" NF}'  #what is NR and what is NF?
 
 ## Tutorial 
 
-Your goal for today is to see how well we can assemble a portion of the Salmon reference genome with short read, short+long read, and long read only approaches. New software with improved algorithms and sequence technology specific approaches so we might be careful about generalizing "the best assembly approach" but it is worthwile getting familiar with some of these.
+Your goal for today is to see how well we can assemble a portion of the Salmon reference genome with short read, short+long read (hybrid), and long read only approaches. New software with improved algorithms and sequence technology-specific-approaches are constantly being developed so we should be careful about generalizing "the best assembly approach" from these results. It will also be highly dependent on the architecture of the genome you are trying to assemble (i.e. depending on repeat content, ploidy, etc.) but it is worthwile getting familiar with some of these approaches.
 
-You've already spent some time getting familiar with the data we're working with - Salmon populations that have been evolving to a temperature gradient - however if we want to learn about the evolutionary processes going on in these pops its going to be really useful to have a genome to align it to, to get information about not just variant nucleotides but their relative positioning. 
+You've already spent some time getting familiar with the data we're working with - We want to understanding the evolutionary processes that allow salmon populations to persist across a key temperature gradient - having a high quality reference genome will be indispensible for looking at not just the the frequency of variant nucleotides but their position relative to one another and other features of the genome. 
 
 
 Details for this dataset are as follows: 
 
-Species:
+Species: Oncorhynchus tshawytscha, Chinook Salmon
 
-Actual genome size: 10Mb
+Working Genome size: 10Mb
 
 Type: Illumina Paired End, Pacbio
 
-Read number (total - including both reads per pair):
-
-
-Read size (each read):
-
-Insert length (sd): 
-
-We used some simple command line tools to look at read length above. However, like most bioinformatics, there are a bunch of tools that have been developled to look at various statistics related to your raw reads. We are going to use fastqc to get a better sense of our data.
+We used some simple command line tools to look at read length and number of reads above. However, like most bioinformatics, there are a bunch of tools that have been developled to look at various statistics related to your raw reads and we don't need to reinvent the wheel. We are going to use *fastqc* to get a better sense of the quality of our read data.
 
 ```bash
 mkdir fastqc && cd fastqc
@@ -84,15 +77,14 @@ fastqc ${shortreads}/*R?.fastq.gz ${longreads}/*fastq.gz -o ./ #Q: what does the
 multiqc ./
 ```
 
-Download these the output of these files as follows:
+Download the output of multiqc run as follows:
 ```bash
-scp <username@ip.address>:~/Topic_3/fastqc/multiqc_report.html <path on your computer where you want the file>
+scp <username@ip.address>:~/Topic_3n4/fastqc/multiqc_report.html <path on your computer where you want the file>
 ```
 
 *** I'm not sure how useful this portion will really be - might be worth just discussing that the adapters have already been removed and we have pretty high quality reads, even at the ends ****
 
-Discussion Question: what are the main benefits and weeknesses of the different data types (i.e. pacbio versus illumina short read)
-Discussion Quesiton: there are tradeoffs of trimming short read data, to remove low quality bases near the end of the read. 
+Discussion Quesiton: our data has effectively had adapters already removed from reads and trimmed for low quality BPs near the end of reads. what might be the cons of read trimming? 
 
 ## Go ahead with genome assembly
 
@@ -108,7 +100,8 @@ mkdir spades
 ````
 
 
-#two types of hybrid (short + long) assembly: SPADES & HASLR
+#two types of hybrid (short + long) assembly - SPADES & HASLR - *don't run*
+#haslr takes ~15 minutes
 ```bash
 #make new dir
 mkdir hybridspades
@@ -123,7 +116,8 @@ haslr.py -t 20 -s ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz $
 #
 ```
 
-#long read assembly - using FLYE - *dont run*
+#long read assembly - using FLYE - *don't run*
+#this took 8 minutes with 20 threads
 
 ```bash
 #install
@@ -131,7 +125,6 @@ conda install flye
 
 #run flye assuming lower quality pacbio reads
 flye --pacbio-raw  ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz --threads 20 -o flye/ --genome-size 10m
-#this took 8 minutes with 20 threads
 ```
 
 Now we have four assembles, 1 short read (spades), 2 hybrid (spades, haslr), and one long read only (flye). Lets compare assemblies.
@@ -147,7 +140,7 @@ bbmap is command line alignment program that has a collection of nice scripts fo
 
 An important stat is N50: the number of contigs making up 50% of your assembly. 
 Relatedly, L50 describes for those largest sequences that make up 50% of your assembly, what the minimum sequence length is.
-This becomes more intutitive when you look at the lower table outputted by bbmap.
+This becomes more intutitive when you look at the lower table outputted by bbmap (unfortunately there is some inconsitency between these definitions in that L/N useage is often swapped, as you'll see later)
 
 We have several assemblies we want to generate stats for, so lets automate this using a for loop
 ```bash
@@ -182,3 +175,30 @@ Open the report.html results file in your browser and explore the outcome of our
 
 
 
+#Review some important command line operations we used today.
+
+For loops - this can be a list of items to loop or you can specify of range of values
+```bash
+for i in {1..100}
+do
+echo $i
+done
+```
+
+Making new folders `mkdir`
+Renaming files `mv` and moving them  `mv file path/new_file_name`
+Counting `wc -l`
+Means with `awk '{ total += $2 } END { print total/NR }'`
+
+Printing and splitting certain columns (specified with $) with awk 
+```bash
+awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}'
+#split column 9 by the delimeter ";" and save every split value into the array a
+#print column 1, the first value of array a, column 5, and column 4
+```
+
+Cut also allows your to print certain columns but the order will be the same as provided in the input. For e.g., compare the following outputs.
+```bash
+cut -f2,1 SalmonReference.genes 
+cut -f1,2 SalmonReference.genes
+```
