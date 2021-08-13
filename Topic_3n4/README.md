@@ -18,7 +18,7 @@ topictitle: "Genome Assembly"
 * Flye Paper. Assembly of Long Error-Prone Reads Using Repeat Graphs [Paper](https://doi.org/10.1038/s41587-019-0072-8).
 
 
-# Topic 5 Genome Assembly
+# Topic 3 Genome Assembly
 
 # Code break questions
 
