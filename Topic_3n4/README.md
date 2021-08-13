@@ -136,6 +136,8 @@ mv hybridhaslr/asm_contigs_k49_a3_lr40x_b500_s3_sim0.85/asm.final.fa haslr_hybri
 mv flye/assembly.fasta flye_longread.fasta
 ```
 
+## Assess quality of assemblies
+
 bbmap is command line alignment program that has a collection of nice scripts for library and sequence quality control. We're going to use its stats.sh script to get at some basic stats around the number and length of sequences in our assembly.
 
 An important stat is N50: the number of contigs making up 50% of your assembly. 
@@ -158,7 +160,6 @@ Having a reference genome of a closely related species can really help asses how
 
 Importantly, this allows us to get at both completness (possible when you know the target genome size) and correctness.
 
-
 ```bash
 #for our purposes, it will be useful to know the location of known genes. Lets format this as quast expects 
 #column order as follows: chromosome, gene id, end, start
@@ -173,9 +174,11 @@ scp -r <username@ip.address>:~/Topic_3n4/quast/ ./
 
 Open the report.html results file in your browser and explore the outcome of our assembly efforts. Make sure to eventually click the "View in icarus contig browser".
 
+Question: what new information does this report give us?
 
 
-#Review some important command line operations we used today.
+
+# Review some important command line operations we used today.
 
 For loops - this can be a list of items to loop or you can specify of range of values
 ```bash
@@ -188,6 +191,7 @@ done
 Making new folders `mkdir`
 Renaming files `mv` and moving them  `mv file path/new_file_name`
 Counting `wc -l`
+Find and replace `sed 's/find/replace/g'`
 Means with `awk '{ total += $2 } END { print total/NR }'`
 
 Printing and splitting certain columns (specified with $) with awk 
