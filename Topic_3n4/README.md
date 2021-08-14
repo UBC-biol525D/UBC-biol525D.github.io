@@ -11,7 +11,7 @@ topictitle: "Genome Assembly"
 
 ## Accompanying material
 * Slides 2020: [UBC - De novo Assembly 2020](./Assembly2020.pdf)
-* Background reading: The present and future of de novo whole-genome assembly [Paper](The present and future of de novo whole-genome assembly). 
+* Background reading: The present and future of de novo whole-genome assembly [Paper](https://academic.oup.com/bib/article/19/1/23/2339783?login=true#119542667). 
 
 Programming Resources
 * [Flye Manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md)
