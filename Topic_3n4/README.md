@@ -178,7 +178,7 @@ Question: what new information does this report give us? how does it inform on c
 
 
 
-# Review some important command line operations we used today.
+## Review some important command line operations we used today.
 
 For loops - this can be a list of items seperated by spaces or you can specify of range numeric values to use a an iterator
 ```bash
