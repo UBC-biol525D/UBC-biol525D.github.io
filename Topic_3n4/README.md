@@ -188,12 +188,12 @@ echo $i
 done
 ```
 
-Making new folders `mkdir`
-Renaming files `mv` and moving them  `mv file path/new_file_name`
-Counting `wc -l`
-Find and replace `sed 's/find/replace/g'`
-Column means with `awk '{ total += $2 } END { print total/NR }'`
-Assigning variables `shortreads="/home/biol525d/data/shortreads/"` and calling them `echo ${shortreads}`
+Making new folders `mkdir` \
+Renaming files `mv` and moving them  `mv file path/new_file_name` \
+Counting `wc -l` \
+Find and replace `sed 's/find/replace/g'` \
+Column means with `awk '{ total += $2 } END { print total/NR }'` \
+Assigning variables `shortreads="/home/biol525d/data/shortreads/"` and calling them `echo ${shortreads}` \
 
 Printing and splitting certain columns (specified with $) with awk 
 ```bash
