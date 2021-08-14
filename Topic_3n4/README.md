@@ -11,8 +11,7 @@ topictitle: "Genome Assembly"
 
 ## Accompanying material
 * Slides 2020: [UBC - De novo Assembly 2020](./Assembly2020.pdf)
-* Background reading: Comparison of the two major classes of assembly algorithms: overlap-layout-consensus and de-bruijn-graph [Paper](./background_reading/Briefings in Functional Genomics-2011-Li-bfgp-elr035.pdf). Briefings in Functional Genetics 2011.
-* Sense from sequence reads: methods for alignment and assembly [Paper](./background_reading/Flicek&Birney2009.pdf). Flicek and Birney. Nature methods supplement 2009.
+* Background reading: The present and future of de novo whole-genome assembly [Paper](The present and future of de novo whole-genome assembly). 
 
 Programming Resources
 * [Flye Manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md)
