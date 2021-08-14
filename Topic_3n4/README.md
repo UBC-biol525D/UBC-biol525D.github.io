@@ -89,7 +89,7 @@ Discussion Quesiton: our data effectively has had adapters removed from reads an
 Genome assembly can take a long time. Because our course is short we're only going to actually generate an assembly from the program that runs fastest, but we're going to provide the commands for several programs that we've already run, and together we will compare their outputs. 
 
 
-#short read assembly: SPADES - *don't run*
+# Short read assembly: SPADES - *don't run*
 #using a single core this takes ~14 minutes
 ```bash
 mkdir spades
@@ -98,7 +98,7 @@ mkdir spades
 ````
 
 
-#two types of hybrid (short + long) assembly - SPADES & HASLR - *don't run*
+# Hybrid (short + long) assembly - SPADES & HASLR - *don't run*
 #haslr takes ~15 minutes
 ```bash
 #make new dir
@@ -114,7 +114,7 @@ haslr.py -t 20 -s ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz $
 #
 ```
 
-#long read assembly - using FLYE - *don't run*
+# Long read assembly - FLYE - *don't run*
 #this took 8 minutes with 20 threads
 
 ```bash
