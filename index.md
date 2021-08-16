@@ -44,15 +44,17 @@ To get up to speed on working with a Unix system, take a look at the [unix help]
 
 ## Syllabus
 1. [Topic 11](./Topic_11/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics, and the future of sequencing [Booker,T]
+3. [Topic 13](./Topic_3n4/) Genome Assembly [Kreiner, J]
+
 2. [Topic 2](./Topic_2/) Programming for biologists [Booker, T]
-3. [Topic 3](./Topic_3/) Fastq files and quality checking/trimming [Kay, H]
-4. [Topic 4](./Topic_4/) Alignment: algorithms and tools [Booker, T]
-5. [Topic 5](./Topic_5/) Assembly: transcriptome and genome assembly [Kay, H]
-6. [Topic 6](./Topic_6/) RNAseq + differential expression analysis [Kay, H]
-7. [Topic 7](./Topic_7/) SNP and variant calling [Kreiner, J]
-8. [Topic 8](./Topic_8-9/) Population genomics and plotting in R (Part 1) [Kreiner, J]
-9. [Topic 9](./Topic_8-9/) Population genomics and plotting in R (Part 2) [Kreiner, J]
-10. Topic 10 Case studies [Kreiner,J/Booker,T]
+4. [Topic 3](./Topic_3/) Fastq files and quality checking/trimming [Kay, H]
+5. [Topic 4](./Topic_4/) Alignment: algorithms and tools [Booker, T]
+6. [Topic 5](./Topic_5/) Assembly: transcriptome and genome assembly [Kay, H]
+7. [Topic 6](./Topic_6/) RNAseq + differential expression analysis [Kay, H]
+8. [Topic 7](./Topic_7/) SNP and variant calling [Kreiner, J]
+9. [Topic 8](./Topic_8-9/) Population genomics and plotting in R (Part 1) [Kreiner, J]
+10. [Topic 9](./Topic_8-9/) Population genomics and plotting in R (Part 2) [Kreiner, J]
+11. Topic 10 Case studies [Kreiner,J/Booker,T]
 
 In previous years, there has been a short introduction to phylogenetic analysis included in the workshop. We have not included that topic this year, but the slides and materials are available for those who are interested:
 
