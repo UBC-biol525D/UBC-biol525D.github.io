@@ -1,7 +1,7 @@
 ---
-title: "Topic 10: Phylogenetics"
-permalink: /Topic_10/
-topickey: 10
+title: "Topic 100: Phylogenetics"
+permalink: /Topic_100/
+topickey: 100
 topictitle: Phylogenetics
 ---
 
