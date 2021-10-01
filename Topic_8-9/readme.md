@@ -9,7 +9,7 @@ topictitle: "Population genomics"
 * [Slides](./Topic 8mod.pdf)
 
 ## Daily Questions:
-1. Whats the difference between QUAL and GQ? 
+1. Whats the relasionship between QUAL and GQ? 
 2. What effect does missing data have on a PCA? What about linkage?
 3. What distinguishes PCA from Structure-based analyses?
 
