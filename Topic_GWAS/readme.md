@@ -14,7 +14,10 @@ Last topic we used bcftools to filter snps, and plink & admixture to investigate
 
 Remember, we want to test hypothesis about how our populations of Chinook salmon might have adapted to different temperature environments. We could do this a bunch of different ways, but lets try two. The approach we'll take is to see if we can identify loci that show particularly extreme differentiation between environments of varying temperatures. We'll use the Fst statistic to find these loci that diverge in allele frequency between extreme temperatures. We've already identified a polymorphic phenotype across this temperature gradient, so it might be interesting to see how well environmentally associated allelic variation lines up with alleles that associate with our phenotype. We can find these phenotypically-associated alleles with a GWA. 
 
-Lets start with Fst. We can calculate Fst in genomic windows between all pairwise population comparisons. It is often nice to calculation population statistics like Fst (diversity, tajima's d, etc) in windows, to reduce noise (for example, due to differences in coverage at individual loci). While there are tons of programs that calclulate Fst (plink, Pixy, SNPrelate - keep in mind that there are numerous ways to calculate Fst), here we're going to use VCFtools.
+
+## Fst ##
+
+We can calculate Fst in genomic windows between all pairwise population comparisons. It is often nice to calculation population statistics like Fst (diversity, tajima's d, etc) in windows, to reduce noise (for example, due to differences in coverage at individual loci). While there are tons of programs that calclulate Fst (plink, Pixy, SNPrelate - keep in mind that there are numerous ways to calculate Fst), here we're going to use VCFtools.
 
 
 ```bash
@@ -44,8 +47,6 @@ grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log
 
 ### Code Break Q! ###
 
-
-
 Make a results file of the pairwise weighted fst estimates based on the grep command above. Use pipes and basic UNIX commands like _tr_, _cut_,and _sed_ to split the output into a space seperated file with three columns: 1) pop A, 2) pop B, and 3) Fst. Save it as analysis/fst_comparisons/weighted_fst_pairwise.txt
 
 <details><summary>don't click me unless you're really stuck! try asking a friend first</summary>
@@ -57,7 +58,10 @@ grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log 
 </p>
 </details>
 
-Next, lets run a *GWAS*. A nice thing about plink, the program we used in the previous tutorial, is that alot of programs take the .bed/.fam format for input, including the GWA program GEMMA. We're going to use the same VCF we used to infer patterns of population structure. It's amazing how easy it is to run a GWA, but we have to be careful about the statistical design and interpretation of these type of analyses.
+
+## Genome-wide Association ##
+
+A nice thing about plink, the program we used in the previous tutorial, is that alot of programs take the .bed/.fam format for input, including the GWA program GEMMA. We're going to use the same VCF we used to infer patterns of population structure. It's amazing how easy it is to run a GWA, but we have to be careful about the statistical design and interpretation of these type of analyses.
 
 By default, GEMMA knows to take the 6th column of the plink .fam file as the dependent variable. So first, we need to modify this fam file to include or phenotype of interest.
 
