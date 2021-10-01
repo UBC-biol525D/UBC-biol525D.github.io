@@ -42,7 +42,8 @@ ls analysis/fst_comparisons/*.log
 grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log
 ```
 
-###Code Break Q!###
+### Code Break Q! ###
+
 
 
 Make a results file of the pairwise weighted fst estimates based on the grep command above. Use pipes and basic UNIX commands like _tr_, _cut_,and _sed_ to split the output into a space seperated file with three columns: 1) pop A, 2) pop B, and 3) Fst. Save it as analysis/fst_comparisons/weighted_fst_pairwise.txt
