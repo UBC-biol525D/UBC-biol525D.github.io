@@ -2,7 +2,7 @@
 title: "Topics 8: Population genomics - Structure"
 permalink: /Topic_8/
 topickey: 8
-topictitle: "Population genomics"
+topictitle: "Population genomics - Structure"
 ---
 
 ## Accompanying material
