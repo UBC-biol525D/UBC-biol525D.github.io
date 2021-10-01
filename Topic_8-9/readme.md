@@ -9,9 +9,9 @@ topictitle: "Population genomics"
 * [Slides](./Topic 8mod.pdf)
 
 ## Daily Questions:
-1. For a site that is invariant in both populations (i.e. a locus with no variation), what is Fst?
-2. What effect does missing data have on a PCA?
-3. What is the average Fst between ARG and ANN samples in our dataset? Hint, SNPrelate can calculate Fst.
+1. Whats the difference between QUAL and GQ? 
+2. What effect does missing data have on a PCA? What about linkage?
+3. What distinguishes PCA from Structure-based analyses?
 
 ### NOTE:
 * If you didn't complete creating _Chinook_GWAS.vcf.gz_ in Topic 7, you can copy it to ~/vcf from /mnt/data/vcf
