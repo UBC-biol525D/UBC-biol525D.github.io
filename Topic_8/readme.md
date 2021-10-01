@@ -1,6 +1,6 @@
 ---
 title: "Topics 8: Population genomics"
-permalink: /Topic_8-9/
+permalink: /Topic_8/
 topickey: 8
 topictitle: "Population genomics"
 ---
