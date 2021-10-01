@@ -45,13 +45,13 @@ To get up to speed on working with a Unix system, take a look at the [unix help]
 ## Syllabus
 1. [Topic 1](./Topic_11/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics, and the future of sequencing [Booker,T]
 2. [Topic 2](./Topic_2/) Programming Basics
-3. [Topic 3]  Bioinformatics Gotchyas and File conversion[Booker, T]
-4. [Topic 4](./Topic_3n4/) Genome Assembly [Kreiner, J]
-5. [Topic 5](./Topic_6/) RNAseq + differential expression analysis [Kay, H]
+3. [Topic 3]  Bioinformatics Gotchyas
+4. [Topic 4](./Topic_3n4/) Genome Assembly
+5. [Topic 5](./Topic_6/) RNAseq + differential expression analysis
 6. [Topic 6](./Topic_4/) Alignment: algorithms and tools [Booker, T]
 7. [Topic 7](./Topic_7/) SNP and variant calling [Kreiner, J]
 8. [Topic 8](./Topic_8-9/) Population structure and GWAS [Kreiner, J]
-9. [Topic 9](./Topic_8-9/) Visualizing resuts in R [Kreiner, J]
+9. [Topic 9](./Topic_9/) Data visualization in R [Kreiner, J]
 
 In previous years, there has been a short introduction to phylogenetic analysis included in the workshop. We have not included that topic this year, but the slides and materials are available for those who are interested:
 
