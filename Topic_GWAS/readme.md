@@ -5,8 +5,6 @@ topickey: 9
 topictitle: "Population genomics - Seletion"
 ---
 
-## Accompanying material
-
 ## Daily Questions:
 1. For a site that is invariant in both populations, what is Fst?
 2. What is the average Fst between the most distant populations (pop 1 vs pop 10)? What about nearby populations (pop 5 v pop 6?)
@@ -41,9 +39,14 @@ do
 done
 
 ls analysis/fst_comparisons/*.log
+grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log
+```
 
-#make a results file of the overall pairwise weighted fst estimates
- grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt
+####Coding Challenge!
+Make a results file of the pairwise weighted fst estimates based on the grep command above. Use pipes and basic UNIX commands like _tr_, _cut_,and _sed_ to split the output into a space seperated file with three columns: 1) pop A, 2) pop B, and 3) Fst. Save it as analysis/fst_comparisons/weighted_fst_pairwise.txt
+
+```{echo=FALSE}
+grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt
 ```
 
 Next, lets run a GWAS. A nice thing about plink, the program we used in the previous tutorial, is that alot of programs take the .bed/.fam format for input, including the GWA program GEMMA. We're going to use the same VCF we used to infer patterns of population structure. It's amazing how easy it is to run a GWA, but we have to be careful about the statistical design and interpretation of these type of analyses.
