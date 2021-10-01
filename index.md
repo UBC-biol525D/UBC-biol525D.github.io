@@ -50,8 +50,9 @@ To get up to speed on working with a Unix system, take a look at the [unix help]
 5. [Topic 5](./Topic_6/) RNAseq + differential expression analysis
 6. [Topic 6](./Topic_4/) Alignment: algorithms and tools [Booker, T]
 7. [Topic 7](./Topic_7/) SNP and variant calling [Kreiner, J]
-8. [Topic 8](./Topic_8-9/) Population structure and GWAS [Kreiner, J]
-9. [Topic 9](./Topic_8-9/plotting_structure.md) Data visualization in R [Kreiner, J]
+8. [Topic 8](./Topic_8/) Patterns of population structure [Kreiner, J]
+9. [Topic 9](./Topic_8/) Signals of adaptation [Kreiner, J]
+10. [Topic 9](./Topic_12/) Data visualization in R [Kreiner, J]
 
 In previous years, there has been a short introduction to phylogenetic analysis included in the workshop. We have not included that topic this year, but the slides and materials are available for those who are interested:
 
