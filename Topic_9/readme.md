@@ -1,5 +1,5 @@
 ---
-title: "Topics 8: Population genomics - Selection"
+title: "Topics 9: Population genomics - Selection"
 permalink: /Topic_GWAS/
 topickey: 9
 topictitle: "Population genomics - Seletion"
