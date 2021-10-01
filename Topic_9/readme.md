@@ -2,7 +2,7 @@
 title: "Topics 9: Population genomics - Selection"
 permalink: /Topic_GWAS/
 topickey: 9
-topictitle: "Population genomics - Seletion"
+topictitle: "Population genomics - Selection"
 ---
 
 ## Daily Questions:
