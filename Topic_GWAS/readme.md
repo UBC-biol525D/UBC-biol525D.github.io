@@ -16,23 +16,42 @@ Last topic we used bcftools to filter snps, and plink & admixture to investigate
 
 Remember, we want to test hypothesis about how our populations of Chinook salmon might have adapted to different temperature environments. We could do this a bunch of different ways, but lets try two. The approach we'll take is to see if we can identify loci that show particularly extreme differentiation between environments of varying temperatures. We'll use the Fst statistic to find these loci that diverge in allele frequency between extreme temperatures. We've already identified a polymorphic phenotype across this temperature gradient, so it might be interesting to see how well environmentally associated allelic variation lines up with alleles that associate with our phenotype. We can find these phenotypically-associated alleles with a GWA. 
 
-Lets start with Fst. To keep things simple for now, we're going to calculate Fst between population 1 and population 10, a comparison that shows the largest difference in temperature. We are going to calculate Fst between these groups using the perl tool vcf2fst.pl. This is a custom script from Greg Owens, since we want to keep the numerator and denominator from the Fst calculations, which is hard to do. (Lots of other programs calculate Fst - can you think of a reason why might it be important to keep track of both the denominator and numerator?)
+Lets start with Fst. We can calculate Fst in genomic windows between all pairwise population comparisons. It is often nice to calculation population statistics like Fst (diversity, tajima's d, etc) in windows, to reduce noise (for example, due to differences in coverage at individual loci). While there are tons of programs that calclulate Fst (plink, Pixy, SNPrelate - keep in mind that there are numerous ways to calculate Fst), here we're going to use VCFtools.
 
-We need two files, a sample info file and a group file. The sample info file tells the program which population each sample is in and the group file tells the program which populations to compare. We can make them here:
 
 ```bash
-for i in `cat samplelist.txt`;
-        do echo -e "$i\t${i/%????/}";
-done > sampleinfo.txt
-echo -e "ANN\t1\nARG\t2" > popinfo.txt
+#For vcftools --wier-fst-pop, we need a file containing sample names, for each pop
+for pop in `cut -d"." -f2 vcf/Chinook_GWAS_fiiltered_fixedsamps.fam | uniq`
+do
+cut -d" " -f1 vcf/Chinook_GWAS_fiiltered_fixedsamps.fam | grep -w "$pop" > ${pop}.samples
+done
+
+#Use vcftools to calcluate fst in 10kb windows, across all pop pairs
+mkdir analysis/fst_comparisons
+#vcftools can't read bgzipped files, but can read gzipped
+gunzip vcf/Chinook_GWAS.filtered.fixedsamps.vcf.gz vcf/Chinook_GWAS.filtered.fixedsamps.vcf
+gzip vcf/Chinook_GWAS.filtered.fixedsamps.vcf
+
+for i in {1..9}
+do
+	for k in `seq $((i+1)) 10` # $((EXPR)) is bash for arithmetic expression!
+	do
+	vcftools --gzvcf vcf/Chinook_GWAS.filtered.fixedsamps.vcf.gz --weir-fst-pop p$i.samples --weir-fst-pop p$k.samples --out analysis/fst_comparisons/pop${i}_pop${k}_10kb --fst-window-size 10000 --fst-window-step 10000
+	done
+done
+
+ls analysis/fst_comparisons/*.log
+
+#make a results file of the overall pairwise weighted fst estimates
+ grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt
 ```
 
-Next, less run a GWAS. A nice thing about plink is that alot of programs take the .bed/.fam format for input, including the GWA program GEMMA. We're going to use the same VCF we used to infer patterns of population structure. It's amazing how easy it is to run a GWA, but we have to be careful about the statistical design and interpretation of these type of analyses.
+Next, lets run a GWAS. A nice thing about plink, the program we used in the previous tutorial, is that alot of programs take the .bed/.fam format for input, including the GWA program GEMMA. We're going to use the same VCF we used to infer patterns of population structure. It's amazing how easy it is to run a GWA, but we have to be careful about the statistical design and interpretation of these type of analyses.
 
-By default, gemma knows to take the 6th column of the plink .fam file as the dependent variable. So first, we need to modify this fam file to include or phenotype of interest.
+By default, GEMMA knows to take the 6th column of the plink .fam file as the dependent variable. So first, we need to modify this fam file to include or phenotype of interest.
 
 ```bash
-#modify the fam file, replacing the 6th file with our actual phenotypes
+#modify the fam file, replacing the 6th column with our actual phenotypes
 #first, check whether they are in the same order using comm (how do we interpret the output?)
 comm  <( cut -d" " -f1 vcf/Chinook_GWAS_fiiltered_fixedsamps.fam | sort ) <( cut -d"," -f-1 phenos.txt | sort)
 
@@ -55,6 +74,7 @@ mv vcf/Chinook_GWAS_fiiltered_fixedsamps.fammod vcf/Chinook_GWAS_fiiltered_fixed
 GEMMA writes results from these analyses to a folder it makes called 'output'. Because we are impatient we'll just take a quick look at the the min p-values from these two different GWA runs, before we read it into R.
 
 ``bash
+
 cd output
 head Chinook_GWAS.assoc.txt #lets look at the p_wald values, column 11
 head Chinook_GWAS_relatedness.assoc.txt #note that the p_wald column for the linear mixed effect GWA is 13
@@ -62,7 +82,8 @@ head Chinook_GWAS_relatedness.assoc.txt #note that the p_wald column for the lin
 sort -g -k11,11 Chinook_GWAS.assoc.txt | head -n 2 | cut -d$'\t' -f11  #g tells sort to interpret scientific notation
 sort -g -k14,14 Chinook_GWAS_relatedness.assoc.txt | head -n 2 | cut -d$'\t' -f14
 
-#our minimum p-value is much lower when we account for relatedness!
+#our minimum p-value is much lower when we account for relatedness..
+
 ```
 
 We've now run several analyses to investigate population structure and potentially, local adaptation. Lets move to R to do some statistics and data visualization.
