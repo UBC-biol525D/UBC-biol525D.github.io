@@ -71,9 +71,9 @@ mv vcf/Chinook_GWAS_fiiltered_fixedsamps.fammod vcf/Chinook_GWAS_fiiltered_fixed
 ~/software/gemma-0.98.1-linux-static -bfile vcf/Chinook_GWAS_fiiltered_fixedsamps -k output/Chinook_GWAS_fiiltered_fixedsamps.cXX.txt -lmm 4 -o Chinook_GWAS_relatedness
 ```
 
-GEMMA writes results from these analyses to a folder it makes called 'output'. Because we are impatient we'll just take a quick look at the the min p-values from these two different GWA runs, before we read it into R.
+GEMMA writes results from these analyses to a folder it makes called output/. Because we are impatient we'll just take a quick look at the the min p-values from these two different GWA runs, before we read it into R.
 
-``bash
+```bash
 
 cd output
 head Chinook_GWAS.assoc.txt #lets look at the p_wald values, column 11
