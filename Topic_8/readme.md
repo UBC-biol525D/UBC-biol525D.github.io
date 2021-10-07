@@ -32,17 +32,17 @@ cd vcf
 bgzip Chinook_GWAS.vcf
 tabix Chinook_GWAS.vcf.gz #be careful, gzip also produces .gz suffixes, but isn't compatible with tabix indexing, needed for bcftools!
 
-bcftools  view \ #watch out for version errors
+bcftools  view \
 	-c 2 \
 	-i 'INFO/AN >= 160 && QUAL > 30' \
 	-m 2 \
 	-M 2 \
 	-v snps \
 	Chinook_GWAS.vcf.gz \
-	-O z > Chinook_GWAS.filtered.vcf.gz
+	-O z > Chinook_GWAS_filtered.vcf.gz
 
 #Again, lets index the vcf file for future use
-tabix -p vcf vcf/Chinook_GWAS.filtered.vcf.gz
+tabix -p vcf Chinook_GWAS.filtered.vcf.gz
 ```
 
 ##Coding challenge
@@ -56,13 +56,13 @@ cd ~/
 mkdir analysis
 
 #we had a bug in our pipeline that appended some extra characters to the beginning of sample names - you can check sample names by greping for "#CHROM", which is the first string of the sample header line
-zgrep "#CHROM" vcf/Chinook_GWAS.filtered.vcf.gz
+zgrep "#CHROM" vcf/Chinook_GWAS_filtered.vcf.gz
 #we could use a specialty software like bedtools reheader to fix this, but lets just use basic bash commands
 
-zcat vcf/Chinook_GWAS.filtered.vcf.gz | sed 's/-e Chinook/Chinook/g' | bgzip > vcf/Chinook_GWAS.filtered.fixedsamps.vcf.gz
+zcat vcf/Chinook_GWAS_filtered.vcf.gz | sed 's/-e Chinook/Chinook/g' | bgzip > vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
 
 /mnt/bin/plink --make-bed \
-	--vcf vcf/Chinook_GWAS.filtered.fixedsamps.vcf.gz \
+	--vcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
 	--out vcf/Chinook_GWAS_filtered_fixedsamps \
 	--set-missing-var-ids @:# \
 	--double-id \
@@ -103,7 +103,7 @@ Our chromosomes are named chr_1 and chr_2, not integers like admixture is expect
 
 ```bash
 #numeric chr names
-zcat vcf/Chinook_GWAS.filtered.fixedsamps.vcf.gz |\
+zcat vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz |\
 	sed s/^chr_//g |\
 	gzip > vcf/Chinook_GWAS_filtered_fixedsamps_numericChr.vcf.gz
 	
