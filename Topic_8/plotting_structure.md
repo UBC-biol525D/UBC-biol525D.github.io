@@ -1,7 +1,7 @@
 ---
 title: "Topic 8 (continued: Population structure in R)"
 topickey: 8.2
-topictitle: "Plotting Population Structure"
+topictitle: "Plotting structure in R"
 ---
 
 
