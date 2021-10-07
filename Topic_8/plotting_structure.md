@@ -186,10 +186,10 @@ Plotting challenge 1
 
 Using some of the tricks we learned above, remove the redundant sample column, and then name the remaining columns (call the first "sample", the second "PC1", the third "PC2", all the way to the last column "PC20"! Save the output to "pca_named"
 
+SOLUTION (check w a neighbour first!):
 
-SOLUTION:
-  *pca_named<-pca_output[,-1]
-  *names(pca_named)<-c("sample",paste0("PC",seq(1:20)))
+	pca_named<-pca_output[,-1]
+	names(pca_named)<-c("sample",paste0("PC",seq(1:20)))
   {: .spoiler}
   
 Now that you have your named column, plot your PCA!
