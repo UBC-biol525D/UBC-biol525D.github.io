@@ -17,7 +17,7 @@ topictitle: "Population genomics - Structure"
 * If you didn't complete creating _Chinook_GWAS.vcf.gz_ in Topic 7, you can copy it to ~/vcf from /mnt/data/vcf
 
 
-Last topic we called variants across the three chromosomes. If you look at the VCF, you'll notice there are a lot of sites only genotyped in a small subset of the samples. This can happen with lower overall read depth (in this case this is whole genome sequencing at ~7X depth), but can be due to other factors like divergence been sample and reference. We also have indels, and SNPs with more than two alleles. Many programs strictly require biallelic sites so lets first filter the VCF to a smaller set of usable sites.
+Last topic we called variants across the two chromosomes. If you look at the VCF, you'll notice there are a lot of sites only genotyped in a small subset of the samples. This can happen with lower overall read depth (in this case this is whole genome sequencing at ~10X depth), but can be due to other factors like divergence been sample and reference. We also have indels, and SNPs with more than two alleles. Many programs strictly require biallelic sites so lets first filter the VCF to a smaller set of usable sites.
 We're going to use _bcftools_ a very fast program for processing and filtering VCF files. Here are what we want to filter for:
 * At least 80/100 samples genotyped (which is 160 alleles since they're diploid).
 * Variant call quality (QUAL) > 30 - a 99.9% chance there is a variant at the site given genotype calls across samples
@@ -25,13 +25,11 @@ We're going to use _bcftools_ a very fast program for processing and filtering V
 * No indels.
 * At least 2 copies of the alternate allele
 
-Lets do a quick check to see how many SNPs we have - so we can keep (loose) track of how many SNPs are removed in each filtering step
-
 
 ```bash
-#for BCFtools to work as quickly as it does, VCFs need to be converted to binary format and indexed (for quick referencing)
-bgzip Chinook_GWAS.chr_1.vcf
-tabix Chinook_GWAS.chr_1.vcf.gz #be careful, gzip also produces .gz suffixes, but won't work with bcftools!
+#for BCFtools to work as quickly as it does, VCFs need to be converted to binary format (look for a gz/bcf ending) and make sure its and indexed (for quick referencing)
+bgzip Chinook_GWAS.vcf
+tabix Chinook_GWAS.vcf.gz #be careful, gzip also produces .gz suffixes, but won't work with bcftools!
 
 bcftools  view \
 	-c 2 \
@@ -39,7 +37,7 @@ bcftools  view \
 	-m 2 \
 	-M 2 \
 	-v snps \
-	Chinook_GWAS.chr_1.vcf.gz \
+	Chinook_GWAS.vcf.gz \
 	-O z > Chinook_GWAS.filtered.vcf.gz
 
 #Again, lets index the vcf file for future use
@@ -47,7 +45,7 @@ tabix -p vcf Chinook_GWAS.filtered.vcf.gz
 ```
 
 ##Coding challenge
-* How many sites remain in the filtered VCF? How many were removed in each step? How many in the chromosome chr_1? Don't forget about grep/zgrep!
+* How many sites remain in the filtered VCF? How many were removed in each step? How many in the chromosome? Don't forget about grep/zgrep!
 
 A common first pass analysis is to use structure to look at clustering in your data. Admixture is similar to STRUCTURE but orders of magnitude faster. We're going use that, but before that we have to convert our VCF to the bed format. We're going to use plink to do that. Plink is a large set of tools for manipulating genetic data, running GWAS and calculating various stats. It's geared towards human data, so sometimes you have to force it to work with non-human data. For example, it assumes you have human chromosomes (eg 23 of them) and will complain if it doesn't see them.
 
@@ -92,7 +90,7 @@ Point estimation will terminate when objective function delta < 0.0001
 Estimation of standard errors disabled; will compute point estimates only.
 Invalid chromosome code!  Use integers.
 ```
-Our chromosomes are named chr_1 and chr_2, not integers like admixture is expecting. Like many programs, this is coded for human data where chromosomes are known and numbered clearly. We need to rename the chromosome column of the vcf so that they're integers. In this case, that means removing "HanXRQChr" from any line that starts with that, although it would depend on how your chromosomes are named.
+Our chromosomes are named and chr_2, not integers like admixture is expecting. Like many programs, this is coded for human data where chromosomes are known and numbered clearly. We need to rename the chromosome column of the vcf so that they're integers. In this case, that means removing "HanXRQChr" from any line that starts with that, although it would depend on how your chromosomes are named.
 
 ```bash
 zcat vcf/Chinook_GWAS.filtered.fixedsamps.vcf.gz |\
@@ -166,7 +164,14 @@ We can do this with just one line of code in plink.
 plink --bfile vcf/Chinook_GWAS_fiiltered_fixedsamps --pca --allow-extra-chr --out analysis/Chinook_GWAS_fiiltered_fixedsamps
 ```
 
-Sweet. Before we get to plotting in R, let's see if we can figure out any regions of the genome that might be under selection in our Chinook salmon. We're going to take two approaches - an Fst scan and Genome-wide association of phenotypes with individual genotypes at each locus (GWA). 
+Whoops - we forgot to filter for linkage to reduce non-independence in our samples. Plink allows us to do this too. We'll ask plink to slide across the genome (10 snps at a time),and in windows of 100snps, calculate LD between each snp, removing those with an LD (r2) > .5 
+```bash
+plink --bfile vcf/Chinook_GWAS_fiiltered_fixedsamps --indep-pairwise 100 10 0.5 --out analysis/Chinook_GWAS_fiiltered_fixedsamps --allow-extra-chr --make-founders #this produces two files, .in (to include) and .out (to exclude)
+
+#extract snps with low LD & plot PCA
+plink --bfile vcf/Chinook_GWAS_fiiltered_fixedsamps --pca --allow-extra-chr  --extract analysis/Chinook_GWAS_fiiltered_fixedsamps.prune.in --out analysis/Chinook_GWAS_fiiltered_fixedsamps_LDpruned
+````
 
 
 
+That's probably all we have time for in this tutorial, but next time lets get right into R to visualize our results from the admixture and PCA analyses.
