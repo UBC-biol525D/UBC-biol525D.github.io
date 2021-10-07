@@ -41,10 +41,10 @@ gzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf
 Our input data is all set up for VCFtools but we have to consider how we can get all pairwise comparisons efficiently.
 It helps to write out some psuedocode.
 
-Comparisons of interest:
-For population 1, 2:10
-For population 2, 3:10
-For population 3, 4:10
+Comparisons of interest:  
+For population 1, 2:10  
+For population 2, 3:10  
+For population 3, 4:10  
 ...
 For population 9, 10
 
