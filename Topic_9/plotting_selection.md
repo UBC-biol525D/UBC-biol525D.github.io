@@ -219,7 +219,7 @@ ggarrange(p_uncor, p_cor, nrow=2, align = "v")
 ![](gwas_3.jpeg)
 
 
-We have a bunch of hits in the uncorrected GWA, but in the corrected GWA - just one - one chromsome 2 around 2Mb.
+We have a bunch of hits in the uncorrected GWA, but in the corrected GWA - just one - on chromsome 2 around 2Mb.
 Upon closer inspection, we find that this SNP falls within the XXX gene, which has been showon to function in X and Y.
 
 Plotting Challenge

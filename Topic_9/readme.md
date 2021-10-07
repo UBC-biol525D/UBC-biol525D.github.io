@@ -36,15 +36,59 @@ mkdir analysis/fst_comparisons
 #vcftools can't read bgzipped files, but can read gzipped
 gunzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
 gzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf
+```
 
+Our input data is all set up for VCFtools but we have to consider how we can get all pairwise comparisons efficiently.
+It helps to write out some psuedocode.
 
-#for each pop (of which we have 10), we want to compare that to every other pop that comes after it. We can do this with a nested for loop
-#all pairwise comparisons will take a few minutes
-for i in {1..9} #first comparitor
+Comparisons of interest:
+For population 1, 2:10
+For population 2, 3:10
+For population 3, 4:10
+...
+For population 9, 10
+
+Breaking this down helps outline two major steps 1) that for each population of interest (left side), we can loop over every population that comes after it. This is a nested loop structure.
+
+```r
+#this first problem to solve is how to do addition in bash, since we want to compare our focal population to only those that come after it.
+echo $((1+1)) #$((EXPR)) is bash for arithmetic expression
+
+#it also allows us to do some more complicated expressions like:
+echo $(((1+10)*10))
+
+#we can use this to set our second pop comparitor as a variable that changes depending on the focal population.
+#for instance if our focal population is 1, we can set our second population to 2 as follows
+pop2=`echo $((1+1))`
+echo $pop2
+
+#but we want to compare our focal pop not just to the next one, but all pops that follow. seq helps with this.
+
+pop_comp=`seq $((1+1)) 10`
+echo $pop2
+
+#Now we can put this all together in a nested subloop to perform all population comparisons
+#testing:
+for pop1 in {1..9}
 do
-	for k in `seq $((i+1)) 10` # second comparitor - $((EXPR)) is bash for arithmetic expression
+        for pop2 in `seq $((pop1+1)) 10`
+        do
+        echo $pop1 $pop2 
+	done
+done
+
+```
+
+Now we can use this same logic to run all pairwise population Fst comparisons
+
+```r
+for i in {1..9}
+do
+	for k in `seq $((i+1)) 10`
 	do
+
 	vcftools --gzvcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz --weir-fst-pop p$i.samples --weir-fst-pop p$k.samples --out analysis/fst_comparisons/pop${i}_pop${k}_10kb --fst-window-size 10000 --fst-window-step 10000
+
 	done
 done
 
