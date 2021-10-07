@@ -1,6 +1,6 @@
 ---
-  title: "Topic 9 (continued: Selection in R)"
-topickey: 8.2
+title: "Topic 9 (continued: Selection in R)"
+topickey: 9.2
 topictitle: "Plotting GWAS/Fst in R"
 ---
   
