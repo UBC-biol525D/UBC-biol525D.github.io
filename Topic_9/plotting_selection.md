@@ -155,8 +155,14 @@ Rather than looking for allele-frequency differences between populations of inte
 gwas<-read.table("analysis/gwas/Chinook_GWAS.assoc.txt",header=T)
 head(gwas)
 
+#    chr         rs   ps n_mis n_obs allele1 allele0    af       beta        se    p_wald     p_fdr
+#1 chr_1 chr_1:1006 1006     8    92       A       T 0.011 -0.3573080 0.5302345 0.5019816 0.8086090
+#2 chr_1 chr_1:1470 1470     5    95       G       A 0.016 -0.7430778 0.4713674 0.1181495 0.5570746
+#3 chr_1 chr_1:2857 2857     9    91       G       A 0.011 -0.2818247 0.7553201 0.7098653 0.9062662
+#4 chr_1 chr_1:2914 2914     9    91       G       A 0.088 -0.3615058 0.2385600 0.1328986 0.5727862
+#5 chr_1 chr_1:3460 3460     9    91       C       A 0.011  0.7438422 0.5261554 0.1606097 0.6044356
+#6 chr_1 chr_1:3857 3857     7    93       A       C 0.016 -0.6309864 0.4731316 0.1854139 0.6234073
 ```
-
 Note the p_wald column. These are our p-values. GWA has big issues with multiple testing, and also confounding with population structure.
 A qq-plot (quantile-quantile plot) allows us to investigate our p-value distribution, which is influenced by both of these things potentially inflating false positives.
 
