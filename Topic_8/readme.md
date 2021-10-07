@@ -27,11 +27,12 @@ We're going to use _bcftools_ a very fast program for processing and filtering V
 
 
 ```bash
+cd vcf
 #for BCFtools to work as quickly as it does, VCFs need to be converted to binary format (look for a gz/bcf ending) and make sure its and indexed (for quick referencing)
 bgzip Chinook_GWAS.vcf
-tabix Chinook_GWAS.vcf.gz #be careful, gzip also produces .gz suffixes, but won't work with bcftools!
+tabix Chinook_GWAS.vcf.gz #be careful, gzip also produces .gz suffixes, but isn't compatible with tabix indexing, needed for bcftools!
 
-bcftools  view \
+bcftools  view \ #watch out for version errors
 	-c 2 \
 	-i 'INFO/AN >= 160 && QUAL > 30' \
 	-m 2 \
@@ -41,11 +42,11 @@ bcftools  view \
 	-O z > Chinook_GWAS.filtered.vcf.gz
 
 #Again, lets index the vcf file for future use
-tabix -p vcf Chinook_GWAS.filtered.vcf.gz
+tabix -p vcf vcf/Chinook_GWAS.filtered.vcf.gz
 ```
 
 ##Coding challenge
-* How many sites remain in the filtered VCF? How many were removed in each step? How many in the chromosome? Don't forget about grep/zgrep!
+* How many sites remain in the filtered VCF? How many were removed? How many on each chromosome? Don't forget about grep/zgrep!
 
 A common first pass analysis is to use structure to look at clustering in your data. Admixture is similar to STRUCTURE but orders of magnitude faster. We're going use that, but before that we have to convert our VCF to the bed format. We're going to use plink to do that. Plink is a large set of tools for manipulating genetic data, running GWAS and calculating various stats. It's geared towards human data, so sometimes you have to force it to work with non-human data. For example, it assumes you have human chromosomes (eg 23 of them) and will complain if it doesn't see them.
 
@@ -54,24 +55,32 @@ A common first pass analysis is to use structure to look at clustering in your d
 cd ~/
 mkdir analysis
 
-#we had a bug in our pipeline that appended some extra characters to the beginning of sample names - lets fix this first
-#we could use a specialty software like bedtools reheader, but lets just use basic bash commands
+#we had a bug in our pipeline that appended some extra characters to the beginning of sample names - you can check sample names by greping for "#CHROM", which is the first string of the sample header line
+zgrep "#CHROM" vcf/Chinook_GWAS.filtered.vcf.gz
+#we could use a specialty software like bedtools reheader to fix this, but lets just use basic bash commands
 
 zcat vcf/Chinook_GWAS.filtered.vcf.gz | sed 's/-e Chinook/Chinook/g' | bgzip > vcf/Chinook_GWAS.filtered.fixedsamps.vcf.gz
 
 /mnt/bin/plink --make-bed \
 	--vcf vcf/Chinook_GWAS.filtered.fixedsamps.vcf.gz \
-	--out vcf/Chinook_GWAS_fiiltered_fixedsamps \
+	--out vcf/Chinook_GWAS_filtered_fixedsamps \
 	--set-missing-var-ids @:# \
 	--double-id \
 	--allow-extra-chr
 ```
 This produces files with the suffix .nosex, .log, .fam, .bim, .bed. We can use these in Admixture.
 
-NOTE: When using admixture you should filter your VCF for linkage (i.e. remove highly linked sites). We're going to do this later during the PCA step, so for now we're using our whole set. If you can't filter for linkage, subsetting the site also helps (i.e. selecting every 10th site).
+NOTE: When inferring patterns of population structure (i.e. admixture/pca) its good practice to filter your VCF for linkage (i.e. remove highly linked sites). If you can't filter for linkage, subsetting the site also helps (i.e. selecting every 10th site). Not only does this make your inference draw from independent data, but it also keeps run times down!
+
+To prune for LD, we'll ask plink to slide across the genome (10 snps at a time),and in windows of 100snps, calculate LD between each snp, removing those with an LD (r2) > .5
+
+```bash
+plink --bfile vcf/Chinook_GWAS_filtered_fixedsamps --indep-pairwise 100 10 0.5 --out vcf/Chinook_GWAS_filtered_fixedsamps --allow-extra-chr --make-founders #this produces two files, .in (to include) and .out (to exclude) 
+
+plink --bfile vcf/Chinook_GWAS_filtered_fixedsamps --extract vcf/Chinook_GWAS_filtered_fixedsamps.prune.in --make-bed --out vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned --allow-extra-chr
 
 ```bash 
-/mnt/bin/admixture vcf/Chinook_GWAS_fiiltered_fixedsamps.bed 2
+/mnt/bin/admixture vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned.bed 2
 ```
 Uh oh that doesn't work, it produces this error message.
 ```bash
@@ -90,86 +99,103 @@ Point estimation will terminate when objective function delta < 0.0001
 Estimation of standard errors disabled; will compute point estimates only.
 Invalid chromosome code!  Use integers.
 ```
-Our chromosomes are named and chr_2, not integers like admixture is expecting. Like many programs, this is coded for human data where chromosomes are known and numbered clearly. We need to rename the chromosome column of the vcf so that they're integers. In this case, that means removing "HanXRQChr" from any line that starts with that, although it would depend on how your chromosomes are named.
+Our chromosomes are named chr_1 and chr_2, not integers like admixture is expecting. Like many programs, this is coded for human data where chromosomes are known and numbered clearly. We need to rename the chromosome column of the vcf so that they're integers. In this case, that means removing "chr_" from any line that starts with that, although it would depend on how your chromosomes are named. We'll also have to redo the LD pruning.
 
 ```bash
+#numeric chr names
 zcat vcf/Chinook_GWAS.filtered.fixedsamps.vcf.gz |\
 	sed s/^chr_//g |\
-	gzip > vcf/Chinook_GWAS.filtered.fixedsamps.numericChr.vcf.gz
+	gzip > vcf/Chinook_GWAS_filtered_fixedsamps_numericChr.vcf.gz
 	
+#make new bed from vcf
 /mnt/bin/plink --make-bed \
-	--vcf vcf/Chinook_GWAS.filtered.fixedsamps.numericChr.vcf.gz \
-	--out vcf/Chinook_GWAS.filtered.fixedsamps.numericChr \
+	--vcf vcf/Chinook_GWAS_filtered_fixedsamps_numericChr.vcf.gz \
+	--out vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
 	--set-missing-var-ids @:# \
 	--double-id \
 	--allow-extra-chr
-
-/mnt/bin/admixture --cv vcf/Chinook_GWAS.filtered.fixedsamps.numericChr.bed 2
+#redo LD analysis
+/mnt/bin/plink \
+	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
+	--out vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
+	--allow-extra-chr \
+	--make-founders \
+	--indep-pairwise 100 10 0.5 
+#make new bed with snps in low LD
+/mnt/bin/plink \
+	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
+	--extract vcf/Chinook_GWAS_filtered_fixedsamps_numericChr.prune.in \
+	--make-bed \
+	--out vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned \
+	--allow-extra-chr
+#run admixture
+/mnt/bin/admixture --cv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed 2
 ```
-This works! With 100 samples and ~31000 SNPs it finishes relatively quickly. We only ran it for one value of K (2) but we should also test different K values and select the best K value. Common practice is to run from 1 to number of populations (10). Lets do that but skip some in between.
+This works! With 100 samples and ~31000 SNPs across two chromosomes it finishes in less than a minute. We only ran it for one value of K (2) but we should also test different K values and select the best K value. Common practice is to run from 1 to number of populations (10). Lets do that but skip some in between. This will take a couple minutes.
 ```bash 
-for K in 1 2 3 10; \
-do /mnt/bin/admixture --cv vcf/Chinook_GWAS.filtered.fixedsamps.numericChr.bed $K |\
-tee vcf/Chinook_GWAS.filtered.fixedsamps.numericChr.${K}.out; \
+for K in 1 2 3 4 10; \
+do /mnt/bin/admixture --cv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed $K |\
+tee vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.${K}.out; \
 done
 #NOTE: "tee" takes the output of a command and saves it to a file, while 
 # also printing letting it print to the screen. So we can watch the progress while also 
 # saving that output. 
 
-#Now move all the output files to the analysis directory
-mv Chinook_GWAS.filtered.fixedsamps.numericChr* analysis/
+#Now move all the output files to the analysis directory v
+mv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.*.out analysis/
 ```
 The best K value for Admixture is typically the K value with the lowest cross-validation (CV) error. The CV error are in the .out files we saved. One easy way to look at all those scores is to print all the .out files and then keep only the lines that include "CV" using grep. 
 
 ```
-cat analysis/*out | grep CV
-CV error (K=10): 0.66060
-CV error (K=1): 0.40978
-CV error (K=2): 0.42452
-CV error (K=3): 0.45008
+cat analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned*out | grep CV
+CV error (K=10): 0.79357
+CV error (K=1): 0.49626
+CV error (K=2): 0.51421
+CV error (K=3): 0.54330
+CV error (K=4): 0.57121
 ```
-This shows that the lowest CV error is with K=1, with K=2 as our second choice. To see how this lines up lets look at the .Q file, which shows group assignment for each sample. The Q file doesn't include sample names so we can put those together using "paste. One way to asses if there is meaningful population structure is to check whether each population grouping has individuals of major ancestry.
+This shows that the lowest CV error is with K=1, but actually K=2 is a close second. To see how this lines up lets look at the .Q file, which shows group assignment for each sample. The Q file doesn't include sample names so we can put those together using "paste. One way to asses if there is meaningful population structure is to check whether each population grouping has individuals of major ancestry.
 
 ```bash
-paste <(cut -d" " -f1 vcf/Chinook_GWAS_fiiltered_fixedsamps.fam) analysis/Chinook_GWAS.filtered.fixedsamps.numericChr.2.Q
-Chinook.p1.i0	0.148160 0.851840
-Chinook.p1.i1	0.000010 0.999990
-Chinook.p1.i2	0.000010 0.999990
-Chinook.p1.i3	0.000010 0.999990
-Chinook.p1.i4	0.000010 0.999990
-Chinook.p1.i5	0.000010 0.999990
-Chinook.p1.i6	0.000010 0.999990
-Chinook.p1.i7	0.000010 0.999990
-Chinook.p1.i8	0.000010 0.999990
-Chinook.p1.i9	0.000010 0.999990
-Chinook.p10.i0	0.999990 0.000010
-Chinook.p10.i1	0.999990 0.000010
-Chinook.p10.i2	0.999990 0.000010
-Chinook.p10.i3	0.999990 0.000010
-Chinook.p10.i4	0.999990 0.000010
-Chinook.p10.i5	0.999990 0.000010
-Chinook.p10.i6	0.821645 0.178355
-Chinook.p10.i7	0.999990 0.000010
-Chinook.p10.i8	0.999990 0.000010
-Chinook.p10.i9	0.999990 0.000010
+paste <(cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam) analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.Q
 
+#Chinook.p1.i0	0.999990 0.000010
+#Chinook.p1.i1	0.999990 0.000010
+#Chinook.p1.i2	0.999990 0.000010
+#Chinook.p1.i3	0.999990 0.000010
+#Chinook.p1.i4	0.999990 0.000010
+#Chinook.p1.i5	0.999990 0.000010
+#Chinook.p1.i6	0.999990 0.000010
+#Chinook.p1.i7	0.999990 0.000010
+#Chinook.p1.i8	0.999990 0.000010
+#Chinook.p1.i9	0.999990 0.000010
+#Chinook.p10.i0	0.000010 0.999990
+#Chinook.p10.i1	0.000010 0.999990
+#Chinook.p10.i2	0.000010 0.999990
 ```
 While K=1 has the lowest cross validation error, clearly we can see that individuals from population 1 and population 10 (furthest apart in sampling space) beling to different groupings. 
 
-We're going to plot these results, but before we leave the command line, lets also run another couple of analyses. Lets run a *PCA*. This is a very nice model free approach to visualizing population structure, and is a nice complement to model based structure analyses, like admixture.
+We're going to plot these results, but before we leave the command line, lets also one more analysis. Lets run a *PCA*. This is a very nice model free approach to visualizing population structure, and is a good complement to model based structure analyses, like admixture.
 
 We can do this with just one line of code in plink.
 
 ```bash
-plink --bfile vcf/Chinook_GWAS_fiiltered_fixedsamps --pca --allow-extra-chr --out analysis/Chinook_GWAS_fiiltered_fixedsamps
+plink \
+	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
+	--pca \
+	--allow-extra-chr \
+	--out analysis/Chinook_GWAS_filtered_fixedsamps_numericChr
 ```
 
-Whoops - we forgot to filter for linkage to reduce non-independence in our samples. Plink allows us to do this too. We'll ask plink to slide across the genome (10 snps at a time),and in windows of 100snps, calculate LD between each snp, removing those with an LD (r2) > .5 
-```bash
-plink --bfile vcf/Chinook_GWAS_fiiltered_fixedsamps --indep-pairwise 100 10 0.5 --out analysis/Chinook_GWAS_fiiltered_fixedsamps --allow-extra-chr --make-founders #this produces two files, .in (to include) and .out (to exclude)
+This was on our full dataset, but we learned above it might be a good idea to prune for linkage. Lets redo the analysis, but now with the pruned set
 
-#extract snps with low LD & plot PCA
-plink --bfile vcf/Chinook_GWAS_fiiltered_fixedsamps --pca --allow-extra-chr  --extract analysis/Chinook_GWAS_fiiltered_fixedsamps.prune.in --out analysis/Chinook_GWAS_fiiltered_fixedsamps_LDpruned
+```bash
+#we already have an LD pruned bed, so subbing in that input file
+plink \
+	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned \
+	--pca \
+	--allow-extra-chr \
+	--out analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned
 ````
 
 

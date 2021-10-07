@@ -1,37 +1,12 @@
 ---
-title: "Topic 8: Plotting structure in R"
-topictitle: Plotting structure in 
+title: "Topic 8 (continued: Population structure in R)"
 topickey: 8.2
-datafiles: [1,2,3,4,5,6,7,8]
-
+topictitle: "Plotting structure in R"
 ---
 
 
-We're working with Rstudio on our desktops, so download the "vcf" and "analysis" directories to your laptop. The rest of this tutorial should be run in your Rstudio IDE.
-
-NOTE: This tutorial is based on Rstudio 1.2.1335 and R 3.6.1, the latest version of both. Almost all steps should work identically on older versions, but there may be issues installing some packages. In this case, I recommend updating your version of R unless you have a specific reason not to.
-
-
-The first step to any organized R project is to create a new Rstudio project. A project keeps all your different scripts and results together in a single directory. It also separates saved variables, so when you are switching between different projects you aren't accidentally using the same variables between them.
-
-In Rstudio, select File->New Project
-
-Then select "New Directory".
-
-![](rstudio_project_1.jpeg)
-
-Click on "New Project".
-
-![](rstudio_project_2.jpeg)
-
-Enter directory name "biol525d" and put it somewhere you can get to. In my case, I put it on the Desktop directory. Finally, click "Create Project".
-
-![](rstudio_project_3.jpeg)
-
-After it has been created, move your "analysis" and "vcf" directory into your biol525d project directory so you have easy access to those files.
-
-
 You're now in your Rstudio Project and the next step is to install the tidyverse package, which includes a suite of tools for manipulating data and plotting. The examples today will be focused on tidyverse solutions to problems. One key feature of the tidyverse world is the use of "%>%" to pipe data between commands. This functions similar to "\|" in the commandline and helps put together strings of commands that are work together and are easy to understand.
+
 
 
 ``` r
@@ -39,10 +14,10 @@ You're now in your Rstudio Project and the next step is to install the tidyverse
 library(tidyverse)
 ```
 
-We calculated cluster assignment for each sample at different values of K. Lets try loading up a single output file. We'll also need to keep track of the sample names.
+We calculated cluster assignment for each sample at different values of K. Lets try loading up a single output file.
 
 ``` r
-samplelist <- read.table("analysis/Chinook_GWAS_fiiltered_fixedsamps_LDpruned.fam", header=F)
+samplelist <- read.table("Chinook_GWAS_fiiltered_fixedsamps.famnophenos", header=F)
 class(samplelist) #its useful to keep checking how your data is being treated - here its a DF
 
 #all of these columns except the first aren't useful to us - all we need is the order of sample names. 
@@ -50,7 +25,7 @@ samplelist <- samplelist[,1] #this is called *INDEXING*
 class(samplelist) #after subset, its just a vector of "character" sample names, so its no longer a DF
 
 #read in admixture results
-read_delim("analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.Q",
+read_delim("analysis/Chinook_GWAS.filtered.fixedsamps.numericChr.2.Q",
                   col_names = paste0("Q",seq(1:2)),
                   delim=" ")
 ```
@@ -67,8 +42,8 @@ all_data <- tibble(sample=character(),
                    Q=character(),
                    value=numeric())
 
-for (k in c(1:4,10)){
-  data <- read_delim(paste0("analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.",k,".Q"),
+for (k in c(1:5,10)){
+  data <- read_delim(paste0("analysis/Chinook_GWAS.filtered.fixedsamps.numericChr.",k,".Q"),
                   col_names = paste0("Q",seq(1:k)),
                   delim=" ")
   data$sample <- samplelist
@@ -81,19 +56,19 @@ for (k in c(1:4,10)){
 
 all_data
 # A tibble: 2,500 x 4
-#   sample            k Q     value
-#   <chr>         <dbl> <chr> <dbl>
-# 1 Chinook.p1.i0     1 Q1        1
-# 2 Chinook.p1.i1     1 Q1        1
-# 3 Chinook.p1.i2     1 Q1        1
-# 4 Chinook.p1.i3     1 Q1        1
-# 5 Chinook.p1.i4     1 Q1        1
-# 6 Chinook.p1.i5     1 Q1        1
-# 7 Chinook.p1.i6     1 Q1        1
-# 8 Chinook.p1.i7     1 Q1        1
-# 9 Chinook.p1.i8     1 Q1        1
-#10 Chinook.p1.i9     1 Q1        1
-# … with 1,990 more rows
+   sample            k Q     value
+   <chr>         <dbl> <chr> <dbl>
+ 1 Chinook.p1.i0     1 Q1        1
+ 2 Chinook.p1.i1     1 Q1        1
+ 3 Chinook.p1.i2     1 Q1        1
+ 4 Chinook.p1.i3     1 Q1        1
+ 5 Chinook.p1.i4     1 Q1        1
+ 6 Chinook.p1.i5     1 Q1        1
+ 7 Chinook.p1.i6     1 Q1        1
+ 8 Chinook.p1.i7     1 Q1        1
+ 9 Chinook.p1.i8     1 Q1        1
+10 Chinook.p1.i9     1 Q1        1
+# … with 2,490 more rows
 
 ```
 
@@ -106,7 +81,7 @@ all_data %>%
   geom_bar(stat="identity",position="stack")
 ```
 
-![](structure_1.jpeg)
+![](structure_1.jpg)
 
 Hurray, it works! Although the base plot is pretty ugly. Lets fix a few things:
 * *mutate(sample=gsub("Chinook.p","",sample))* <= remove the redunant "Chinook.p" from sample labels
@@ -126,12 +101,8 @@ all_data %>%
   theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
   scale_fill_brewer(palette="Set1",name="K",
                     labels=c("1","2"))
-
-```
-![](structure_2.jpeg)
-
-This is much better, but its still annoying that population 10, comes between population 1 and 2 (by default R won't sort vectors numerically if it has a character in it). We can get a little hacky with this and mutate the "sample" column one more time, removing the i character and telling R to explicitly treat sample as a factor (but first sorted numerically).
-```
+                    
+#although its annoying that population 10, comes between population 1 and 2 (by default R won't sort vectors numerically if it has a character in it). We can get a little hacky with this and mutate the "sample" column one more time, removing the i character and telling R to explicitly treat sample as a factor (but first sorted numerically).
 
 all_data %>%
   filter(k == 2) %>%
@@ -147,7 +118,7 @@ all_data %>%
 
 ```
 
-![](structure_3.jpeg)
+![](structure_2.jpg)
 
 We can also plot all the different K values together using facet_wrap().
 
@@ -167,17 +138,15 @@ all_data %>%
   
 ```
 
-![](structure_4.jpeg)
+That looks awesome. Make sure to take a look at how modelling an increasing number of ancestral populations leads to different inferences about population structure. 
 
-That looks awesome. Make sure to take some time to look at how modeling an increasing number of ancestral populations leads to different inferences about population structure. 
-
-Remember though, K=1 (no structure) was our most likely scenario! This actually isn't what we might have inferred from looking at the structure plot alone...at K=2 to 4, we can find individuals that fit in majority to all of the different modelled pops, in a way that might make sense geographically. Hmm. 
+Remember though, K=1 (no structure) was our most likely scenario! This actually isn't what we might have inferred from looking at the structure plot alone...at K=2 to 5, we can find individuals that fit in majority to all of the different modelled pops. Hmm. 
 
 Lets take a look at the PCA and compare.
 
 
 ```r
-pca_output<-read.table("analysis/Chinook_GWAS_filtered_fixedsamps_numericChr.eigenvec")
+pca_output<-read.table("analysis/Chinook_GWAS_fiiltered_fixedsamps.eigenvec")
 head(pca_output)
 ```
 
@@ -187,11 +156,11 @@ Plotting challenge 1
 Using some of the tricks we learned above, remove the redundant sample column, and then name the remaining columns (call the first "sample", the second "PC1", the third "PC2", all the way to the last column "PC20"! Save the output to "pca_named"
 
 
-SOLUTION:
-  *pca_named<-pca_output[,-1]
-  *names(pca_named)<-c("sample",paste0("PC",seq(1:20)))
-  {: .spoiler}
-  
+```{r, include=FALSE}
+pca_named<-pca_output[,-1]
+names(pca_named)<-c("sample",paste0("PC",seq(1:20)))
+```
+
 Now that you have your named column, plot your PCA!
 
 ```r
@@ -200,10 +169,9 @@ pca_named %>%
   mutate(sample=as.factor(as.numeric(gsub("i","",sample)))) %>%
   ggplot(aes(PC2,PC1, color=sample)) +
   geom_point() +
-  theme_bw()
+  theme_bw
 
 ```
-![](pca_1.jpeg)
 
 Woah. We can kinda begin to make up some clustering, but theres something funky going on with the legend. Its giving every individual a distinct color because we've said to color by sample (aes(color=sample)). We would like to color by population though, so lets split up those labels by the "." to get two columns, one for population and one for individual.
 
@@ -220,12 +188,10 @@ pca_named %>%
 ?tidyr:::separate
 
 ```
-![](pca_2.jpeg)
-
 
 Right away we can see that while there is _some_ clusering of individausl by population, that there is nearly as much clustering of populations with each other. We might not have expected this from looking only at the structure plot. Lets visualize some other PCs of genotype variation. 
 
-Lets also make use of the actually eigenvalues.
+Lets also make us of the eigen values.
 
 ```r
 eigenvals<-read.table("analysis/Chinook_GWAS_fiiltered_fixedsamps.eigenval",col.names = "var")
@@ -270,17 +236,16 @@ library(ggpubr)
 ggarrange(pc_1v2, pc_1v3, pc_2v3, ncol=2,nrow=2, common.legend=T)
 
 ```
-![](pca_3.jpeg)
 
 We also have the output from a PCA after LD thinning. Lets compare the PC1 v PC2 plot
 
 
 ```r
-pca_pruned<-read.table("analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.eigenvec")
+pca_pruned<-read.table("analysis/Chinook_GWAS_fiiltered_fixedsamps_LDpruned.eigenvec")
 pca_LDpruned_named<-pca_pruned[,-1]
 names(pca_LDpruned_named)<-c("sample",paste0("PC",seq(1:20)))
 
-eigenvals_pruned<-read.table("analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.eigenval",col.names="var")
+eigenvals_pruned<-read.table("analysis/Chinook_GWAS_fiiltered_fixedsamps_LDpruned.eigenval",col.names="var")
 eigenvals_pruned$frac<-round((eigenvals_pruned$var / sum(eigenvals_pruned$var)*100), digits=2)
 
 
@@ -292,14 +257,12 @@ pc_1v2_pruned <- pca_LDpruned_named %>%
   geom_point() +
   ylab(paste0("PC1 (", eigenvals_pruned$frac[1], "%)")) +
   xlab(paste0("PC2 (", eigenvals_pruned$frac[2], "%)")) +
-  theme_bw() +
-  ggtitle("LDpruned")
+  theme_bw()
 
 #plot the pruned and unpruned together
 ggarrange(pc_1v2, pc_1v2_pruned,nrow=2, common.legend=T)
 
 ```
-![](pca_4.jpeg)
 
 What does comparing these pruned and unpruned plots tell us?
 
@@ -312,5 +275,6 @@ Plotting challenge 2
 HINT:
   * Try the ggrepel package
   {: .spoiler}
+
 
 
