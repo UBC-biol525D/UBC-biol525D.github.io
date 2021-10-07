@@ -87,7 +87,13 @@ do
 	for k in `seq $((i+1)) 10`
 	do
 
-	vcftools --gzvcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz --weir-fst-pop p$i.samples --weir-fst-pop p$k.samples --out analysis/fst_comparisons/pop${i}_pop${k}_10kb --fst-window-size 10000 --fst-window-step 10000
+	vcftools \
+	--gzvcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
+	--weir-fst-pop p$i.samples \
+	--weir-fst-pop p$k.samples \
+	 --out analysis/fst_comparisons/pop${i}_pop${k}_10kb \
+	--fst-window-size 10000 \
+	--fst-window-step 10000
 
 	done
 done
@@ -101,7 +107,7 @@ grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log
 Make a results file of the pairwise weighted fst estimates based on the grep command above. Use pipes and basic UNIX commands like _tr_, _cut_,and _sed_ to split the output into a space seperated file with three columns: 1) pop A, 2) pop B, and 3) Fst. Save it as analysis/fst_comparisons/weighted_fst_pairwise.txt
 
 SOLUTION (don't click me unless your stuck!):	
-* grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt
+* ```grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt```
 {: .spoiler}
 
 
@@ -125,15 +131,28 @@ mv vcf/Chinook_GWAS_filtered_fixedsamps.fam vcf/Chinook_GWAS_filtered_fixedsamps
 mv vcf/Chinook_GWAS_filtered_fixedsamps.fammod vcf/Chinook_GWAS_filtered_fixedsamps.fam
 
 #actually running the GWA is as simple as:
-~/software/gemma-0.98.1-linux-static -bfile vcf/Chinook_GWAS_filtered_fixedsamps -lm -o Chinook_GWAS -miss .10 -maf 0.01
+~/software/gemma-0.98.1-linux-static \
+	-bfile vcf/Chinook_GWAS_filtered_fixedsamps \
+	-lm \
+	-o Chinook_GWAS \
+	-miss .10 \
+	-maf 0.01
 ```
 
 We talked aobut in lecture how population structure can have effects on GWA that are very important to control for. Lets compare the above GWA to one that controls for population structure via the relatedness matrix in a linear mixed model framework
 
 ```r
-~/software/gemma-0.98.1-linux-static -bfile vcf/Chinook_GWAS_filtered_fixedsamps -gk -o Chinook_GWAS_filtered_fixedsamps #gk is the option for generating the relatedness matrix
+~/software/gemma-0.98.1-linux-static \
+	-bfile vcf/Chinook_GWAS_filtered_fixedsamps \
+	-gk \
+	-o Chinook_GWAS_filtered_fixedsamps #gk is the option for generating the relatedness matrix 
+
 #run the GWA controlling for relatedness
-~/software/gemma-0.98.1-linux-static -bfile vcf/Chinook_GWAS_filtered_fixedsamps -k output/Chinook_GWAS_filtered_fixedsamps.cXX.txt -lmm 4 -o Chinook_GWAS_relatedness
+~/software/gemma-0.98.1-linux-static \
+	-bfile vcf/Chinook_GWAS_filtered_fixedsamps \
+	-k output/Chinook_GWAS_filtered_fixedsamps.cXX.txt \
+	-lmm 4 \
+	-o Chinook_GWAS_relatedness
 ```
 
 GEMMA writes results from these analyses to a folder it makes called output/. Lets rename this folder and move it inside analysis/, and because we are impatient we'll just take a quick look at the the min p-values from these two different GWA runs, before we read it into R.
