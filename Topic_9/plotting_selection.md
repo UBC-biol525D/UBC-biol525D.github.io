@@ -52,6 +52,8 @@ fst_pairwise_ordered <- rbind(fst_pairwise_ordered, c(10,10,NA) )
 
 Our data is in long format now - converting to wide format when we have all pairwise comparisons will lead to a matrix. Perfect.
 
+
+```r
 #OK, back to tidyverse to convert to a matrix
 ?tidyr:::pivot_wider
 fst_wide<-pivot_wider(fst_pairwise_ordered, names_from=y, values_from=Fst)
@@ -73,7 +75,6 @@ fst_wide
 
 #and finally, remove the row and column that isn't Fst values, and change class = matrix
 fst_wide<-fst_wide[,-1]
-
 ```
 
 That took a good amount of work to get the pairwise Fst comparisons into matrix format. Now plotting is pretty simple...
