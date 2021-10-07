@@ -17,11 +17,14 @@ Remember, we want to test hypothesis about how our populations of Chinook salmon
 
 ## Fst ##
 
-We can calculate Fst in genomic windows between all pairwise population comparisons. It is often nice to calculation population statistics like Fst (diversity, tajima's d, etc) in windows, to reduce noise (for example, due to differences in coverage at individual loci). While there are tons of programs that calclulate Fst (plink, Pixy, SNPrelate - keep in mind that there are numerous ways to calculate Fst), here we're going to use VCFtools.
+Since our PCA and structure plots were still a bit mysterious, we also might curious about what Fst among populations shows - for example, when calculating the mean Fst across all pairwise comparisons. 
+
+We are also interested whether this any signatures of selection driven by temperature adaptation, so we might as well do these calculations at a fine-scale - in windows across the genome - to see if we can find any potentially adaptive regions. While there are tons of programs that calclulate Fst (plink, Pixy, SNPrelate), here we're going to use VCFtools.
 
 
 ```bash
 #For vcftools --wier-fst-pop, we need a file containing sample names, for each pop
+
 for pop in `cut -d"." -f2 vcf/Chinook_GWAS_fiiltered_fixedsamps.fam | uniq`
 do
 cut -d" " -f1 vcf/Chinook_GWAS_fiiltered_fixedsamps.fam | grep -w "$pop" > ${pop}.samples
@@ -49,14 +52,12 @@ grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log
 
 Make a results file of the pairwise weighted fst estimates based on the grep command above. Use pipes and basic UNIX commands like _tr_, _cut_,and _sed_ to split the output into a space seperated file with three columns: 1) pop A, 2) pop B, and 3) Fst. Save it as analysis/fst_comparisons/weighted_fst_pairwise.txt
 
-<details><summary>don't click me unless you're really stuck! try asking a friend first</summary>
-<p>
-
+SOLUTION (don't click me unless your stuck!):
 ```bash
 grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt
 ```
-</p>
-</details>
+{: .spoiler}
+
 
 
 ## Genome-wide Association ##
@@ -86,20 +87,20 @@ mv vcf/Chinook_GWAS_fiiltered_fixedsamps.fammod vcf/Chinook_GWAS_fiiltered_fixed
 ~/software/gemma-0.98.1-linux-static -bfile vcf/Chinook_GWAS_fiiltered_fixedsamps -k output/Chinook_GWAS_fiiltered_fixedsamps.cXX.txt -lmm 4 -o Chinook_GWAS_relatedness
 ```
 
-GEMMA writes results from these analyses to a folder it makes called output/. Because we are impatient we'll just take a quick look at the the min p-values from these two different GWA runs, before we read it into R.
+GEMMA writes results from these analyses to a folder it makes called output/. Lets rename this folder and move it inside analysis/, and because we are impatient we'll just take a quick look at the the min p-values from these two different GWA runs, before we read it into R.
 
 ```bash
 
-cd output
-head Chinook_GWAS.assoc.txt #lets look at the p_wald values, column 11
-head Chinook_GWAS_relatedness.assoc.txt #note that the p_wald column for the linear mixed effect GWA is 13
+mv output/ analysis/gwas/
+head analysis/gwas/Chinook_GWAS.assoc.txt #lets look at the p_wald values, column 11
+head analysis/gwas/Chinook_GWAS_relatedness.assoc.txt #note that the p_wald column for the linear mixed effect GWA is 13
 
-sort -g -k11,11 Chinook_GWAS.assoc.txt | head -n 2 | cut -d$'\t' -f11  #g tells sort to interpret scientific notation
-sort -g -k14,14 Chinook_GWAS_relatedness.assoc.txt | head -n 2 | cut -d$'\t' -f14
+sort -g -k11,11 analysis/gwas/Chinook_GWAS.assoc.txt | head -n 2 | cut -d$'\t' -f11  #g tells sort to interpret scientific notation
+sort -g -k14,14 analysis/gwas/Chinook_GWAS_relatedness.assoc.txt | head -n 2 | cut -d$'\t' -f14
 
 #our minimum p-value is much lower when we account for relatedness..
 
 ```
 
-We've now run several analyses to investigate population structure and potentially, local adaptation. Lets move to R to do some statistics and data visualization.
+Now that we've run some analyses to investigate potential patterns of selection, lets move to R to do some statistics and data visualization.
 
