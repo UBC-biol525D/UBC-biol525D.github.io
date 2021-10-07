@@ -50,7 +50,7 @@ For population 9, 10
 
 Breaking this down helps outline two major steps 1) that for each population of interest (left side), we can loop over every population that comes after it. This is a nested loop structure.
 
-```r
+```bash
 #this first problem to solve is how to do addition in bash, since we want to compare our focal population to only those that come after it.
 echo $((1+1)) #$((EXPR)) is bash for arithmetic expression
 
@@ -81,7 +81,7 @@ done
 
 Now we can use this same logic to run all pairwise population Fst comparisons
 
-```r
+```bash
 for i in {1..9}
 do
 	for k in `seq $((i+1)) 10`
@@ -102,7 +102,7 @@ Make a results file of the pairwise weighted fst estimates based on the grep com
 
 	SOLUTION (don't click me unless your stuck!):
 	
-	grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt
+	*grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt
 	{: .spoiler}
 
 
