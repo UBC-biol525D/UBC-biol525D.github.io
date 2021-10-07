@@ -39,14 +39,14 @@ gzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf
 ```
 
 Our input data is all set up for VCFtools but we have to consider how we can get all pairwise comparisons efficiently.
-It helps to write out some psuedocode.
+It helps to write out some _psuedocode_.
 
 Comparisons of interest:  
 For population 1, 2:10  
 For population 2, 3:10  
 For population 3, 4:10  
-...
-For population 9, 10
+...  
+For population 9, 10  
 
 Breaking this down helps outline two major steps 1) that for each population of interest (left side), we can loop over every population that comes after it. This is a nested loop structure.
 
