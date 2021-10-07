@@ -1,7 +1,8 @@
 ---
-  title: "Topic 9 (continued: Selection in R)"
+title: "Topic 9 (continued: Selection in R)"
 topickey: 9.2
 topictitle: "Plotting GWAS/Fst in R"
+datafiles: [1,2,3,4,5,6,7,8]
 ---
   
 Just like before, we're going to need download the output files of the GWA and FST analyses from the server to our local computers.
