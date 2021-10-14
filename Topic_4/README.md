@@ -43,7 +43,8 @@ awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" 
 > Note: math is kind of annoying in command lind. expr works pretty well though for basic purposes (make sure to leave spaces around operators).
 > you can also do cool things like save the output of commands to a variable using "` `"
 ```bash
-readlength=`zcat SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 |  egrep -v "chr|--" | awk -F "" '{print NR "\t" NF}' | awk '{ total += $2 } END { print total/NR }' `
+readlength=`zcat SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 |  egrep -v "chr|--" |\
+ awk -F "" '{print NR "\t" NF}' | awk '{ total += $2 } END { print total/NR }' `
 numreads=`zcat SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 |  egrep -v "chr|--" | wc -l`
 echo "mean coverage =" "$(( ($readlength * $numreads) / 10000000 ))"
 ```
@@ -69,7 +70,10 @@ For our assembly, since we only sequence one individual, we have two files for o
 shortreads="/home/biol525d/data/shortreads/"
 longreads="/home/biol525d/data/longreads/"
 
-fastqc ${shortreads}/*fastq.gz ${longreads}/*fastq.gz -o ./ #some programs allow you to input multiple files at once using wild cards. this is convienient. otherwise we would have had to specify each file individually. heres anotherway we could use wildcards here (fastqc ${shortreads}/*R?.fastq.gz ${longreads}/*fastq.gz -o ./ )
+fastqc ${shortreads}/*fastq.gz ${longreads}/*fastq.gz -o ./ 
+#some programs allow you to input multiple files at once using wild cards. this is convienient. 
+#otherwise we would have had to specify each file individually. heres anotherway we could use wildcards here: 
+#fastqc ${shortreads}/*R?.fastq.gz ${longreads}/*fastq.gz -o ./ )
 
 #summarise into a single report
 multiqc ./
@@ -80,7 +84,7 @@ Download the output of multiqc run as follows:
 scp <username@ip.address>:~/Topic_3n4/fastqc/multiqc_report.html <path on your computer where you want the file>
 ```
 
-*** I'm not sure how useful this portion will really be - might be worth just discussing that the adapters have already been removed and we have pretty high quality reads, even at the ends ****
+Since we are using simulated data, our data does not have adapters. But taking a look at the signatures of our highly quality reads can help you get a sense of what very high quality data might look like, and additionally,by comparing to your real data, how sequencing technology influences data quality.  
 
 Discussion Quesiton: our data effectively has had adapters removed from reads and already been trimmed for low quality BPs near the end of reads. what might be the cons of read trimming? 
 
@@ -92,9 +96,12 @@ Genome assembly can take a long time. Because our course is short we're only goi
 #### Short read assembly: SPADES - *don't run*
 #using a single core this takes ~14 minutes
 ```bash
-mkdir spades
-/ohta1/julia.kreiner/software/SPAdes-3.
-15.3-Linux/bin/spades.py --pe1-1 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz --pe1-2 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz -o ./spades/
+#mkdir spades
+#/ohta1/julia.kreiner/software/SPAdes-3.
+#15.3-Linux/bin/spades.py \
+	--pe1-1 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz \
+	--pe1-2 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz \
+	-o ./spades/
 ````
 
 
@@ -104,13 +111,25 @@ mkdir spades
 #make new dir
 mkdir hybridspades
 #run
-/ohta1/julia.kreiner/software/SPAdes-3.15.3-Linux/bin/spades.py --pe1-1 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz --pe1-2 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz --pacbio ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz -t 20 -o /hybridspades/ 
+#/ohta1/julia.kreiner/software/SPAdes-3.15.3-Linux/bin/spades.py \
+	--pe1-1 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz \
+	--pe1-2 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz \
+	--pacbio ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz \
+	-t 20 \
+	-o /hybridspades/ 
 
-mkdir hybridhaslr
+#mkdir hybridhaslr
 #install
-conda install -c bioconda haslr
+#conda install -c bioconda haslr
 #run
-haslr.py -t 20 -s ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz -l ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz -x pacbio -g 10m -o hybridhaslr --cov-lr 40 #takes 15 minutes
+#haslr.py \
+	-t 20 \
+	-s ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz \
+	-l ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz \
+	-x pacbio \
+	-g 10m \
+	-o hybridhaslr \
+	--cov-lr 40 #takes 15 minutes
 #
 ```
 
@@ -119,10 +138,14 @@ haslr.py -t 20 -s ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz $
 
 ```bash
 #install
-conda install flye
+#conda install flye
 
 #run flye assuming lower quality pacbio reads
-flye --pacbio-raw  ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz --threads 20 -o flye/ --genome-size 10m
+flye \
+	--pacbio-raw ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz \
+	--threads 20 \
+	-o flye/ 
+	--genome-size 10m
 ```
 
 Now we have four assemblies, 1 short read (spades), 2 hybrid (spades, haslr), and one long-read (flye).
@@ -167,7 +190,10 @@ awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' ../data/SalmonAnnotat
 
 #run quast on all 4 assemblies at once
 mkdir quast
-/ohta1/julia.kreiner/software/quast/quast.py flye.fa haslr.fa hybridspades.fa spades.fa -r SalmonReference.fasta -g SalmonReference.genes -o quast
+/ohta1/julia.kreiner/software/quast/quast.py flye.fa haslr.fa hybridspades.fa spades.fa \
+	-r SalmonReference.fasta \
+	-g SalmonReference.genes \
+	-o quast
 
 scp -r <username@ip.address>:~/Topic_3n4/quast/ ./
 ```
