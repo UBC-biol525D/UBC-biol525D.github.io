@@ -166,5 +166,3 @@ The information presented by the servers when you connect to them is shown here 
 Your screen should give you a prompt on the server, and should print some server text similar to this (ignoring visual terminal differences aside):
 
 ![](terminal.jpeg "Terminal"){:width="100%"}
-
-

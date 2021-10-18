@@ -1,170 +1,151 @@
----
-title: "Topic 1: Logging into the server."
-permalink: /Topic_1/
-topickey: 1
-topictitle: Servers
----
+# Introduction to BIOL525D
 
-We are working on servers provided by Compute Canada, hosted on the
-[WestCloud](https://www.computecanada.ca/research-portal/national-services/compute-canada-cloud/)
-system. The only task now is to install a few programs we'll need
-later on, and login to your account.
+## Bioinformatics for evolutionary biologists
 
-**Accounting**: We have created an account for each student. You may
-find your account information in this
-[table](https://docs.google.com/spreadsheets/d/1v7k2-XtfiwOoQ3iZHnJyqVXsxgekVGXEtnFIvdk7aqU/edit?usp=sharing). Take
-note of your username, and server ip address. In the instructions, if
-you see the placeholders `serveruser` and `serverhost` replace them
-with your own information. You should have received your server password separately.
+*We have tried to keep jargon to a minimum, but if there are things that you want us to clarify or terms you want us to define please don't be afraid to ask!*
 
+In this workshop, we aim to cover the basics of bioinformatics. This course is aimed at those who have some familiarity with computational tools.
 
-Accompanying material:
----------------------
+There are a number of tools for applying bioinformatic tools with a graphical user interface (such as [Galaxy](https://usegalaxy.org/) and [Geneious](https://www.geneious.com/)). These programs are great and certainly have their place. However, I (Tom) would argue that learning how to use the command line is preferable as it provides far more flexibility and reproducibility and is also a highly transferable skill.
 
-* [Slides](./Topic 1.pdf)
+There is a very steep learning curve when it comes to the command line.  The purpose of this workshop is not really to teach you how to use the command line, it takes a lot of practice and learning to get comfortable using the command line. The purpose of this workshop is to demonstrate the fundamentals of bioinformatic analysis. We will need to use the command line throughout the week, so it would be best if participants had taken part in an introduction to the Unix command line workshop before participating in this one, if you not had the time to do that, that's Ok, but there may be places where some things seem a bit opaque. Please do not hesitate to ask questions and do not be put off if you find certain things opaque to begin with, but remember that the primary purpose of this workshop is to become familiar with bioinformatic tools and a general familiarity with UNIX command line environments is strongly encouraged.
 
+Additionally, we have tried to focus on concepts rather than particular software packages. This field is moving so fast that most programs and packages are out of date before too long. That being said, we have had to choose some packages to use for the tutorial, but these should not be seen as the be-all and end-all. There are many packages for specific purposes that we do not have time to go over.
 
+______
 
-Software: _(can be completed early)_{: style="color: darkred"}
--------------------
+## The Integrative Genomics Viewer
 
-Your local workstation (not the server) will need to be fitted with some
-software for programming in R, and connecting to servers. The servers
-will be fitted with the rest of the software already.
+In this first tutorial, we are going to use the Integrative Genomics Viewer (IGV) to manually inspect several types of files that you may come across in bioinformatics.
 
-On your computer, you will need:
+While it may seem topsy-turvy to start the workshop by looking at results before generating results, exploring data in IGV is a really great way to understand the types of data that you will likely encounter in bioinformatics in evolutionary biology.
 
-1. [Rstudio](https://www.rstudio.com/products/rstudio/download2/), the de-facto Integrated Development Environment (IDE) for R.
-   The free edition will suffice for this course.
+IGV was developed and is maintained by the Broad Institute (who also maintain many other widely used packages). The IGV provides users with a graphical user interface (GUI) for inspecting and curating datasets. It's a remarkably flexible tool that is invaluable in many instances. Here's how the Broad describes it:
 
-1. Tool to transfer files over SFTP (secure file transfer protocol) or
-   SCP (secure copy). We can use these tools to browse and transfer files
-   back and forth between your workstation and the server. Get *one* of the following options:
+*The Integrative Genomics Viewer (IGV) is a high-performance, easy-to-use, interactive tool for the visual exploration of genomic data. It supports flexible integration of all the common types of genomic data and metadata, investigator-generated or publicly available, loaded from local or cloud sources.*
 
-   * _Graphical option 1_: [Cyberduck](https://cyberduck.io/?l=en) (Mac &
-    Windows). This is a graphical tool that will allow you to transfer
-    files to/from a remote storage location (+dragndrop), and edit remote
-    files with a local editor. We will also cover how to perform these
-    operations from the command line using other readily-availble
-    tools.
+The first thing that you need to do in this tutorial is to get IGV up and running on your machine.
 
-   * _Graphical option 2_:
-   [MobaXTerm](https://mobaxterm.mobatek.net/download-home-edition.html)
-   (Windows only). MobaXTerm combines a graphical terminal emulator, a
-   graphical file-transfer tool, an X11 server (to use graphical
-   applications from the remote-side), and more. Comes in two formats:
-   "portable", and "installer/msi". The difference: the portable is
-   installed simply by uncompressing the contents of the zip in a
-   folder of your choice (this is useful if you want to carry it
-   around on a USB stick). The "installer edition" will run an installation
-   wizard and get added to your start menu and windows environment.
+IGV is written in Java and is available as a pre-compiled package from the Broad Institute. IGV can be freely downloaded at: [https://software.broadinstitute.org/software/igv/](https://software.broadinstitute.org/software/igv/). IGV is written in Java, so if you do not have Java installed on your machine, use the *Java Included* versions of the program for your specific machine.
 
-   * _Command line option_1_: pscp.exe/psftp.exe from the [PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) suite (Windows only). Install the MSI version to get all the utilities at once. It comes in 32bit and 64bit editions. Unless you know your workstation has a 32bit cpu or operating system (which is uncommon in 2019), pick 64bit.
+The download page should look like this:
+![](pics/IGV_downloadPage.png)
 
-   * _Command line option 2_: Other platforms (Mac & GNU/Linux) have
-     sftp and scp tools installed out-of-the-box. We will also teach
-     you how to transfer files from the command-line using these. This
-     knowledge will come in handy for scripting.
+The links highlighted by the blue blob are what you are after.
 
-1. A (good) terminal emulator. To interact with command line programs, you will need to type a terminal emulator, and parse results.
+## Download data for the tutorial
 
-   If you don't have a terminal emulator, we recommend you install one
-   from the list that follows (there are many more out there):
+**Figure out a good way to make the data downloadable - where to host the data so that there is a reproducible ?**
 
-    - [iTerm2](https://www.iterm2.com/) (Mac Only). Fuller-featured replacement for the default Terminal application (see feature list). The built-in terminal application which comes with MacOs is also decent.
+The second thing to do is to download the data package for Tutorial 1 available at the following link:
 
-    - [MobaXTerm](https://mobaxterm.mobatek.net/download-home-edition.html) (Windows). This is a one-stop shop for working with remote computers from windows. It has a good terminal, and it also doubles as a file transfer tool.
+Once the data has finished downloading, move the data to a memorable location.  
 
-    - putty.exe from the [PuTTy](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) suite (Windows). This is a second choice if Moba doesn't work. Putty is a "classic" terminal emulator on Windows, because it is stable, and simple to use. Get the .msi (installer) version which has all of the utilities. It comes in 32bit and 64bit editions. Unless you are working with a 32bit cpu or operating system (which is uncommon in 2019), pick 64bit.
+If everything went Ok, you should have the following files:
 
-    - For GNU/Linux environments (e.g. Ubuntu). Your desktop environment's default terminal application will work just fine, e.g. gnome-terminal, or xfce-terminal.
+```shell
 
-   Features of a good terminal emulator (things to look for):
-     1. Options for scrolling and searching.
-     1. Reliable text selection, copy-paste, both in, and out.
-     1. Sensible translation of keypresses (especially true of <kbd>ALT</kbd>, <kbd>CTRL</kbd>, <kbd>⌘cmd</kbd>, <kbd>PGUP</kbd>, <kbd>PGDN</kbd>, <kbd>DEL</kbd>, <kbd>BCKSPC</kbd>, <kbd>⊞ Win</kbd>, <kbd>FN</kbd>, and arrow keys, whose meaning can be open to different interpretation across different platforms).
-     1. Proper display of characters from different unicode planes (natural languages, emojis, etc.)
-     1. Configurable appearance (font sizes, colors, and transparency).
-     1. Multiple tabs/sessions in the same window.
+ReferenceGenome.fasta.gz ## This is a text file containing the reference genome
 
-   > *Note*: I would advise *against* using Window's CMD prompt for
-   this purpose because it's too minimal. In a pinch, it can do, but
-   it's worthwhile to spend a few minutes on getting a better
-   emulator with better defaults.
-   >
-   *Note 2*: If you're curious why it's called an "emulator", you may read about their ancestor: ["real" terminals](https://en.wikipedia.org/wiki/Computer_terminal#Text_terminals).
+SalmonAnnotations.gtf.gz ## A file containing the locations of genomic elements (in this case genes)
+SalmonAnnotations.gtf.gz.tbi ## An index for the above file  
+
+Salmon.HiSeq.30x.bam ## A file containing the alignments of paired-end
+                     ## Illumina HiSeq reads to the reference genome - at 30x
+
+Salmon.HiSeq.10x.bam ## A file containing the alignments of paired-end
+                     ## Illumina HiSeq reads to the reference genome - at 10x
+
+Salmon.ddRAD.bam ## A file containing the alignments of double-digest RAD seq.
+                 ## reads to the reference genome
+
+Salmon.Nova.bam ## A file containing the alignments of PacBio NovaSeq reads to
+                 ## reads to the reference genome
+
+Salmon.MiSeq.10x.vcf # A file containing variants called from the 10x Illumina data
+
+Salmon.MiSeq.30x.vcf # A file containing variants called from the 30x Illumina data
+
+## Each of the files ending in ".bam" also have an index file (those ending in ".bai")
+
+SalmonData_checksums.sha ## See below
+
+```
+## Check data integrity
+
+The following is optional, only do this if you are comfortable working on the command line already - return to this at a later stage if not.
+
+<details>
+  <summary>Click to expand!</summary>
+
+Often when downloading large files, we want to perform a check on the integrity of the data downloaded. Perhaps you were downloading a large file and the power went down before you were not able to check the data. More generally, when downloading many large files you may not have the time (or the patience) to manually curate each one to ensure that it was downloaded correctly.
+
+It is good practice to check data integrity when moving files from place to place and there are useful functions for checking data integrity. The two main methods that are used are ```shasum``` and ```md5```. ```shasum``` is perhaps a bit more common as it is available as standard on MacOS. Both methods generate what is called a "checksum", a hexadecimal string (e.g. "d241941bac307bd853fd21945d029e62c83cea71") that is unique to a given file.
+
+If you inspect the contents of ```SalmonData_checksums.sha``` you'll notice that there are two columns in the file, the left hand column contains a bunch of checksums, the righthand column contains the name of corresponding files. You can compare all the files in the directory you downloaded using:
 
 
-Configuration: _(can be completed early)_{: style="color: darkred"}
----------------
+**Store the checksums with the data, whereever we host it.**
 
-This section assumes that you've already followed the steps to install
-software above for your environment. We have provided steps to
-configure rapid authentication between your computer and the
-server. The steps are meant to be done in sequence and should take
-about 15 minutes to complete once the software above is installed.
+```shell
+shasum -c SalmonData_checksums.sha
 
-**NOTE, WE ARE NOT USING SSH-KEYS FOR THE WORKSHOP THIS YEAR - UNLESS YOU ARE USING PUTTY PROCEED TO "Testing it all"**
-
-Configuration steps, in sequence :
-
-1. Generate a key for authenticating to your assigned server. Follow steps in [Generate A Key](./generate_a_key).
-
-2. Load the key in your ssh-agent. Details in [Configure-SSH-Agent](./configure_ssh_agent)
-
-3. Configure the server account to authenticate with your new key. Take note of your assigned server hostname (IP), username, and password and follow details in [Finalize Tool Config](./finalize_tool_config). This will let you login to the server without remembering usernames, ips, or keys.
+```
+</details>
 
 
-Testing it all: _(can be completed early)_{: style="color: darkred"}
----------------
+## Load the reference genome into IGV
+*Let us know if you've had difficulties setting up IGV on your machine*
 
-Log into ComputeCanada Virtual Machines using ssh (terminal). Recall that you will find your username and ip address in the table you were sent via email. We use `serveruser` and `serverhost` as placeholders for this info.
+Open up IGV on your machine, you should be seeing something like the following (don't worry if it looks a little different):
+![](pics/IGV_startScreen.png)
 
-The information presented by the servers when you connect to them is shown here in [Fingerprints](./fingerprints).
+You may notice "hg19" in the drop down menu on the top left (highlighted in orange). "hg19" stands for human genome version 19, it's fun to explore the human genome, but today we're going to explore the genome of the system we're working with in this workshop .
 
-* For Mac, GNU Linux users:
+The first thing to do is to load in our reference genome. From the drop-down menu in the top left, choose the ```Genomes``` drop-down menu and choose ```Load Genome From File...```. When the box opens up, navigate to the data you downloaded and choose the ```ReferenceGenome.fasta.gz``` file. The file extension ".fasta.gz" tells us that this is a FASTA file (a simple text file that represents a genetic sequence - DNA, RNA or peptides).
 
-  ```bash
-
-  ssh -v <serveruser>@<serverhost>
-
-  # FOR REFERENCE ONLY..
-  # if you have followed the key authentication steps, you need only to specify
-  # the host alias you chose from your `~/.ssh/config`, e.g. b525:
-
-  # ssh -v b525
-  ```
-* MobaXTerm users:
-
-  If you have configured a new user session, as specified in the
-  key authentication pages, you can simply find your session
-  on the left pane of Moba (the vertical-text tab "Sessions"), and
-  double click your chosen session.
-
-  If not, you can open a moba local terminal and do:
-
-  ```
-  # from the local terminal
-  ssh -v <serveruser>@<serverhost>
-
-  # FOR REFERENCE ONLY..
-  # or just this if you have configured ~/.ssh/config
-  # ssh -v b525
-  ```
-
-* Putty users:
-
-  If you've followed the key authentication steps, you should have a user session you can open
-  directy from the Pageant right-click menu.
-
-  Otherwise, create a new putty session:
-
-  - In the menu, use your provided account info for Host Name (your `serverhost`), Connection->Data->Login username (your `serveruser`).
-  - If you have followed the key authentication steps, you will not have to enter
-    passwords, and will be logged in immediately. Otherwise, provide your password at the prompt (your `serverpass`).
-
-Your screen should give you a prompt on the server, and should print some server text similar to this (ignoring visual terminal differences aside):
-
-![](terminal.jpeg "Terminal"){:width="100%"}
+Once you've done that, you should be able to select "SalmonReference.fasta" from the drop down menu. Explore IGV and figure out how many chromosomes our reference genome contains and how long the chromosomes are.
 
 
+
+# Load sequence annotations into IGV
+
+
+
+# Load sequence alignments into IGV
+
+### Low coverage Illumina sequencing
+
+Let's go ahead and load a file containing sequence alignments. To begin with, load up the file ```Salmon.MiSeq.10x.bam``` in IGV. You do this by selecting "SalmonReference.fasta" from the dropdown menu (where you can see)
+
+This file (and the others like it) contains information on paired-end short reads generated using an Illumina MiSeq machine. The data has been aligned to the reference genome we are using and is stored as a "BAM" file. A "BAM" file is a file containing the alignment of genetic sequences to a reference genome in binary format. Files in binary format are often smaller than raw text, and going from binary to text involves work for your computer, so binary can be worked with more efficiently. BAM stands for **B**inary **A**lignment **M**ap. Don't worry, we'll go over the details of SAM/BAM formats later in the week, for now though, just know that they are a type of file containing genetic sequences.
+
+If the data loaded happily, choose a chromosome from the dropdown menu and zoom in to any location in the genome (by double clicking or using the zoom bar in the top right corner). The window should look a little like this:
+<details>
+  <summary>Click to expand!</summary>
+  ![](pics/IGV_HiSeq_lowCoverage.png)
+</details>
+
+
+We are looking at a graphical representation of the short reads aligned to our refernece genome. Illumina technology is amazing, but it is not perfect. Explore the alignment, using your mouse or trackpad, scroll through the alignment and get a feel for navigation in IGV.
+
+#### Discussion points:
+
+* *What do you think the challenges are with using this data to make biological inferences?*
+* *What features should be used to assess the quality of an alignment?*
+
+
+
+
+### Higher coverage Illumina sequencing
+
+After you've had a little play with the reference genome, let's go ahead and load a file containing sequence alignments. To begin with, load up the file ```Salmon.MiSeq.10x.bam``` in IGV. You do this by selecting "SalmonReference.fasta" from the dropdown menu (where you can see)
+
+This file (and the others like it) contains information on paired-end short reads generated using an Illumina MiSeq machine. The data has been aligned to the reference genome we are using and is stored as a "BAM" file. A "BAM" file is a file containing the alignment of genetic sequences to a reference genome in binary format. Files in binary format are often smaller than raw text, and going from binary to text involves work for your computer, so binary can be worked with more efficiently. BAM stands for **B**inary **A**lignment **M**ap. Don't worry, we'll go over the details of SAM/BAM formats later in the week, for now though, just know that they are a type of file containing genetic sequences.
+
+If the data loaded happily, choose a chromosome from the dropdown menu and zoom in to any location in the genome (by double clicking or using the zoom bar in the top right corner). The window should look a little like this:
+
+![](pics/IGV_startScreen.png)
+
+
+## I hope you had fun!
