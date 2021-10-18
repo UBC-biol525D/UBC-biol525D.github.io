@@ -5,6 +5,13 @@ topickey: 2
 topictitle: "Cmdline"
 ---
 
+There are a number of tools for applying bioinformatic tools with a graphical user interface (such as [Galaxy](https://usegalaxy.org/) and [Geneious](https://www.geneious.com/)). These programs are great and certainly have their place. However, I (Tom) would argue that learning how to use the command line is preferable as it provides far more flexibility and reproducibility and is also a highly transferable skill.
+
+There is a very steep learning curve when it comes to the command line.  The purpose of this workshop is not really to teach you how to use the command line, it takes a lot of practice and learning to get comfortable using the command line. The purpose of this workshop is to demonstrate the fundamentals of bioinformatic analysis. We will need to use the command line throughout the week, so it would be best if participants had taken part in an introduction to the Unix command line workshop before participating in this one, if you not had the time to do that, that's Ok, but there may be places where some things seem a bit opaque. Please do not hesitate to ask questions and do not be put off if you find certain things opaque to begin with, but remember that the primary purpose of this workshop is to become familiar with bioinformatic tools and a general familiarity with UNIX command line environments is strongly encouraged.
+
+Additionally, we have tried to focus on concepts rather than particular software packages. This field is moving so fast that most programs and packages are out of date before too long. That being said, we have had to choose some packages to use for the tutorial, but these should not be seen as the be-all and end-all. There are many packages for specific purposes that we do not have time to go over.
+
+
 In this tutorial we will be going through parts of several software
 carpentry workshops. Right now, just code along with me, but after
 the lesson you can go through the tutorial on your own to clarify any
@@ -207,12 +214,12 @@ run the command `byobu-quiet`.  This can be undone with `byobu-quiet
 * Detach from the session.
 * Reattach to the same byobu session
 * Close the byobu session entirely
- 
+
 <details>
 <summary markdown="span">**Answer 2**
 </summary>
 ```bash
-   > byobu 
+   > byobu
    F2
    > seq 10000000
    F3
@@ -228,7 +235,3 @@ run the command `byobu-quiet`.  This can be undone with `byobu-quiet
 ### Daily Assignments
 1. What is one task you'd rather use an R script instead of a shell script? Why? What is one task you'd rather use a shell script, instead of an R script? Why?
 2. Why is piping directly between programs faster than writing each consecutive output to the disk? Explain using information about computer hardware.
-
-
-
-
