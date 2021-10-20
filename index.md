@@ -43,9 +43,9 @@ The course material is organized in several topics, with slides and coding examp
 To get up to speed on working with a Unix system, take a look at the [unix help](resources/unix_ref.pdf) file. There are some resources there that will help you find the specific command you need for each task.
 
 ## Syllabus
-1. [Topic 1](./Topic_1/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics, and the future of sequencing [Booker,T]
-2. [Topic 2](./Topic_2/) Programming Basics
-3. [Topic 3]  Bioinformatics Gotchyas
+1. [Topic 1](./Topic_1/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics [Booker,T]
+2. [Topic 2](./Topic_2/) Programming Basics [Booker, T]
+3. [Topic 3]  Bioinformatics Gotchyas [Booker, T]
 4. [Topic 4](./Topic_3n4/) Genome Assembly
 5. [Topic 5](./Topic_6/) RNAseq + differential expression analysis
 6. [Topic 6](./Topic_4/) Alignment: algorithms and tools [Booker, T]
