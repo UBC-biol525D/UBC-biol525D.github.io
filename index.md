@@ -56,8 +56,10 @@ To get up to speed on working with a Unix system, take a look at the [unix help]
 
 In previous years, there has been a short introduction to phylogenetic analysis included in the workshop. We have not included that topic this year, but the slides and materials are available for those who are interested:
 
-11. [Topic 11](./Topic_10/) Phylogenetic analysis
 
+## Extras
+
+1. [Topic 11](./Topic_10/) Phylogenetic analysis
 
 ## Obtaining all the files on this site
 

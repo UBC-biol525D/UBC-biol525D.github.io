@@ -45,12 +45,9 @@ If everything went Ok, you should have the following files:
 
 ```shell
 
-ReferenceGenome.fasta.gz ## This is a text file containing the reference genome
+SalmonReference.fasta ## This is a text file containing the reference genome
 
-SalmonAnnotations.gtf.gz ## A file containing the locations of genomic elements (in this case genes)
-SalmonAnnotations.gtf.gz.tbi ## An index for the above file  
-
-CandidateRegions.bed ## A BED file containing the locations of some random regions
+SalmonAnnotations_forIGV.gff ## A file containing the locations of genomic elements (in this case genes)
 
 Salmon.HiSeq.5x.bam ## A file containing the alignments of paired-end
                      ## Illumina HiSeq reads to the reference genome - at 10x
@@ -58,16 +55,17 @@ Salmon.HiSeq.5x.bam ## A file containing the alignments of paired-end
 Salmon.HiSeq.10x.bam ## A file containing the alignments of paired-end
                       ## Illumina HiSeq reads to the reference genome - at 10x
 
-Salmon.variants.vcf # A file containing variants called from the 10x Illumina data
+Salmon.HiSeq.20x.vcf.gz # A file containing variants called from the 10x Illumina data
 
 
 Salmon.ddRAD.bam ## A file containing the alignments of double-digest RAD seq.
                  ## reads to the reference genome
 
-Salmon.Nova.bam ## A file containing the alignments of PacBio NovaSeq reads to
-                 ## reads to the reference genome
+Salmon.16x.PacBio.bam ## A file containing the alignments of PacBio  reads to the Salmon reference
 
 ## Each of the files ending in ".bam" also have an index file (those ending in ".bai")
+
+coldWaterSalmon.RNA.bam ## A file containing RNA-seq data aligned to the reference genome
 
 SalmonData_checksums.sha ## See below
 
@@ -222,14 +220,29 @@ We'll discuss the structure of the ```SalmonAnnotations_forIGV.gff``` file with 
 * *Can you think of any challenges of aligning RNA-seq data to a refernece genome?*
 
 
-## Part 4: variants
+## Part 4: Variants
 
 Now the fun really starts.
 
-One of the common tasks in bioinformatics is to identify genetic variation. Hopefully by now you'll have an appreciation for how different technologies and methods give you different insights. Identifying genetic variation may seem straightforward, but there are many complicating factors.  
+One of the common tasks in bioinformatics is to identify genetic variation. Identifying genetic variation may seem straightforward, but there are many complicating factors.  
 
 First, let's reload the Illumina whole genome data that we were analysing previously (```Salmon.HiSeq.5x.bam``` and ```Salmon.HiSeq.10x.bam``` ). In addition, also load up the file named ```Salmon.HiSeq.20x.vcf.gz```. This will load up an additional track that shows the locations of genetic variants that were identified before the tutorial.
 
+If you've successfully loaded in all the data, you should have a window that looks like this:
 
+![](pics/variantsInIGV.png)
+
+In this window the variants are loaded in and shown in the top bar of the plot. IGV colour codes many things (as you'll have noticed). Note that homozygous variants are coloured in a light turquoise blue, heterozygous variants are in dark blue.
+
+The standard format for genetic variant information is the Variant Call Format (VCF). Later in the week you'll be using a program called GATK to generate VCF files and we'll walk through the anatomy of the files.
+
+
+#### *Discussion points*:
+
+* *When you compare the locations of variants called with high confidence with the sequence alignments, what do you notice?*
+* *What features of an alignment do you think should be assessed when calling variants?*
+____________________
+
+Hopefully by now you'll have an appreciation for how different technologies and methods give you different insights. When designing a research project involving bioinformatics, it is prudent to think of how best to match technologies and research questions when balanced against finite budgets.
 
 ## I hope you had fun!
