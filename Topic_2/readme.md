@@ -7,26 +7,130 @@ topictitle: "Cmdline"
 
 There are a number of tools for applying bioinformatic tools with a graphical user interface (such as [Galaxy](https://usegalaxy.org/) and [Geneious](https://www.geneious.com/)). These programs are great and certainly have their place. However, I (Tom) would argue that learning how to use the command line is preferable as it provides far more flexibility and reproducibility and is also a highly transferable skill.
 
-There is a very steep learning curve when it comes to the command line.  The purpose of this workshop is not really to teach you how to use the command line, it takes a lot of practice and learning to get comfortable using the command line. The purpose of this workshop is to demonstrate the fundamentals of bioinformatic analysis. We will need to use the command line throughout the week, so it would be best if participants had taken part in an introduction to the Unix command line workshop before participating in this one, if you not had the time to do that, that's Ok, but there may be places where some things seem a bit opaque. Please do not hesitate to ask questions and do not be put off if you find certain things opaque to begin with, but remember that the primary purpose of this workshop is to become familiar with bioinformatic tools and a general familiarity with UNIX command line environments is strongly encouraged.
+There is a very steep learning curve when it comes to the command line.  The purpose of this workshop is not really to help you become a command line expert, so don't worry if you are finding it difficult. It takes a lot of practice and learning to get comfortable using the command line.
 
-Additionally, we have tried to focus on concepts rather than particular software packages. This field is moving so fast that most programs and packages are out of date before too long. That being said, we have had to choose some packages to use for the tutorial, but these should not be seen as the be-all and end-all. There are many packages for specific purposes that we do not have time to go over.
+The purpose of this workshop is to demonstrate the fundamentals of bioinformatic analysis. We will need to use the command line throughout the week, so it would be best if participants had taken part in an introduction to the Unix command line workshop before participating in this one, if you not had the time to do that, that's Ok, but there may be places where some things seem a bit opaque.
 
+Please do not hesitate to ask questions and do not be put off if you find certain things difficult to begin with, but remember that the primary purpose of this workshop is to become familiar with bioinformatic tools and a general familiarity with UNIX command line environments is strongly encouraged.
+______________
 
-In this tutorial we will be going through parts of several software
-carpentry workshops. Right now, just code along with me, but after
-the lesson you can go through the tutorial on your own to clarify any
-understanding problems.
+We have tried to focus on concepts rather than particular software packages in this workshop. This field is moving so fast that most programs and packages are out of date before too long. That being said, we have had to choose some packages to use for the tutorial, but these should not be seen as the be-all and end-all. There are many packages for specific purposes that we do not have time to go over.
+
 
 ### Accompanying material
 
 * [Slides](./Topic 2.pdf)
 * [Software Carpentry Tutorial](http://swcarpentry.github.io/shell-novice/)
 
-### Other Tutorials
-Here are some good tutorials if you're interested in learning a programming language
-* [Python](https://www.codecademy.com/learn/python)
-* [Perl](http://www.perl.com/pub/2000/10/begperl1.html)
-* [R](http://swirlstats.com/)
+# Part 0: Logging on to the servers:
+
+We have set up virtual machines (VM) for the workshop. You should have received an email about the particular VM you'll be using. To access the VMs we'll use a command line program called "Secure Shell" (```ssh```).
+
+The program ```ssh``` is a very widely used piece of software that is normally installed on most Linux distributions, Macs too. If you are working on Windows, on the other hand, it is a little more involved...
+
+### Mac/Linux instructions
+
+If you are working on a Mac or a machine running a Linux distribution, it is as simple as opening the Application called ```Terminal```.
+
+### Windows Instructions
+
+If you are working on a PC and running a Windows version later than 10, you should be able to use Windows Terminal or Windows PowerShell. If you're using an earler version of Windows you'll need to download, install and use something like Putty to access the virtual machines.
+
+[Instructions for using Putty and MobaXTerm can be found here](../old_intro/old_topic1_readme.md)
+____________
+Once you have access to a comand line interface do the following to login to the server:
+
+```
+ssh my_user_name@123.456.789
+  # my_user_name should be whatever your username is
+  # 123.456.789 is the IP address of the server
+```
+When you hit enter, you'll be asked to enter your password. Note that when you do that you will not see any text appear as you write - this is a security feature of ```ssh```.
+
+# Part 1: Interface:
+
+
+## 1.1 Prompt or command line
+
+You should see a blinking cursor and a screen that looks something like this:
+![](pics/commandLine.png){: width="100%"}
+
+The white text is mostly a welcome screen that lets you know the status of the machine you've just logged in to. For the purposes of this tutorial ignore this text.
+
+## 1.2 Output
+
+### Cowsay
+
+The first thing you should do is to enter the following command:
+
+```bash
+cowsay Hello
+```
+
+This should have printed a picture of a happy little cow to your screen. ```cowsay``` is a very helpful little program for whenever you need a little pick-me-up.
+
+The cow picture is an ASCII image, which means that it is text characters arranged to make a picture. The ASCII cow is the ```STDOUT``` from the ```cowsay``` program.
+
+## 1.3 Arguments
+
+Command line programs offer their users lots of control that may not be as easily accessed when using a GUI. The ```cowsay``` program has lots of options for changing the appearance of our little bovine friend.
+
+Most command line tools come with a manual that can be accesed rather easily. There is a program called ```man``` (short for manual) which can be used to look through all the diferent options for a program.
+
+You use ```man``` by calling that program and specifying which manual you would like to look at. For example:
+
+```bash
+man cowsay # this will bring up the manual for ```cowsay```
+```
+
+It should look like this:
+
+![](pics/manCowsay.png){: width="100%"}
+
+This is an explorable text document that you can scroll through using the arrow keys.
+
+The manual tells us that there are lots of ways to customise the cow.
+
+Try a few out, for example:
+
+```bash
+cowsay -W2 -t 420
+```
+
+Obviously ```cowsay``` is great, but there are tons of more useful programs that you should try and familiarise yourself with. Here are some examples based on my own usage:
+
+```bash
+ls  # list the files in a directory
+cd  # change directory
+wc  # counts the number of lines, words and characters in a file
+top # prints an active summary of what your machine is doing right now (exit by hitting "q")
+cp # copies a files
+ps # lists active processes that you have launched
+cat # concatenate a file to STDOUT
+mkdir # make a new directory (or folder)
+head # list the first few entries of a files
+mv # Move a file from one place to another (or rename a file)
+less # scroll through a file
+more  # scroll through a file - similar to less, but less good
+which # tells you where a file is located
+pwd # prints working directory to STDOUT - handy for checkoing where you are
+rm # delete a file
+grep # highly efficient program for finding  text strings in files
+awk # a highly efficient language for reading/editing files
+sed # a highly efficient program for performing complicated find and replace operations
+chmod # used to change permissions on a file
+ssh # secure shell - a program and protocol for accessing remote computers
+seq # send a sequence of numbers to STDOUT
+echo # concatenate a given text string to screen
+who # tells you who you is logged in to a server
+kill # terminate a running process
+passwd # change passwords
+```
+
+Some of these are really simple, but are crucially important for being able to navigate the command line happily. Others are more complex (such as ```awk``` and ```sed```) and take lots of time to learn and master. This list is by no means exhaustative, and should be used as a jumping off point.
+
+
+
 
 ### Getting help
 
@@ -43,6 +147,132 @@ Programs like `man` and `less` show an on-screen navigation system:
  - You can search with <kbd>/</kbd>: e.g.  <kbd>/</kbd> + `[dD]og` + <kbd>enter</kbd> will search for "dog" or "Dog". then <kbd>n</kbd> and <kbd>p</kbd> to go the next and previous occurrence.
  - <kbd>Esc</kbd> can be used to abort a command. <kbd>CTRL</kbd>+<kbd>c</kbd> aborts loading a file.
  - <kbd>q</kbd> *q*uits.
+
+
+## 2 Interface: STDIO
+
+There are three data streams that programs have access to in UNIX like systems - and remember, everything is a file!
+
+![](pics/STDIN_diagram.png){: width="100%"}
+
+
+You can manage the flow and access each of the streams using certain characters.
+
+### STDOUT
+Many programs will write their output directly to a file that you have specified, but many will print the results directly to the screen. The results of a program that did not run with errors will typically be sent to STDOUT. As you may imagine, being able to save the output of a program or process is very important, so we need to be able to direct STDOUT to a file.
+
+For example, when we ran ```cowsay Hello``` the text that made up the picture of the cow was sent to STDOUT.
+
+Try running the following:
+
+```
+cowsay Hello > niceCow.txt
+```
+This time, nothing will have been printed to screen.
+
+However, if we list the contents of our directory, we'll see that there is now a file called ```niceCow.txt``` that is stored in our home directory.
+
+![](pics/listedCow.png){: width="100%"}
+
+I used the ```ls``` command to list the file that are in my working directory. I used ```ls``` twice. The second time I used the ```-l``` option, which prints the output as a table containing information about the files present such as their permissions, who owns the file, how big it is, when it was made and what it is called. You may have also noticed that I used the ```cat``` program to send the contents of the cow file to STDOUT and it was printed to screen.
+
+Any program that sends its output to STDOUT can be captured using the ```>``` symbol. In Unix, we call that symbol a "redirection" symbol.
+
+Let's run some other programs and capture the output
+
+```
+cowsay Hello > niceCow.txt
+cowsay You stink > nastyCow.txt
+cowsay e=mc2 > smartCow.txt
+echo "Hello Joe" > Hello_Joe.txt
+echo "Dental Plan" > Dental_Plan.txt
+echo "Lisa Needs Braces" > Braces.txt
+```
+
+In each of the above cases, we saved STDOUT to a file. If it worked, you should have 6 files in your directory now, one for each of the redirects we just used.
+________________
+### STDERR
+
+STDERR is another stream that is often used to print program logs and error messages to screen. For example, let's run a program incorrectly and see what happens.
+
+If we run:
+```
+seq 1 5
+
+```
+we should get a nice list of numbers printed to the screen.
+
+Or if we run:
+```
+seq 1 5 > numbers.txt
+
+```
+We should now have a little file that contains the numbers 1 through 5.
+
+The `seq` program prints a sequence of numbers to STDOUT. It comes in handy in various ways.
+
+If we provide non-numeric input to `seq`, however, it will throw an error. For example:
+```
+seq a g
+```
+The program is not happy and throws and error
+
+If we save STDOUT in such a case we'll end up with an empty file:
+```
+seq a g > letters.txt
+cat letters.txt
+```
+But the error message still comes through. The error message that is printed to screen is actually being sent to STDERR.
+
+We can capture STDERR if we want to:
+```
+seq a g 2> letters_log.txt
+cat letters_log.txt
+```
+
+This time, we saved the error message in a file using `2>`. The `2>` tells UNIX to send stream #2 (a.k.a. STDERR) to a the file that we specified.
+
+FYI, stream #1 is actually STDIN, Unix assumes STDOUT when redirecting by default, so if you want to work with STDERR you need to be specific.
+
+___________________
+
+
+### Pipes
+
+One of the major advantages of working with the Unix command line is the control over the flow of STDIN/STDOUT. Taking the output of one program and feeding to another is very computationally efficent as it means that you don't have to write intermediate files and waste a whole bunch of time.
+
+For the sake of demonstration, let's say that we wanted to count how many files there were in our working directory. We could run `ls` then count how many things are printed to screen. With a small number of files, that's not a big deal, but if you have tens or hundreds of files, that's a big waste of time.
+
+Using some simple UNIX commands we can count how many files we have generated so far.
+
+We know that the following will print a list of our files in our wd to STDOUT:
+```
+ls
+```
+
+Another program, `wc` provides a count of the number of lines, words and characters there are in a file. If we use `wc -l` (note the `-l` argument), we will just count the number of lines. However, `wc` takes it's input from STDIN.
+
+We could do the following:
+```
+ls > list_o_files.txt
+wc -l list_o_files.txt
+```
+and this should tell us how many files we have. However, now we have an annoying intermediate file in our directory that we'll have to clean up.
+
+Instead, let's send the STDOUT of `ls` as input to `wc`:
+
+```
+ls | wc -l
+```
+We'll get the exact same answer, but we've skipped a step and saved ourselves some time.
+
+The `|` character we used is referred to as a "pipe" and is another form of redirection.
+
+Even though this example is fairly trivial, piping is incredibly useful and can be used to great effect in bioinformatics, saving precious disc space and making analyses more efficient.
+
+
+In the exercises below we'll get some more practice using pipes.
+____________________
 
 <a name="editing"></a>
 ### Editing
@@ -204,7 +434,7 @@ run the command `byobu-quiet`.  This can be undone with `byobu-quiet
 --undo`.
 
 
-**Exercise 2**:
+**Optional Exercise 2**:
 * Open a new byobu session.
 * Make a new window.
 * In the new window print numbers 1 to 10000000
@@ -232,6 +462,15 @@ run the command `byobu-quiet`.  This can be undone with `byobu-quiet
 </details>
 
 
+### Other Tutorials
+Here are some good tutorials if you're interested in learning a programming language
+* [Python](https://www.codecademy.com/learn/python)
+* [Perl](http://www.perl.com/pub/2000/10/begperl1.html)
+* [R](http://swirlstats.com/)
+
+<!---
+
 ### Daily Assignments
 1. What is one task you'd rather use an R script instead of a shell script? Why? What is one task you'd rather use a shell script, instead of an R script? Why?
 2. Why is piping directly between programs faster than writing each consecutive output to the disk? Explain using information about computer hardware.
+-->
