@@ -1,10 +1,14 @@
+
+# Topic 11: Phylogenetics
+<!---
+Uncomment this to put it back on the menu, boys
 ---
 title: "Topic 100: Phylogenetics"
 permalink: /Topic_100/
 topickey: 100
 topictitle: Phylogenetics
 ---
-
+-->
 ## Accompanying material
 * [Slides](./Topic 10.pdf)
 
@@ -18,7 +22,7 @@ We're going to run our data through SNAPP since we only have variant sites. As t
 
 [vcf2nex.pl](vcf2nex.pl): This is a perl converter from vcf to the nexus input format. It is edited from the version on the [SNAPP FAQ](https://www.beast2.org/snapp-faq/) to output integers instead of binary output. Put this in your biol525d project directory.
 
-Also note, this tutorial is based heavily off this [SNAPP tutorial](https://github.com/BEAST2-Dev/beast-docs/releases/download/v1.0/SNAPP-tutorial-2018.zip), so please refer to it for further details. 
+Also note, this tutorial is based heavily off this [SNAPP tutorial](https://github.com/BEAST2-Dev/beast-docs/releases/download/v1.0/SNAPP-tutorial-2018.zip), so please refer to it for further details.
 
 The first step is to convert our filtered vcf into the nexus format. Nexus is a phylogenetics data format. In this case we're converting our genotypes from 0/0, 0/1 and 1/1 into 0, 1 and 2.
 
@@ -50,7 +54,7 @@ Next, in the BEAST 2.6.0 directory open the BEAUTi app.
 * Select *File => Save* and name file "full_genome.filtered.snapp"
   ![](beauti_4.jpeg){:width="100%"}
 
-This whole use of Beauti is setting up the SNAPP run. We're specifying which samples go to which population, since SNAPP is calculating the phylogenetic history of the population, rather than individuals. We're setting the number of MCMC chains to be very small for time limitations. Also we're not modifying the priors, which can be important and should be something you should consider for each particular dataset. 
+This whole use of Beauti is setting up the SNAPP run. We're specifying which samples go to which population, since SNAPP is calculating the phylogenetic history of the population, rather than individuals. We're setting the number of MCMC chains to be very small for time limitations. Also we're not modifying the priors, which can be important and should be something you should consider for each particular dataset.
 
 At the end, we have a file _full_genome.filtered.snapp.xml_ that is ready for running BEAST. Onward!
 * Open the BEAST app
@@ -133,7 +137,7 @@ Lets break down this command
 
 Take a look at the output files. One of the most useful is *full_genome.filtered.fa.iqtree* which is a log of the run and a summary of all its results. It also includes an ascii phylogeny. We're going to focus on *full_genome.filtered.fa.treefile*, which is the maximum likelihood tree it selected.
 
-Transfer your whole *phylogenetics* directory to your *biol525d* Rstudio project directory on your laptop. Then open Rstudio, reload your project if its been closed, create a new Rscript and clear your environment. 
+Transfer your whole *phylogenetics* directory to your *biol525d* Rstudio project directory on your laptop. Then open Rstudio, reload your project if its been closed, create a new Rscript and clear your environment.
 
 
 ```r
@@ -221,6 +225,3 @@ ggtree(rooted.tree) %<+% tree_info +
 ## Daily Questions:
 1. What are two biological scenarios where you would want to use a reticulate tree, versus the standard non-reticulate tree, to represent the phylogeny?
 2. What does it mean when something has 50% bootstrap support? What are two possible reasons that a node may have low support? Include one biological and one methodological reason.
-
-
-

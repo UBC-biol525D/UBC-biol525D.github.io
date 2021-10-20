@@ -29,7 +29,8 @@ The first thing that you need to do in this tutorial is to get IGV up and runnin
 IGV is written in Java and is available as a pre-compiled package from the Broad Institute. IGV can be freely downloaded at: [https://software.broadinstitute.org/software/igv/](https://software.broadinstitute.org/software/igv/). IGV is written in Java, so if you do not have Java installed on your machine, use the *Java Included* versions of the program for your specific machine.
 
 The download page should look like this:
-![](pics/IGV_downloadPage.png)
+
+![](pics/IGV_downloadPage.png){: width="100%"}
 
 The links highlighted by the blue blob are what you are after.
 
@@ -63,37 +64,17 @@ Salmon.ddRAD.bam ## A file containing the alignments of double-digest RAD seq.
 
 Salmon.16x.PacBio.bam ## A file containing the alignments of PacBio  reads to the Salmon reference
 
-## Each of the files ending in ".bam" also have an index file (those ending in ".bai")
 
 coldWaterSalmon.RNA.bam ## A file containing RNA-seq data aligned to the reference genome
 
 SalmonData_checksums.sha ## See below
 
-```
-
-There are a number of file types
-
-## Check data integrity
-
-The following is optional, only do this if you are comfortable working on the command line already - return to this at a later stage if not.
-
-<details>
-  <summary>Click to expand!</summary>
-
-Often when downloading large files, we want to perform a check on the integrity of the data downloaded. Perhaps you were downloading a large file and the power went down before you were not able to check the data. More generally, when downloading many large files you may not have the time (or the patience) to manually curate each one to ensure that it was downloaded correctly.
-
-It is good practice to check data integrity when moving files from place to place and there are useful functions for checking data integrity. The two main methods that are used are ```shasum``` and ```md5```. ```shasum``` is perhaps a bit more common as it is available as standard on MacOS. Both methods generate what is called a "checksum", a hexadecimal string (e.g. "d241941bac307bd853fd21945d029e62c83cea71") that is unique to a given file.
-
-If you inspect the contents of ```SalmonData_checksums.sha``` you'll notice that there are two columns in the file, the left hand column contains a bunch of checksums, the righthand column contains the name of corresponding files. You can compare all the files in the directory you downloaded using:
-
-
-**Store the checksums with the data, whereever we host it.**
-
-```shell
-shasum -c SalmonData_checksums.sha
+## Each of the files ending in ".bam" and the ".vcf" file also have index files associated (those ending in ".bai" and ".tbi")
 
 ```
-</details>
+
+There are a number of file types here, by the end of the week you'll have seen how each of these kinds of files are generated, understand what information they contain and have an idea of what you can do with them.
+
 
 ____________
 # Part 2: The reference genome
@@ -102,7 +83,7 @@ ____________
 *Do not proceed unless you have set up IGV on your machine*
 _
 Open up IGV on your machine, you should be seeing something like the following (don't worry if it looks a little different):
-![](pics/IGV_startScreen.png)
+![](pics/IGV_startScreen.png){: width="100%"}
 
 You may notice "hg19" in the drop down menu on the top left (highlighted in orange). "hg19" stands for human genome version 19, it's fun to explore the human genome, but today we're going to explore the genome of the system we're working with in this workshop .
 
@@ -135,7 +116,7 @@ If the data loaded happily, choose a chromosome from the dropdown menu and zoom 
 <details>
   <summary>Click to expand! </summary>
 
-![](pics/IGV_HiSeq_lowCoverage.png)
+![](pics/IGV_HiSeq_lowCoverage.png){: width="100%"}
 
 </details>
 
@@ -170,7 +151,7 @@ For the next part, we'll need to remove the browser tracks we've opened. This is
 2. Under ```Hide indels < show indel threshold``` replace 1 with 3.
 3. Check the box that says ```Quick consensus mode```
 
-![](pics/OptionsMenu.png)
+![](pics/OptionsMenu.png){: width="100%"}
 
 Once you've removed the previous two tracks and tweaked the options, load up the file ```Salmon.16x.PacBio.bam``` in IGV as above.
 
@@ -208,7 +189,7 @@ Now load in Salmon genes. You can do this like you have been doing for all the a
 
 Now you should see diagrams indicating genes in the Salmon genome on a track at the bottom of the screen. Something like this:
 
-![](pics/IGV_withGenes.png)
+![](pics/IGV_withGenes.png){: width="100%"}
 
 Explore this data, and get a feel for some of the differences between the results of genome sequencing and RNA-seq
 
@@ -230,7 +211,7 @@ First, let's reload the Illumina whole genome data that we were analysing previo
 
 If you've successfully loaded in all the data, you should have a window that looks like this:
 
-![](pics/variantsInIGV.png)
+![](pics/variantsInIGV.png){: width="100%"}
 
 In this window the variants are loaded in and shown in the top bar of the plot. IGV colour codes many things (as you'll have noticed). Note that homozygous variants are coloured in a light turquoise blue, heterozygous variants are in dark blue.
 

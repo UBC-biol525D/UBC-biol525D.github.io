@@ -1,0 +1,189 @@
+<p>This page contains instructions to configure a key usable for
+password-less login to your server account. This allows you, and
+scripts that you run, to authenticate automatically with the server
+environment.</p>
+
+<p><em>Instructions:</em> Read the general text, and then follow only the instructions that pertain to your operating system and software.</p>
+
+<p>Time needed to complete: 5 minutes.</p>
+
+<h2 id="generating-a-keypair-for-key-authentication">Generating a keypair for key authentication</h2>
+
+<p>We will generate a keypair for the purposes of authenticating and communicating with the server. The keypair has two parts, a public and a private part. They are created in a single operation.</p>
+
+<ul>
+  <li>
+    <p>The private key is contains the secret information. It stays on the computer and is in a file protected with a “passphrase”.</p>
+  </li>
+  <li>
+    <p>The public key works in tandem with the private key, but it’s not secret. You can write it in email, on github, and inside your
+server accounts to identify yourself. The file extension is generally <code class="language-plaintext highlighter-rouge">.pub</code>. <em>We will show how to configure your server account with it</em></p>
+  </li>
+</ul>
+
+<p><em>Key authentication in a nutshell</em> The public and private key parts are unique to one another and work in tandem. Without going into much detail into cryptography, it works out that whatever is encrypted with the public key, can <em>only</em> be decrypted with the private key counterpart. It is also computationally infeasible to reconstitute the private key from the public key. The end result is that your computer can “prove” to a server that it is the owner of the private key by cracking a mathemathical challenge crafted with that public key. And that’s how servers can authenticate your computer based on keys.</p>
+
+<p><em>What’s a passphrase?</em> A passphrase is a long-ish password that is designed to be easy to
+remember, but hard to guess for a computer. <code class="language-plaintext highlighter-rouge">My roommate wastes good water.</code>,
+<code class="language-plaintext highlighter-rouge">always smile when entering a room</code>, and <code class="language-plaintext highlighter-rouge">my TV does not support HDMI 100%</code> are fine examples. Just make one up.</p>
+
+<p><em>Won’t I also need to unlock the key to use it? When will I need the passphrase?</em> Yes, but you will do so <em>less frequently</em>. One of the advantages of key-based authentication, is that you will load your key once with the passphrase, but once it’s loaded, you can login to your server without typing in anything. You will need to enter this passphrase once each time you open a new computer session (after a fresh boot). If you put it to sleep, but never it shut down completely, then you might need to recall it once in a blue moon.</p>
+
+<blockquote>
+  <p><em>Note on information security:</em> Passwords constrained in length like <code class="language-plaintext highlighter-rouge">p0werhouse%1</code> or <code class="language-plaintext highlighter-rouge">M4jestic2</code>, that many websites train you to use are hard to remember, and easy to guess for (a hacker on) a computer. Such passwords can be cracked with slightly modified dictionary attacks.</p>
+</blockquote>
+
+<h3 id="mac-or-gnulinux">MAC or GNU/Linux</h3>
+
+<p>In your terminal, run the following commands:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># create a directory to hold your new key
+# ~/.ssh is the usual location to put those in.
+[[ ! -d ~/.ssh ]] &amp;&amp; { mkdir ~/.ssh &amp;&amp; chmod 700 ~/.ssh; }
+
+# create a new key
+# substitute your name and email address in the command.
+# The quotes, i.e. `"`, allow the series of words to be
+# be ingested a single argument to the -C option.
+ssh-keygen -t rsa -b 4096 -C "Full Name biol525 &lt;myemail@example.org&gt;" -f ~/.ssh/biol525D
+</code></pre></div></div>
+
+<p>Enter a passphrase at the prompt, and then hit <kbd>enter</kbd>.</p>
+
+<blockquote>
+  <p><em>Note:</em> Depending on your terminal, it may seem like your keyboard is not generating any characters, but that’s only because “terminal echo” is turned off, to avoid showing passwords on screen and in logs – but worry not your passphrase is being received. And you will be asked to confirm it:</p>
+</blockquote>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Generating public/private rsa key pair.
+Enter passphrase (empty for no passphrase):
+
+Enter same passphrase again:
+Your identification has been saved in /home/localuser/.ssh/biol525D.
+Your public key has been saved in /home/localuser/.ssh/biol525D.pub.
+The key fingerprint is:
+SHA256:OCSHEdwMh/FCl3zbFmLiUmj8XMhDZrtkWjlgsM1czJs Full Name &lt;myemail@example.org&gt;
+The key's randomart image is:
++---[RSA 4096]----+
+|  .+O#Bo         |
+|   B*@&amp;o= .      |
+|  ..B=@O + .     |
+|    .XE+. o      |
+|    ..+ S.       |
+|       .         |
+|                 |
+|                 |
+|                 |
++----[SHA256]-----+
+</code></pre></div></div>
+
+<h3 id="windows">Windows</h3>
+
+<p>We cover instructions for Putty, and MobaXterm.</p>
+
+<p><em>Windows: MobaXterm</em></p>
+
+<p>These instructions are specific to MobaXTerm. If you are using PuTTy only, use the other section below.</p>
+
+<ol>
+  <li>
+    <p>First, make sure you have a local home folder and root folder setup for storing files generated by MobaXterm. This is generally done for you, but it’s a good thing to check.</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Menu</code> -&gt; <code class="language-plaintext highlighter-rouge">Settings</code> -&gt; <code class="language-plaintext highlighter-rouge">Configuration</code></li>
+      <li>Set the persistent home folder location to somewhere under your Documents, e.g. <code class="language-plaintext highlighter-rouge">My Documents/MobaXTerm/home</code>.</li>
+      <li>Set the persistent root folder location to somewhere under your Documents, e.g. <code class="language-plaintext highlighter-rouge">My Documents/MobaXTerm/slash</code>.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Generate the key using a “local terminal”. On the home screen this is “Start a local terminal”.</p>
+
+    <p>Run the following command, substituting your name and email address:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> ssh-keygen -t rsa -b 4096 -C "Full Name biol525 &lt;email@example.org&gt;" -f ~/.ssh/biol525D
+</code></pre></div>    </div>
+
+    <p>It will print the following, and you will be prompted to enter a passphrase.</p>
+    <blockquote>
+      <p><em>Note:</em> It may seem like your keyboard is not generating any characters, but that’s only because “terminal echo” is turned off, to avoid showing passwords on screen and in logs – but worry not your passphrase is being received. And you will be asked to confirm it:</p>
+    </blockquote>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Generating public/private rsa key pair.
+Created directory '/home/mobaxterm/.ssh'.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/mobaxterm/.ssh/biol525D.
+Your public key has been saved in /home/mobaxterm/.ssh/biol525D.pub.
+The key fingerprint is:
+SHA256:JQtQOm0p/O3HNdFOOb6dijYQNCzYmbjLCanr4Orl+qA Full Name &lt;myemail@example.org&gt;
+The key's randomart image is:
++---[RSA 4096]----+
+|    ..= +        |
+|   . * * +   . . |
+|    * * + o . =  |
+|   o * o =   = . |
+|  . o + S . o o  |
+| .   + . o . . o.|
+|....    . +   ...|
+|+.+      . o. .  |
+|E=oo      ....   |
++----[SHA256]-----+
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Convert the generated key into the other windows format, <code class="language-plaintext highlighter-rouge">.ppk</code>. Most windows tools ingest keys in that format, so it’s a good idea to have that handy as well. It uses the same key content and same passphrase, just a different file format.</p>
+
+    <ol>
+      <li>
+        <p>Open <code class="language-plaintext highlighter-rouge">Menu</code> -&gt; <code class="language-plaintext highlighter-rouge">Tools</code> -&gt; <code class="language-plaintext highlighter-rouge">MobaKeyGen (SSH Key generator)</code></p>
+      </li>
+      <li>
+        <p>In the <code class="language-plaintext highlighter-rouge">MobaKeyGen</code> window, select <code class="language-plaintext highlighter-rouge">Menu</code> -&gt; <code class="language-plaintext highlighter-rouge">Conversions</code> -&gt; <code class="language-plaintext highlighter-rouge">Import Key</code>. Choose the biol525D private key inside the <code class="language-plaintext highlighter-rouge">.ssh</code> folder of your moba-home folder. (defaults to <code class="language-plaintext highlighter-rouge">Documents/MobaXTerm/home/.ssh/</code>).</p>
+      </li>
+      <li>
+        <p>Enter the key’s passphrase to unlock it.</p>
+      </li>
+      <li>
+        <p>You should see something like this:
+<img src="./img/keyimport.png" alt="key imported" title="Logo Title Text 1" /></p>
+      </li>
+      <li>
+        <p>Hit <code class="language-plaintext highlighter-rouge">save private key</code>. In the same folder as the <code class="language-plaintext highlighter-rouge">biol525D</code> private key file, save it as “biol525D.ppk”</p>
+      </li>
+    </ol>
+  </li>
+</ol>
+
+<p><em>Windows: PuTTy suite</em></p>
+
+<ol>
+  <li>
+    <p>Start “PuTTYgen” from the start menu.</p>
+  </li>
+  <li>
+    <p>click “Menu” -&gt; “Key” -&gt; “Generate Keypair”</p>
+  </li>
+  <li>
+    <p>Draw a doodle in the area below the progress bar. This is to help the computer generate some randomness. Be as random as possible. At the bottom, change 2048 bits for 4096. Hit “generate” again.</p>
+  </li>
+  <li>
+    <p>In the “key comment” section write your name and email address:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Full Name biol525 &lt;myemail@example.org&gt;
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Enter a good passphrase in the passphrase/confirm fields. Keep the same window open for the following steps. If you accidentally close it, you will have to re-load the key or generate a new one.</p>
+  </li>
+  <li>
+    <p>Click “save private key”. Choose a location and save as “biol525D.ppk”. Somewhere under <code class="language-plaintext highlighter-rouge">My Documents</code> is fine. Remember that location.</p>
+  </li>
+  <li>
+    <p>Click “save public key”. Choose the same location as the private key, but replace the “.ppk” extension with “.ppub”. i.e. call it “biol525D.ppub”</p>
+  </li>
+</ol>
+
+<h2 id="continuing">Continuing</h2>
+
+<p>Congratulations! You now have a key that can uniquely identify your computer. Continue on to learn how to configure your computer to use it.</p>
+
+<p>You may continue on to page <a href="./configure_ssh_agent">Configure SSH Agent</a>.</p>

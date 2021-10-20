@@ -1,0 +1,388 @@
+<p>This page contains instructions to connect rapidly to your account with your private key. The exercise is part of <a href="./">Topic 1</a>. It assumes you’ve completed the steps: <a href="./generate_a_key">generate a key</a> and <a href="./configure_ssh_agent">configure ssh-agent</a>. The result will be a working setup on your computer to run programs remotely.</p>
+
+<blockquote>
+  <p><em>Note: watch out for placeholders!</em> Replace the placeholders <code class="language-plaintext highlighter-rouge">serveruser</code>, <code class="language-plaintext highlighter-rouge">serverpass</code>, and <code class="language-plaintext highlighter-rouge">serverhost</code>, with your assigned username, password, and server address (IP).</p>
+</blockquote>
+
+<p>Instructions: Read the general text, and then follow only the instructions that pertain to your operating system and software.</p>
+
+<p>Time to complete: 5 minutes</p>
+
+<h3 id="instructions-for-macos-including-cyberduck-for-mac">Instructions for MacOS (including Cyberduck for Mac)</h3>
+
+<ol>
+  <li>
+    <p>Edit (or create) file <code class="language-plaintext highlighter-rouge">~/.ssh/config</code>, and add this information to it, replacing placeholders with your data, (and then save the file):</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Allows login to your assigned server by simply doing: ssh b525
+Host b525
+HostName serverhost
+IdentityFile ~/.ssh/biol525D
+User serveruser
+ForwardAgent yes
+ForwardX11 yes
+</code></pre></div>    </div>
+
+    <p>Explanation:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Host</code> setting is a friendly name that you choose. You will use it as a shorthand alias when connecting: i.e. <code class="language-plaintext highlighter-rouge">ssh b525</code>.</li>
+      <li><code class="language-plaintext highlighter-rouge">HostName</code> is the address of your assigned server (e.g. 123.123.123.123).</li>
+      <li><code class="language-plaintext highlighter-rouge">IdentityFile</code> is the path to the private key to use (it will use that one from your agent).</li>
+      <li><code class="language-plaintext highlighter-rouge">User</code> is your username <em>on the server</em>.</li>
+      <li><code class="language-plaintext highlighter-rouge">ForwardAgent</code> allows you to connect to other servers <em>from that server</em> while relying on the local agent. This is useful if you hop on from one server to another using one set of keys. If you configure your public key in your github accout, for instance, you would be able to issue git commands without passwords, <em>on the server</em>. If you don’t trust the administrators of the server, you would choose “no”.</li>
+      <li><code class="language-plaintext highlighter-rouge">ForwardX11</code> allows running graphical applications installed on the server, but viewing the window <em>from your computer</em>. Again, if you don’t trust the admins, set it to “no”.</li>
+      <li>If you wish to know more about this file, see the manual page: <code class="language-plaintext highlighter-rouge">man ssh_config</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>Configuring cyberduck.</p>
+
+    <p>No config needed! Once you’ve configured your <code class="language-plaintext highlighter-rouge">ssh_config</code> like
+described above, then you should be able to connect to your server
+using the short alias you configured, e.g. <code class="language-plaintext highlighter-rouge">b525</code> as part of the “server name”. Cyberduck will
+also automatically rely on your <code class="language-plaintext highlighter-rouge">ssh-agent</code> to provide the
+necessary credentials.</p>
+  </li>
+  <li>
+    <p>The remaining step is to configure your account on the server to recognize the public key that is loaded in your ssh-agent’s keyring. We will require access to the files of the account. Therefore, we will login <em>once</em>, using your password, and then adding the public key to a recognized filename. On subsequent logins, the key will suffice. There is a helper command that does it for you:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-copy-id -i ~/.ssh/biol525D.pub b525
+</code></pre></div>    </div>
+
+    <p>What the above command does:</p>
+    <ul>
+      <li>logs in to the server as serveruser</li>
+      <li>appends the given public key to ~/.ssh/authorized_keys.</li>
+    </ul>
+
+    <p>Note that the command above uses your new alias (i.e. <code class="language-plaintext highlighter-rouge">b525</code>), and the default username and server hostname are automatically
+selected from <code class="language-plaintext highlighter-rouge">~/.ssh/config</code>. It is equivalent to the full command:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-copy-id -i ~/.ssh/biol525D.pub serveruser@serverhost
+</code></pre></div>    </div>
+
+    <p>You will be asked you for your account password (not your key passphrase). Once this is configured, you won’t need your password again to connect over ssh.</p>
+
+    <blockquote>
+      <p><em>Note:</em> The first time you connect to a server over ssh, it will
+        ask you to authorize the server’s public keys. The
+        server is also using a public key to identify itself to
+        your computer. Ideally, you know ahead of time which
+        public key to expect.</p>
+    </blockquote>
+  </li>
+</ol>
+
+<h3 id="instructions-for-windows-mobaxterm">Instructions for Windows: MobaXTerm</h3>
+
+<ol>
+  <li>
+    <p>Open a local terminal.</p>
+  </li>
+  <li>
+    <p>Edit the file <code class="language-plaintext highlighter-rouge">~/.ssh/config</code>:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># moba's editor doesn't always open if you try to edit a file which does not exist
+# so we -touch- it first, which will create it if needed.
+touch ~/.ssh/config
+edit ~/.ssh/config
+</code></pre></div>    </div>
+
+    <p>In the editor, add the following section, making sure to replace <code class="language-plaintext highlighter-rouge">serverhost</code> and <code class="language-plaintext highlighter-rouge">serveruser</code>:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Allows login to your assigned server by simply doing: ssh b525
+Host b525
+HostName serverhost
+IdentityFile ~/.ssh/biol525D
+User serveruser
+ForwardAgent yes
+ForwardX11 yes
+</code></pre></div>    </div>
+
+    <p>Explanation:</p>
+
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">Host</code> setting is a friendly name that you choose. You will use it as a shorthand alias when connecting: i.e. <code class="language-plaintext highlighter-rouge">ssh b525</code>.</li>
+      <li><code class="language-plaintext highlighter-rouge">HostName</code> is the address of your assigned server (e.g. 123.123.123.123).</li>
+      <li><code class="language-plaintext highlighter-rouge">IdentityFile</code> is the path to the private key to use (it will use that one from your agent).</li>
+      <li><code class="language-plaintext highlighter-rouge">User</code> is your username <em>on the server</em>.</li>
+      <li><code class="language-plaintext highlighter-rouge">ForwardAgent</code> allows you to connect to other servers <em>from that server</em> while relying on the local agent. This is useful if you hop on from one server to another using one set of keys. If you configure your public key in your github accout, for instance, you would be able to issue git commands without passwords, <em>on the server</em>. If you don’t trust the administrators of the server, you would choose “no”.</li>
+      <li><code class="language-plaintext highlighter-rouge">ForwardX11</code> allows running graphical applications installed on the server, but viewing the window <em>from your computer</em>. Again, if you don’t trust the admins, set it to “no”.</li>
+      <li>If you wish to know more about this file, see the manual page: <code class="language-plaintext highlighter-rouge">man ssh_config</code></li>
+    </ul>
+  </li>
+  <li>
+    <p>Save the file and close the editor.</p>
+  </li>
+  <li>
+    <p>Run the following command (in a local terminal) to add our public key to the server account:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> # notice that we are using our new alias from ~/.ssh/config: b525
+ ssh-copy-id -i ~/.ssh/biol525D.pub b525
+
+ # (if you skipped the ~/.ssh/config part, you can simply use
+ #  serveruser@serverhost (your username and IP) instead of "b525")
+</code></pre></div>    </div>
+
+    <p>You will be asked for your server password (not the key
+passphrase). The tool will copy the public key to the account’s
+<code class="language-plaintext highlighter-rouge">~/.ssh/authorized_keys</code> to recognize this key as a valid way to
+authenticate.</p>
+
+    <p>If this is the first time you connect to that server with Moba,
+Moba will prompt us to cache the password. I don’t recommend
+relying only on saved user/passwords to login to servers. Keys are
+safer than saved passwords, and they never leave your computer even
+when you hop between proxies.</p>
+
+    <blockquote>
+      <p><em>Note:</em> You can access saved passwords in MobaXTerm in:
+  <code class="language-plaintext highlighter-rouge">Menu</code> -&gt; <code class="language-plaintext highlighter-rouge">Settings</code> -&gt; <code class="language-plaintext highlighter-rouge">Configuration</code> -&gt; <code class="language-plaintext highlighter-rouge">General Tab</code> -&gt; <code class="language-plaintext highlighter-rouge">MobaXterm passwords management</code>.
+  You will not need to use a saved password to connect from now on.</p>
+    </blockquote>
+
+    <p>The output of <code class="language-plaintext highlighter-rouge">ssh-copy-id</code> will look like this:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+myuser@myserver's password: ******
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'b525'"
+and check to make sure that only the key(s) you wanted were added.
+</code></pre></div>    </div>
+
+    <p>If you type <code class="language-plaintext highlighter-rouge">ssh b525</code> like the command output suggests, you should automatically be logged in
+without typing in a password.</p>
+  </li>
+  <li>
+    <p>Create a session bookmark in the MobaXterm menu.</p>
+
+    <p>We’ll bookmark a session for connecting to the server by double clicking. This will give us an opportunity to configure terminal settings to map your keyboard correctly.</p>
+
+    <p>In the Moba menu, do “Sessions”-&gt; “New session”. Choose “SSH”:</p>
+
+    <ol>
+      <li>In “Remote host”, enter your <code class="language-plaintext highlighter-rouge">serverhost</code> (the IP)</li>
+      <li>Check “Specify username” and enter your <code class="language-plaintext highlighter-rouge">serveruser</code></li>
+      <li>Leave port at 22</li>
+      <li>Click “Advanced SSH settings” Tab
+        <ol>
+          <li>Enable “X11 Forwarding” (if you want)</li>
+          <li>You can leave the rest as is. You don’t need to configure the key there if your agent is running.</li>
+        </ol>
+      </li>
+      <li>Click “Terminal settings Tab”
+        <ol>
+          <li>Uncheck “Backspace sends ^H” – this will allow your backspace key to work as it does on windows.</li>
+          <li>Under “Terminal Type”, pick “Byobu” – this will allow your function keys to work as expected (for using byobu).</li>
+        </ol>
+      </li>
+      <li>Click “Bookmark Settings” Tab
+        <ol>
+          <li>Pick a short name for your session.</li>
+        </ol>
+      </li>
+      <li>Click the green “OK” to commit the session settings.</li>
+    </ol>
+  </li>
+  <li>
+    <p>Activate the session</p>
+
+    <p>You can retrieve your session bookmark on the left, on the vertical tabs of the main Moba window, under “Sessions”.
+You can double-click it to start the session.</p>
+
+    <p>If you need to go back to change the parameters of the session, you can right click the session icon, and “edit”.</p>
+
+    <p>Activating your new session should allow you to see something like this (a prompt provided <em>on the remote server</em>):</p>
+
+    <p><img src="./img/loginmoba.png" alt="moba logged in" title="Moba is logged in" /></p>
+  </li>
+</ol>
+
+<h3 id="instructions-for-windows-cyberduck">Instructions for Windows: Cyberduck</h3>
+
+<p>Cyberduck works on Mac and Windows. In theory, it should pick up the
+keys loaded in the Pageant program, but there are numerous reports of
+the feature not working as expected on Windows.</p>
+
+<p>So for cyberduck on Windows, you will have to choose either between
+username/password authentication or loading the key file (.ppk)
+locally in your session.</p>
+
+<ul>
+  <li>Click “Open Connection”</li>
+  <li>Choose SFTP as the connection type.</li>
+  <li>In “Server” enter the server host (IP) (<code class="language-plaintext highlighter-rouge">serverhost</code>)</li>
+  <li>In “username” enter your server assigned username (<code class="language-plaintext highlighter-rouge">serveruser</code>)</li>
+  <li>In “SSH Private Key” browse to find your private key ppk file.</li>
+  <li>
+    <p>Uncheck “Save Password”</p>
+  </li>
+  <li>
+    <p>Here is a summary of the configuration for the connection:</p>
+
+    <p><img src="./img/cyberduck-config.png" alt="cyberduck configured" title="Cyberduck config on windows" /></p>
+
+    <p>When you use this connection, you will be prompted for the
+passphrase to your key.  Once the keys are loaded, cyberduck will
+try to authenticate with them. If this fails (which is the case if
+you haven’t yet configured the public key on your account), it will
+revert to username/password login – this is serveruser/serverpass.</p>
+  </li>
+  <li>
+    <p>Hit “Connect”.</p>
+
+    <p>It’s not obvious to know you’re connected sometimes, esp if there are
+0 files in your account.  But the icon in the top right will show
+“Disconnect”, which means you’re connected.  Once you see the file
+listing (consider that there may be 0 files listed), you can also
+toggle displaing hidden files with:</p>
+
+    <p><code class="language-plaintext highlighter-rouge">Menu</code> -&gt; <code class="language-plaintext highlighter-rouge">View</code> -&gt; <code class="language-plaintext highlighter-rouge">Show Hidden files</code></p>
+  </li>
+</ul>
+
+<h3 id="instructions-for-windows-putty">Instructions for Windows: PuTTY</h3>
+
+<p>PuTTy can work in conjunction with Pageant to automatically
+   retrieve keys, but we have to copy our public key to the remote
+   account manually. The tool <code class="language-plaintext highlighter-rouge">ssh-copy-id</code> is included in certain
+   toolkits (namely git for windows, and windows Bash) and is a great shortcut.
+   But in this section we will show what to do when it is not available.</p>
+
+<ol>
+  <li>
+    <p>Create a new session profile in PuTTy.</p>
+
+    <ul>
+      <li>Start putty. Shortcut: <kbd>windows</kbd>+<kbd>r</kbd>, putty+<kbd>enter</kbd>. You will see the (one and only) menu.</li>
+      <li>In “Session”. Under “Host Name” enter your server IP: <code class="language-plaintext highlighter-rouge">serverhost</code></li>
+      <li>In “Terminal/Keyboard”. Under “Function keys and Keypad, choose Xterm R6”. This is a sensible default to get
+some of the F keys mapped correctly.</li>
+      <li>In “Connection/Data”,  under “Auto-login username” enter your server username: <code class="language-plaintext highlighter-rouge">serveruser</code></li>
+      <li>In “Connection/SSH/Auth”. Enable “Agent forwarding” (see notes on “ForwardAgent” in <code class="language-plaintext highlighter-rouge">man ssh_config</code>).</li>
+      <li>In “Connection/SSH/X11”. Enable “X11 Forwarding” (see notes on “ForwardX11” in <code class="language-plaintext highlighter-rouge">man ssh_config</code>).</li>
+      <li>In “Window/Selection”. Familiarize yourself with the mouse button actions. The default might surprise you:
+        <ul>
+          <li>“Left button selects (and automatically copies)”</li>
+          <li>“Middle button extends existing selection”</li>
+          <li>“Right button - pastes”.</li>
+        </ul>
+      </li>
+      <li>Go back to “Session”. Enter a name in the field under “Saved Sessions”: <code class="language-plaintext highlighter-rouge">b525</code></li>
+      <li>After you’ve typed a name for the session, hit “Save”. You will see the new entry in the list of profiles.</li>
+    </ul>
+
+    <blockquote>
+      <p><em>Note:</em> Quirks! - If your settings need to be adjusted later on, you will have to click “b525”, then “Load” the profile,
+make the change, go back to the “Sessions” tab, make sure the session you’re editing is selected, and hit “Save”.</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>Use the newly created PuTTy session:</p>
+
+    <ul>
+      <li>Double click on “b525” in the sessions list.</li>
+      <li>Your username should be automatically filled in.</li>
+      <li>Type in your password</li>
+    </ul>
+  </li>
+  <li>
+    <p>We’re going to copy the public key over to the server.</p>
+
+    <ul>
+      <li>
+        <p>Recall the location of your public key file (e.g. <code class="language-plaintext highlighter-rouge">biol525D.ppub</code>). This file was created with puTTYgen in the previous page.</p>
+      </li>
+      <li>Option 1: copy using <code class="language-plaintext highlighter-rouge">cmd</code> and <code class="language-plaintext highlighter-rouge">pscp</code>
+        <ul>
+          <li>Open a command terminal. <kbd>windows</kbd>+<kbd>r</kbd>, <code class="language-plaintext highlighter-rouge">cmd</code> + <kbd>enter</kbd></li>
+          <li>
+            <p>We will copy our public key file over to the server with pscp (which comes with putty). Replace the paths and serveruser/serverhost.</p>
+
+            <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>REM replace the path of the pubkey file with yours.
+REM replace serveruser and serverhost with your assigned user/pass.
+REM the colon at the very end is important.
+pscp C:\Users\MyName\Documents\keys\biol525D.ppub serveruser@serverhost:
+</code></pre></div>            </div>
+          </li>
+          <li>
+            <p>You should see something like this:</p>
+
+            <p><img src="./img/scp_key.png" alt="public_key_copied" title="Copied the key with pscp" style="width: 600px" /></p>
+
+            <blockquote>
+              <p><em>Note:</em> The screenshot shows an error because the trailing colon is missing. Without it, pscp assumes that the parameter is
+   the destination name of a local file, rather than a username and server. The error is corrected in the second command. You can use the <kbd>UP</kbd> arrow to recall previous commands.</p>
+            </blockquote>
+          </li>
+          <li>We just copied a file from our computer to the server account. Since we omitted the name of the remote file (after the colon),
+the file keeps the local computer’s file base name, i.e. <code class="language-plaintext highlighter-rouge">biol525D.ppub</code>.</li>
+        </ul>
+      </li>
+      <li>
+        <p>Option 2: Copy with cyberduck</p>
+
+        <ul>
+          <li>Open cyberduck, and connect. Navigate the file listing to your 
+home folder (i.e. <code class="language-plaintext highlighter-rouge">/home/serveruser/</code>). This is the default when you connect. Drag the file
+<code class="language-plaintext highlighter-rouge">biol525D.ppub</code> from your local folder, and drop it into the cyberduck file
+listing. You might be prompted for your passphrase or server
+password.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Activate the public key on the server account</p>
+
+    <p>The final step is to add the public key to the special file <code class="language-plaintext highlighter-rouge">~/.ssh/authorized_keys</code> on our server account. We will connect
+to the server using username/password and use the tool
+<code class="language-plaintext highlighter-rouge">ssh-copy-id</code> installed there.</p>
+
+    <ul>
+      <li>
+        <p>Log in to the server with your PuTTy session. If Pageant is
+running in the system tray, you can right-click its icon, go to “Saved Sessions”
+and pick <code class="language-plaintext highlighter-rouge">b525</code>. You will be prompted for you account password at this point. Successful login
+should open a command prompt.</p>
+      </li>
+      <li>At the server prompt (<code class="language-plaintext highlighter-rouge">$</code>), we enter two commands:
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># convert the key
+ssh-keygen -i -f biol525D.ppub &gt; openssh.pub
+
+# authorize that key to login as you
+ssh-copy-id -f -i openssh.pub localhost
+</code></pre></div>        </div>
+
+        <p>The first command converts the .ppub public key file from putty into the openssh format (the server runs openssh tools). The second
+command lets ssh-copy-id deal with importing the key into <code class="language-plaintext highlighter-rouge">~/.ssh/authorized_keys</code>. You will have to enter your server password (for the last time).</p>
+
+        <blockquote>
+          <p><em>Note:</em> The order of the command line arguments <code class="language-plaintext highlighter-rouge">-i</code> and <code class="language-plaintext highlighter-rouge">-f</code> is sensitive. Pay attention to the order. It differs in the two commands.
+  Make sure that you are entering the command as provided. The file <code class="language-plaintext highlighter-rouge">biol525D.ppub</code> has to match the name of the file that you
+  have uploaded (via pscp or cyberduck)</p>
+        </blockquote>
+      </li>
+      <li>
+        <p>The previous set of commands will look like this, when run:</p>
+
+        <p><img src="./img/putty-key-added.png" alt="putty key added" title="Used putty to configure the public key into authorized_keys" style="width: 600px" /></p>
+      </li>
+      <li>You can close the terminal, or issue the <code class="language-plaintext highlighter-rouge">exit</code> command (<code class="language-plaintext highlighter-rouge">e</code>+<code class="language-plaintext highlighter-rouge">x</code>+<code class="language-plaintext highlighter-rouge">i</code>+<code class="language-plaintext highlighter-rouge">t</code>+<kbd>enter</kbd>).</li>
+    </ul>
+  </li>
+  <li>
+    <p>You’re all done. Next time you start the saved putty session, (and
+your private key is loaded in the agent), you will be logged in
+automatically. This applies to all the tools in the putty suite,
+e.g. <code class="language-plaintext highlighter-rouge">pscp</code> and <code class="language-plaintext highlighter-rouge">psftp</code>.</p>
+  </li>
+</ol>
+
+<h3 id="next">Next</h3>
+
+<p>You’re done with this exercise. go back to <a href="./">Topic 1</a></p>
