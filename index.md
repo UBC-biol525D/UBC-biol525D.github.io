@@ -7,8 +7,6 @@ menuPosition: 1
 
 <h1>{{ site.courseName }}</h1>
 
-<img src="{{ site.baseurl }}/style/header.jpg" width="100%" alt="Nitobe Memorial Gardens -- CC BY-NC 2.0 - @kardboard604 https://www.flickr.com/photos/moov4/10157685024/" title="Nitobe Memorial Gardens -- flickr @kardboard604">
-
 ## Description
 The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic. The course will be presented as a series of short lectures and lab exercises over a one week period in October 2021.
 
@@ -54,12 +52,21 @@ To get up to speed on working with a Unix system, take a look at the [unix help]
 9. [Topic 9](./Topic_8/) Signals of adaptation [Kreiner, J]
 10. [Topic 10](./Topic_12/) Data visualization in R [Kreiner, J]
 
-In previous years, there has been a short introduction to phylogenetic analysis included in the workshop. We have not included that topic this year, but the slides and materials are available for those who are interested:
 
 
 ## Extras
 
-1. [Topic 11](./Topic_10/) Phylogenetic analysis
+In previous years, there have been other topics that were included in the workshop as well as brief tutorials on other aspects of bioinformatics. In this section we include the slides and materials for those topics for those who are interested:
+
+[Phylogenetic analysis](./Topic_10/)
+
+
+## Chinook
+
+In this workshop we make use of simulated datasets for all of the tutorials and demonstrations. The simutions model a populations of Chinook Salmon living in the Fraser River in Southern British Columbia. We use a population genetic simulation modelling local adaptation to varying environmental conditions. These simulations are used to generate DNA and RNA sequence data that we use to demonstrate bioinformatic principles and give workshop participants experience using standard tools. The biggest benefit to using simulations is that we can compare bioinformatic estimates to a ground truth, which is not possible when using real data.
+
+The GitHub page for Chinook is here:
+[https://github.com/TBooker/Chinook](https://github.com/TBooker/Chinook)
 
 ## Obtaining all the files on this site
 
