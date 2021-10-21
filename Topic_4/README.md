@@ -25,27 +25,6 @@ Programming Resources
 # Code break questions
 
 
-1) How long are the sequences in /home/biol525d/data/shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.g? what about in /home/biol525d/data/longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz?
-
-> Hint: One approach could be to subset the fastq file to just retain lines with the actually sequence info. Play around with these commands.
-```bash
-cat SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | head #why doesn't this work?
-zcat SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 #what does the A option do?
-#what could you add to this pipe to only keep the sequence length? hint: egrep -v "match1|match2"
-#pipe the final output that is just the read sequence lines to the following awk command. 
-awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" option do?
-```
-2) Given the genome size of 10Mb that we will be working with, what is the expected estimate of coverage/bp in just the forward reads?
-> Hint: to get mean of column two you can try:  `awk '{ total += $2 } END { print total/NR }' ` \
-> Hint:  `wc -l` gives a count of the number of lines \
-> Note: math is kind of annoying in command lind. expr works pretty well though for basic purposes (make sure to leave spaces around operators).
-> you can also do cool things like save the output of commands to a variable using "` `"
-```bash
-readlength=`zcat SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 |  egrep -v "chr|--" |\
- awk -F "" '{print NR "\t" NF}' | awk '{ total += $2 } END { print total/NR }' `
-numreads=`zcat SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 |  egrep -v "chr|--" | wc -l`
-echo "mean coverage =" "$(( ($readlength * $numreads) / 10000000 ))"
-```
 
 ## Tutorial 
 
@@ -54,41 +33,75 @@ Your goal for today is to see how well we can assemble a portion of the Salmon r
 You've already spent some time getting familiar with the data we're working with - Our overall aim is to understand the evolutionary processes that allow salmon populations to persist across a key temperature gradient, and having a high quality reference genome will be indispensible for looking at not just the the frequency of variant nucleotides but their position relative to one another and other features of the genome. 
 
 
-We already used some simple command line tools to look at read length, number of reads, and expected coverage above. However, like most bioinformatics, there are a bunch of tools that have been developled to look at various statistics related to your raw reads and we don't need to reinvent the wheel. We are going to use *fastqc* to get a better sense of the quality of our read data.
-
 ```bash
 mkdir fastqc && cd fastqc
 ```
 
 For our assembly, since we only sequence one individual, we have two files for our short reads (one for forward reads and one for reverse) and one for long reads. We're going to be referring to these files alot so lets first make a short cut path to these files and then run fastqc on each.
 
-## Check the quality of your reads
+## First, lets check out our sequencing data!
+
+We just got back our high coverage illumina paired-end data and long-read pacbio data from the sequencing facility! Let's see how it turned out.
+
+The first thing we might want to check is how long our long-read sequence data is (we'll do this too for short read data but this should be less interesting)
 
 ```bash
-shortreads="/home/biol525d/data/shortreads/"
-longreads="/home/biol525d/data/longreads/"
-
-fastqc ${shortreads}/*fastq.gz ${longreads}/*fastq.gz -o ./ 
-#some programs allow you to input multiple files at once using wild cards. this is convienient. 
-#otherwise we would have had to specify each file individually. heres anotherway we could use wildcards here: 
-#fastqc ${shortreads}/*R?.fastq.gz ${longreads}/*fastq.gz -o ./ )
-
-#summarise into a single report
-multiqc ./
+#lets specify short cuts to this data since we're going to be working with it alot
+shortreads="/mnt/data/fastq/shortreads/"
+longreads="/mnt/data/fastq/longreads/"
 ```
 
-Download the output of multiqc run as follows:
+> Hint: One approach could be to subset the fastq file to just retain lines with the actually sequence info. Play around with these commands, first with the short read data.
+
 ```bash
-scp <username@ip.address>:~/Topic_3n4/fastqc/multiqc_report.html <path on your computer where you want the file>
+
+cat $shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | head #why doesn't this work?
+zcat $shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 #what does the A option do?
+#what could you add to this pipe to only keep the sequence length? hint: egrep -v "match1|match2"
+#pipe the final output that is just the read sequence lines to the following awk command. 
+awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" option do?
+#save the output to shortread_lengths.txt
 ```
 
-Since we are using simulated data, our data does not have adapters. But taking a look at the signatures of our highly quality reads can help you get a sense of what very high quality data might look like, and additionally,by comparing to your real data, how sequencing technology influences data quality.  
+What read lengths did you get? Was there any variation?
+Now take a similar approach for the long read data ($longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz) and save the output to longread_lengths.txt
 
-Discussion Quesiton: our data effectively has had adapters removed from reads and already been trimmed for low quality BPs near the end of reads. what might be the cons of read trimming? 
+You can get the mean of columns using awk pretty easily `awk '{ total += $2 } END { print total/NR }' longread_lengths.txt` #this gets the mean of column two. 
 
-## Let's go ahead with genome assembly
+The mean read length of our long-read data is informative but you might have noticed alot of variation across reads, and be curious what the distribution of read length looks like. While R is a great place for quick and efficient statistical analyses, bash can also handle doing some intuitve stats. For example, we can get the quartiles of read length pretty easily with basic bash.
 
-Genome assembly can take a long time. Because our course is short we're only going to actually generate an assembly from the program that runs fastest, but we're going to provide the commands for several programs that we've already run, and together we will compare their outputs. 
+> Hint:  `wc -l` gives a count of the number of lines \
+> Note: Math is doable in command lind but can be a bit annoying. Bc (basic calculator) works pretty well though for basic purposes.
+> Note: Variables are one of the most powerful parts about command line. In addition to saving paths as variables, you can also do cool things like save the output of commands to a variable using "` `"
+
+```bash
+LINECOUNT=`wc -l longread_lengths.txt | cut -d" " -f1`
+FIRSTQUART=`echo "$LINECOUNT * 1 / 4" | bc` 
+THIRDQUART=`echo "$LINECOUNT * 3 / 4" | bc` 
+cut -f2 longread_lengths.txt | sort -n | sed -n "$FIRSTQUART p" 
+cut -f2 longread_lengths.txt | sort -n | sed -n "$THIRDQUART p" 
+```
+
+Nice. While theres some variance in our long-read lengths, its nice to see its actually quite consistent. 
+
+Another thing we might want to know is how much coverage our reads give us for each locus in our genome. We are working with a genome size of 10Mb. What is the expected estimate of coverage/bp in just the forward reads?
+
+
+```bash
+READLENGTH=`cat shortread_lengths.txt | awk '{ total += $2 } END { print total/NR }' `
+NUMREADS=`wc -l shortread_lengths.txt | cut -d" " -f1`
+echo "mean coverage =" "$(( ($READLENGTH * $NUMREADS) / 10000000 ))"
+echo "mean coverage =" "$(( ($READLENGTH * $NUMREADS) / 10000000 ))"
+MEANCOV=`echo "$READLENGTH * $NUMREADS / 10000000" | bc`
+echo "mean coverage = $MEANCOV" 
+
+```
+
+Our short read coverage is only 40x. Whats our long read coverage? This is good information to have before we start trying to assemble our genome.
+
+## Genome Assembly
+
+Genome assembly can take a long time. Because our course is short, we won't have time to run these commands in tutorial, but you could try them out outside of class and see if you're patient enough to let them finish. During tutorial, we'll focus on comparing the output of these different assembly programs.
 
 
 #### Short read assembly: SPADES - *don't run*
@@ -150,13 +163,13 @@ Now we have four assemblies, 1 short read (spades), 2 hybrid (spades, haslr), an
 
 ## Assess quality of assemblies
 
-Lets compare assemblies.
+Lets compare assemblies. Copy these out of the 
 
 ```bash
-mv spades/scaffolds.fasta spades.fasta
-mv hybridspades/scaffolds.fasta spades_hybrid.fasta
-mv hybridhaslr/asm_contigs_k49_a3_lr40x_b500_s3_sim0.85/asm.final.fa haslr_hybrid.fasta
-mv flye/assembly.fasta flye_longread.fasta
+cp /mnt/data/fasta/spades_shortreadonly.fasta ./
+cp /mnt/data/fasta/spades_hybrid.fasta ./
+cp /mnt/data/fasta/haslr_hybrid.fasta ./
+cp /mnt/data/fasta/flye_longread.fasta ./
 ```
 
 bbmap is command line alignment program that has a collection of nice scripts for library and sequence quality control. We're going to use its stats.sh script to get at some basic stats related to the number and length of sequences in our assembly.
@@ -167,24 +180,27 @@ This becomes more intutitive when you look at the lower table outputted by bbmap
 
 We have several assemblies we want to generate stats for, so lets automate this using a for loop:
 ```bash
-for i in haslr flye haslr hybridspades spades 
+mkdir assembly_stats
+for i in spades_shortreadonly spades_hybrid haslr_hybrid flye_longread
 do
 
-~/software/bbmap/stats.sh in=${i}.fa > ${i}.stats
+/mnt/software/bbmap/stats.sh in=${i}.fasta > assembly_stats/${i}.stats
 
 done
 ```
 
-Question: which genome has the best *contiguity* via N50/L50 metrics? What might be an issue with relying on only contiguity? 
+Question: which genome has the best *contiguity* via N50/L50 metrics? Whats an issue with relying just on contiguity?
 
-Having a reference genome of a closely related species can really help asses how well we've done with assembly, outside of just contiguity. In our case we have one better - the high quality reference genome from which our reads were simulated. Lets test out quast - a program for getting detail stats when comparing to a closely related high quality reference.
+Having a reference genome of a closely related species can really help asses how *accurate* our assemblies are. In our case we have one better - the high quality reference genome from which our reads were simulated. Lets test out Quast - a program for getting detail stats when comparing to a closely related high quality reference.
 
 Importantly, this allows us to get not just the number and length of our contigs/scaffolds, but also _completeness_ (possible when you know the target genome size) and _correctness_.
 
 ```bash
 #it would be nice to know how well our assemblies have captured known genes. Lets extract this information from the true reference genome's gff file and format it as quast expects 
 #quast expects the column order as follows: chromosome, gene id, end, start
-awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' ../data/SalmonAnnotations_forIGV.gff | sed 's/ID=//g' > SalmonReference.genes
+awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' /mnt/data/gff/SalmonAnnotations_forIGV.gff | sed 's/ID=//g' > SalmonReference.genes
+
+#what does $1 and $5 represent in the command above? What about a[1]?
 
 #run quast on all 4 assemblies at once
 mkdir quast
