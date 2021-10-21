@@ -1,5 +1,5 @@
 ---
-title: "Topic 3n4: Genome Assembly"
+title: "Topic 4: Genome Assembly"
 permalink: /Topic_4/
 topickey: 4
 topictitle: "Genome Assembly"
@@ -21,8 +21,6 @@ Programming Resources
 * [Spades Manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md)
 * Spades Paper. A New Genome Assembly Algorithm and Its Applications to Single-Cell Sequencing [Paper](https://cab.spbu.ru/files/release3.15.3/manual.html).
 
-
-# Topic 3 Genome Assembly
 
 # Code break questions
 
