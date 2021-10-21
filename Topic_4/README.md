@@ -90,8 +90,6 @@ Another thing we might want to know is how much coverage our reads give us for e
 ```bash
 READLENGTH=`cat shortread_lengths.txt | awk '{ total += $2 } END { print total/NR }' `
 NUMREADS=`wc -l shortread_lengths.txt | cut -d" " -f1`
-echo "mean coverage =" "$(( ($READLENGTH * $NUMREADS) / 10000000 ))"
-echo "mean coverage =" "$(( ($READLENGTH * $NUMREADS) / 10000000 ))"
 MEANCOV=`echo "$READLENGTH * $NUMREADS / 10000000" | bc`
 echo "mean coverage = $MEANCOV" 
 
