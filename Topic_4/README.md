@@ -204,12 +204,12 @@ awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' /mnt/data/gff/SalmonA
 
 #run quast on all 4 assemblies at once
 mkdir quast
-/ohta1/julia.kreiner/software/quast/quast.py flye.fa haslr.fa hybridspades.fa spades.fa \
-	-r SalmonReference.fasta \
+/mnt/software/quast-5.0.2/quast.py flye_longread.fasta haslr_hybrid.fasta spades_hybrid.fasta spades_shortreadonly.fasta \
+	-r /mnt/data/fasta/SalmonReference.fasta \
 	-g SalmonReference.genes \
 	-o quast
 
-scp -r <username@ip.address>:~/Topic_3n4/quast/ ./
+scp -r <username@ip.address>:/home/<usr>/assembly/quast/ ./
 ```
 
 Open the report.html results file in your browser and explore the outcome of our assembly efforts. Make sure to eventually click the "View in icarus contig browser".
