@@ -20,22 +20,30 @@ mkdir db
 mkdir vcf
 ```
 We also have a few programs we're going to use. Since we will be calling them repeatedly, its helpful to save their full path to a variable. This will only last for the current session so if you log out you'll have to set them up again.
+
 ```bash
-gatk=/mnt/bin/gatk.jar
+gatk=/mnt/software/gatk-package-4.0.1.2-local.jar
 picard=/mnt/bin/picard.jar
 ```
 
-There are 10 different samples and we're going to have to run multiple steps on each. To make this easier, we make a list of all the sample names.
+There are 4 different samples (2 individuals [i1, i2] each from 2 populations [p1,p2]), and for the purposes of this tutorial, we've also produced alignments resulting from different coverages of each sample (~8x and ~20x). 
+
+We're going to have to run multiple steps on each sample, so to make this easier, we make a list of all the sample names.
+
+In case you didn't finish last tutorial, and since we have some extra bams you didn't generate, copy the \*bam files and their index (\*.bai) to your ~/bam directory (`cp /mnt/data/bams/*bam /mnt/data/bams/*bai ~/bam/).
+
 ```bash
-ls bam/ | grep .sort.bam$ | sed s/.sort.bam//g > samplelist.txt
+ls bam/ | grep .rg.bam$ | sed s/.rg.bam//g | tr "." "\t" > samplelist.txt
 ```
 Lets break this down. 
 
 **ls bam** <= List all the files in the _bam_ directory
 
-**\| grep .sort.bam$** <= Only keep the file names ending in _.sort.bam_.
+**\| grep .rg.bam$** <= Only keep the file names ending in _.sort.bam_.
 
-**\| sed s/.sort.bam//g** <= Replace the string _.sort.bam_ with "", effectively leaving only the sample name.
+**\| sed s/.rg.bam//g** <= Replace the string _.sort.bam_ with "", effectively leaving only the sample name.
+
+**\| tr "." "\t"** <= Replace all "." with "\t", so that we can parse by coverage (column 4)
 
 **> samplelist.txt** <= Save the result in a file named _samplelist.txt_
 
