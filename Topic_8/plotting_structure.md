@@ -301,7 +301,9 @@ ggarrange(pc_1v2, pc_1v2_pruned,nrow=2, common.legend=T)
 ```
 ![](pca_4.jpeg)
 
-What does comparing these pruned and unpruned plots tell us?
+What happens when we infer patterns of structure without LD pruning?
+
+**What conclusions would you draw about patterns of population structure in our data after today?**
 
 
 Plotting challenge 2
