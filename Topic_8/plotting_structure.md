@@ -1,6 +1,6 @@
 ---
 title: "Topic 8: Plotting structure in R"
-topictitle: Plotting structure in 
+topictitle: Plotting structure in R 
 topickey: 8.2
 datafiles: [1,2,3,4,5,6,7,8]
 
