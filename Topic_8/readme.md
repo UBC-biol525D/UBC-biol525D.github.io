@@ -24,22 +24,22 @@ We're going to use _bcftools_ a very fast program for processing and filtering V
 * At least 2 copies of the alternate allele
 
 ### NOTE:
-* We are going to be doing some data hungry analyses, so will be working with a much larger VCF then we made last tutorial. Copy it to from /mnt/data/vcf/Chinook_GWAS.vcf.gz to ~/vcf
+* We are going to be doing some data hungry analyses, so will be working with a much larger VCF then we made last tutorial. Copy it to from `/mnt/data/vcf/Chinook_GWAS.vcf.gz` to `~/vcf`
 
 
 ```bash
-
-bcftools  view \
-	-c 2 \
-	-i 'INFO/AN >= 160 && QUAL > 30' \
-	-m 2 \
-	-M 2 \
-	-v snps \
-	-O z \
-	Chinook_GWAS.vcf.gz > Chinook_GWAS_filtered.vcf.gz
+cd ~/vcf
+bcftools view \
+    -c 2 \
+    -i 'INFO/AN >= 160 && QUAL > 30' \
+    -m 2 \
+    -M 2 \
+    -v snps \
+    -O z \
+    Chinook_GWAS.vcf.gz > Chinook_GWAS_filtered.vcf.gz
 
 #Lets index the vcf file for future use
-tabix vcf/Chinook_GWAS.filtered.vcf.gz
+tabix Chinook_GWAS_filtered.vcf.gz
 ```
 
 ##Coding challenge
@@ -143,7 +143,7 @@ $plink \
 	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
 	--extract vcf/Chinook_GWAS_filtered_fixedsamps_numericChr.prune.in \
 	--make-bed \
-	--out analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned \
+	--out vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned \
 	--allow-extra-chr
 	
 #run admixture
@@ -171,8 +171,8 @@ The best K value for Admixture is typically the K value with the lowest cross-va
 
 ```
 cat analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned*out | grep CV
-CV error (K=10): 0.79357
 CV error (K=1): 0.49626
+CV error (K=10): 0.79357
 CV error (K=2): 0.51421
 CV error (K=3): 0.54330
 CV error (K=4): 0.57121
@@ -181,6 +181,8 @@ This shows that the lowest CV error is with K=1, but actually K=2 is a close sec
 
 ```bash
 paste <(cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam) analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.Q
+
+#what was that <( ) notation? this is another cool bash trick called *subprocessing*. Instead of making an intermediate file of sample names to join with our K values, we can use subprocessing to take the output of the cut command and pass that to paste. 
 
 #Chinook.p1.i0	0.999990 0.000010
 #Chinook.p1.i1	0.999990 0.000010
