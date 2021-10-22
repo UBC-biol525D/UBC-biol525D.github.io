@@ -165,7 +165,7 @@ Try to find an indel. Do you see any sites with more than 1 alternate alleles?
 
 Pick a site and figure out, whats the minor allele frequency? How many samples were genotyped? 
 
-We've now called variants for a single chromosome, but there are other chromosomes. In this case there are only three, but for many genomes there will be thousands of contigs. Your next challenge is to write a loop to create the genomicsdb file and then VCF for each chromosome. 
+We've now called variants for a single chromosome, but there are other chromosomes. In this case there are only three, but for many genomes there will be thousands of contigs. Your next challenge is to write a loop to create the genomicsdb file and then VCF for each chromosome (...check out gatk's genomicsdb documentation... is there another way to create a db for multiple chromosomes more efficiently?) 
 
 Once you have three VCF files, one for each chromosome, you can concatenate them together to make a single VCF file. We're going to use _bcftools_ which is a very fast program for manipulating vcfs as well as bcfs (the binary version of a vcf).
 
