@@ -48,7 +48,7 @@ for num in {1..10}
 ```
 What do these commands do? Can you use commands like this to find all the kmers in the sequence? 
 
-Think about how you could encorporate some basic algebra and variable assignment to solve this problem.
+Think about how you could incorporate some basic algebra and variable assignment (k=`<some command here>`) to solve this problem.
 
 ```bash
 #one way to do math in bash is by piping to bc (basic calculator).
@@ -113,8 +113,6 @@ Remember that you can get column means pretty quickly with awk: `awk '{ total +=
 The mean read length of our long-read data is informative but you might have noticed alot of variation across reads, and be curious what the distribution of read length looks like. While R is a great place for quick and efficient statistical analyses, bash can also handle doing some intuitve stats, which will save us the headache of importing data into R. \
 
 For example, we can get the quartiles of read length pretty easily with basic bash.
-
-> Note:  We've used variables alot and seen how powerful a part of programming they are. Don't forget in addition to their use as shortcuts (e.g. for paths), they can also be set to the output of a set of commands using the notation "` `"
 
 ```bash
 LINECOUNT=`wc -l longread_lengths.txt | cut -d" " -f1`
