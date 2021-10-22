@@ -18,22 +18,24 @@ mkdir log
 mkdir gvcf
 mkdir db
 mkdir vcf
+mkdir ref
 ```
 We also have a few programs we're going to use. Since we will be calling them repeatedly, its helpful to save their full path to a variable. This will only last for the current session so if you log out you'll have to set them up again.
 
 ```bash
-gatk=/mnt/software/gatk-package-4.0.1.2-local.jar
-picard=/mnt/bin/picard.jar
+gatk=/mnt/software/gatk-4.2.2.0/gatk-package-4.2.2.0-local.jar
+picard=/mnt/software/picard.jar
 ```
 
-There are 4 different samples (2 individuals [i1, i2] each from 2 populations [p1,p2]), and for the purposes of this tutorial, we've also produced alignments resulting from different coverages of each sample (~8x and ~20x). 
+There are 4 different samples (2 individuals [i1, i2] each from 2 populations [p1,p10]), and for the purposes of this tutorial, we've also produced alignments resulting from different coverages of each sample (~8x and ~20x). 
 
 We're going to have to run multiple steps on each sample, so to make this easier, we make a list of all the sample names.
 
-In case you didn't finish last tutorial, and since we have some extra bams you didn't generate, copy the \*bam files and their index (\*.bai) to your ~/bam directory (`cp /mnt/data/bams/*bam /mnt/data/bams/*bai ~/bam/).
+In case you didn't finish last tutorial, and since we have some extra bams you didn't generate, copy the \*bam files and their index (\*.bai) to your ~/bam directory (`cp /mnt/data/bams/*r400000.rg.bam /mnt/data/bams/*r400000.rg.bam.bai ~/bam/`).
 
 ```bash
-ls bam/ | grep .rg.bam$ | sed s/.rg.bam//g | tr "." "\t" > samplelist.txt
+ls bam/ | grep .rg.bam$ | sed s/.rg.bam//g  > samplelist.txt
+
 ```
 Lets break this down. 
 
@@ -43,18 +45,16 @@ Lets break this down.
 
 **\| sed s/.rg.bam//g** <= Replace the string _.sort.bam_ with "", effectively leaving only the sample name.
 
-**\| tr "." "\t"** <= Replace all "." with "\t", so that we can parse by coverage (column 4)
-
 **> samplelist.txt** <= Save the result in a file named _samplelist.txt_
 
 
-The first step is to make duplicate reads using picardtools. If you were using GBS data you wouldn't want to do this step.
+The first step is to mark duplicate reads using picardtools - this is important because we wouldn't expect to find reads that are exactly identical (the same sequence, with the same start and end positions) unless it resulted from PCR amplification. We don't want to infer genome-wide variation with removing this pseudoreplicated data. If you were using GBS data you wouldn't want to do this step.
 
 ```bash
 
 while read name; do
   java -jar $picard MarkDuplicates \
-  I=bam/$name.sort.bam O=bam/$name.sort.dedup.bam \
+  I=bam/$name.rg.bam O=bam/$name.sort.dedup.bam \
   M=log/$name.duplicateinfo.txt
   samtools index bam/$name.sort.dedup.bam
 done < samplelist.txt
@@ -64,13 +64,18 @@ done < samplelist.txt
 Now in the bam files duplicate reads are flagged. Take a look in the log directory, which sample has the highest number of duplicate reads?
 
 
-To use GATK, we have to index our reference genome. An index is a way to allow rapid access to a very large file. For example, it can tell the program that the third chromosome starts at bit 100000, so when the program wants to access that chromosome it can jump directly there rather than scan the whole file. Some index files are human readable (like .fai files) while others are not.
-```bash
-java -jar $picard CreateSequenceDictionary R= ref/HanXRQr1.0-20151230.1mb.fa O= ref/HanXRQr1.0-20151230.1mb.dict
+To use GATK, we have to index our reference genome. An index is a way to allow rapid access to a very large file. For example, it can tell the program that the third chromosome starts at bit 100000, so when the program wants to access that chromosome it can jump directly there rather than scan the whole file (we've already done this for our bam files --> .bai) . Some index files are human readable (like .fai files) while others are not.
 
-samtools faidx ref/HanXRQr1.0-20151230.1mb.fa
+
+```bash
+cp /mnt/data/fasta/SalmonReference.fasta ~/ref/
+java -jar $picard CreateSequenceDictionary \
+  R=~/ref/SalmonReference.fasta \
+  O=~/ref/SalmonReference.dict
+
+samtools faidx ~/ref/SalmonReference.fasta
 ```
-Take a look at the ref/HanXRQr1.0-20151230.1mb.fa.fai. How many chromosomes are there and how long is each? 
+Take a look at the ref/SalmonReference.fasta.fai. How many chromosomes are there and how long is each? 
 
 
 
@@ -78,20 +83,20 @@ The next step is to use GATK to create a GVCF file for each sample. This file su
 
 This step can take a few minutes so lets first test it with a single sample to make sure it works.
 ```
-for name in `cat ~/samplelist.txt | head -n 1` 
+for name in `cat ~/samplelist.txt | head -n +1 ` 
 do 
-java -Xmx15g -jar $gatk HaplotypeCaller \
--R ref/HanXRQr1.0-20151230.1mb.fa \
+java -Xmx10g -jar $gatk HaplotypeCaller \
+-R ref/SalmonReference.fasta \
+--native-pair-hmm-threads 10 \
 -I bam/$name.sort.dedup.bam \
---native-pair-hmm-threads 3 \
 -ERC GVCF \
--O gvcf/$name.sort.dedup.g.vcf 
+-O gvcf/$name.sort.dedup.g.vcf
 done
+
 ```
  Check your gvcf file to make sure it has a .idx index file. If the haplotypecaller crashes, it will produce a truncated gvcf file that will eventually crash the genotypegvcf step. Note that if you give genotypegvcf a truncated file without a idx file, it will produce an idx file itself, but it still won't work.
 
 We would run the HaplotypeCaller on the rest of the samples, but that will take too much time, so once you're satisfied that your script works, you can copy the rest of the gvcf files (+ idx files) from /mnt/data/gvcf into ~/gvcf.
-
 
 
 The next step is to import our gvcf files into a genomicsDB file. This is a compressed database representation of all the read data in our samples. It has two important features to remember:
@@ -132,13 +137,14 @@ Lets break down this loop to understand how its working
 **done > ~/biol525d.sample_map** <= Take all the output and put it into a file name _biol525d.sample_map_.
 
 
-Next we call GenomicsDBImport to actually create the database.
+Next we call GenomicsDBImport to actually create the database. This command requires a list of scaffolds so we'll make that too.
 ```bash
-java -Xmx10g -Xms10g -jar $gatk \
+cut -f1 ref/SalmonReference.fasta.fai > scaffold.list
+java -Xmx10g -jar $gatk \
        GenomicsDBImport \
-       --genomicsdb-workspace-path db/HanXRQChr01 \
+       --genomicsdb-workspace-path db/Chinook \
        --batch-size 50 \
-       -L HanXRQChr01 \
+       -L  scaffold.list \
        --sample-name-map ~/biol525d.sample_map \
        --reader-threads 3
 ```
@@ -146,14 +152,14 @@ java -Xmx10g -Xms10g -jar $gatk \
 With the genomicsDB created, we're finally ready to actually call variants and output a vcf
 ```bash
 java -Xmx10g -jar $gatk GenotypeGVCFs \
-   -R ref/HanXRQr1.0-20151230.1mb.fa \
-   -V gendb://db/HanXRQChr01 \
-   -O vcf/HanXRQChr01.vcf.gz
+   -R ref/SalmonReference.fasta \
+   -V gendb://db/Chinook \
+   -O vcf/Chinook_p1p10_i1i2.vcf.gz
 ```
 Now we can actually look at the VCF file
 
 ```bash
-less -S vcf/HanXRQChr01.vcf.gz
+less -S vcf/Chinook_p1p10_i1i2.vcf.gz
 ```
 
 Try to find an indel. Do you see any sites with more than 1 alternate alleles? 
@@ -178,10 +184,18 @@ You've done it! We have a VCF. Tomorrow we will fliter this file and use it for 
 
 ### Coding challenge
 * Use command line tools to extract a list of all the samples in your VCF file, from the vcf file itself. They should be one name per line.
-* Take the original vcf file produced and create a vcf of only high biallelic SNPs for ANN samples. 
+* Take the original vcf file produced and create a vcf of only biallelic SNPs for P1 samples. 
 * Use bcftools to filter your vcf file and select for sites with alternate allele frequencies > 0.01, including multi-allelic sites. 
 
 ### Daily assignments
 1. Another program that is useful for filtering and formatting vcf files is [vcftools](https://vcftools.github.io/index.html). It is installed on the server. It can also do basic pop gen stats. Use it to calculate Fst between samples with ARG and ANN names.
 2. You're trying to create a very stringent set of SNPs. Based on the site information GATK produces, what filters would you use? Include the actual GATK abbreviations.
 3. What is strand bias and why would you filter based on it?
+
+
+
+sudo apt-get install openjdk-8-jdk
+sudo update-java-alternatives -s java-1.8.0-openjdk-amd64
+
+sudo wget https://github.com/broadinstitute/gatk/releases/download/4.2.2.0/gatk-4.2.2.0.zip
+sudo unzip gatk-4.2.2.0.zip
