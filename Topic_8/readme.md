@@ -61,7 +61,7 @@ zcat vcf/Chinook_GWAS_filtered.vcf.gz | sed 's/-e Chinook/Chinook/g' | bgzip > v
 plink=/mnt/software/plink
 $plink --make-bed \
 	--vcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
-	--out analysis/Chinook_GWAS_filtered_fixedsamps \
+	--out vcf/Chinook_GWAS_filtered_fixedsamps \
 	--set-missing-var-ids @:# \
 	--double-id \
 	--allow-extra-chr 
@@ -74,26 +74,26 @@ To prune for LD, we'll ask plink to slide across the genome (10 snps at a time),
 
 ```bash
 $plink \
-	--bfile analysis/Chinook_GWAS_filtered_fixedsamps \
+	--bfile vcf/Chinook_GWAS_filtered_fixedsamps \
 	--indep-pairwise 100 10 0.5 \
-	--out analysis/Chinook_GWAS_filtered_fixedsamps \
+	--out vcf/Chinook_GWAS_filtered_fixedsamps \
 	--make-founders \
 	--allow-extra-chr 
 
 #this produces two files, .in (to include) and .out (to exclude) 
 
 $plink \
---bfile analysis/Chinook_GWAS_filtered_fixedsamps \
---extract analysis/Chinook_GWAS_filtered_fixedsamps.prune.in \
+--bfile vcf/Chinook_GWAS_filtered_fixedsamps \
+--extract vcf/Chinook_GWAS_filtered_fixedsamps.prune.in \
 --make-bed \
---out analysis/Chinook_GWAS_filtered_fixedsamps_LDpruned \
+--out vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned \
 --allow-extra-chr 
 
 #this actually extracts that snps that remain after LD pruning
 
 ```bash 
 admixture=/mnt/software/dist/admixture_linux-1.3.0/admixture
-$admixture analysis/Chinook_GWAS_filtered_fixedsamps_LDpruned.bed 2
+$admixture vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned.bed 2
 ```
 Uh oh that doesn't work, it produces this error message.
 ```bash
@@ -125,29 +125,29 @@ zcat vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz |\
 #make new bed from vcf
 $plink --make-bed \
 	--vcf vcf/Chinook_GWAS_filtered_fixedsamps_numericChr.vcf.gz \
-	--out analysis/Chinook_GWAS_filtered_fixedsamps_numericChr \
+	--out vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
 	--set-missing-var-ids @:# \
 	--double-id \
 	--allow-extra-chr
 	
 #redo LD analysis
 $plink \
-	--bfile analysis/Chinook_GWAS_filtered_fixedsamps_numericChr \
-	--out analysis/Chinook_GWAS_filtered_fixedsamps_numericChr \
+	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
+	--out vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
 	--allow-extra-chr \
 	--make-founders \
 	--indep-pairwise 100 10 0.5 
 	
 #make new bed with snps in low LD
 $plink \
-	--bfile analysis/Chinook_GWAS_filtered_fixedsamps_numericChr \
-	--extract analysis/Chinook_GWAS_filtered_fixedsamps_numericChr.prune.in \
+	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
+	--extract vcf/Chinook_GWAS_filtered_fixedsamps_numericChr.prune.in \
 	--make-bed \
 	--out analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned \
 	--allow-extra-chr
 	
 #run admixture
-$admixture --cv analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed 2 |\
+$admixture --cv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed 2 |\
 tee analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.out; \
 
 #NOTE: "tee" takes the output of a command and saves it to a file, while 
@@ -159,7 +159,7 @@ This works! With 100 samples and ~31000 SNPs across two chromosomes it finishes 
 ```bash 
 for K in 1 3 4 10; \
 do 
-$admixture --cv analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed $K |\
+$admixture --cv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed $K |\
 tee analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.${K}.out; \
 done
 
@@ -180,7 +180,7 @@ CV error (K=4): 0.57121
 This shows that the lowest CV error is with K=1, but actually K=2 is a close second. To see how this lines up lets look at the .Q file, which shows group assignment for each sample. The Q file doesn't include sample names so we can put those together using "paste. One way to asses if there is meaningful population structure is to check whether each population grouping has individuals of major ancestry.
 
 ```bash
-paste <(cut -d" " -f1 analysis/Chinook_GWAS_filtered_fixedsamps.fam) analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.Q
+paste <(cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam) analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.Q
 
 #Chinook.p1.i0	0.999990 0.000010
 #Chinook.p1.i1	0.999990 0.000010
@@ -204,7 +204,7 @@ We can do this with just one line of code in plink.
 
 ```bash
 $plink \
-	--bfile analysis/Chinook_GWAS_filtered_fixedsamps_numericChr \
+	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
 	--pca \
 	--allow-extra-chr \
 	--out analysis/Chinook_GWAS_filtered_fixedsamps_numericChr
@@ -215,7 +215,7 @@ This was on our full dataset, but we learned above it might be a good idea to pr
 ```bash
 #we already have an LD pruned bed, so subbing in that input file
 $plink \
-	--bfile analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned \
+	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned \
 	--pca \
 	--allow-extra-chr \
 	--out analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned
