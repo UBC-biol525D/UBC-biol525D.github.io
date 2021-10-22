@@ -46,7 +46,17 @@ for num in {1..10}
         echo $num >> file.txt
     done
 ```
-What do these commands do? Can you use commands like this to find all the kmers in the sequence?
+What do these commands do? Can you use commands like this to find all the kmers in the sequence? 
+
+Think about how you could encorporate some basic algebra and variable assignment to solve this problem.
+
+```bash
+#one way to do math in bash is by piping to bc (basic calculator).
+echo "1+1" | bc
+#another way to do arithmitic in bash is through the $(( )) syntax which tells shell to evaluate its contents
+echo $((1+1))
+
+```
 
 3. Sort them and keep the unique kmers
 
@@ -66,22 +76,28 @@ For our assembly, since we only sequence one individual, we have two files for o
 
 We just got back our high coverage illumina paired-end data and long-read pacbio data from the sequencing facility! Let's see how it turned out.
 
-The first thing we might want to check is how long our long-read sequence data is (we'll do this too for short read data but this should be less interesting)
+The first thing we might want to check is how long the reads are in our different sequence data sets are.
 
+First lets specify variables for the paths to our data since we'll be working with them alot
 ```bash
-#lets specify short cuts to this data since we're going to be working with it alot
 shortreads="/mnt/data/fastq/shortreads/"
 longreads="/mnt/data/fastq/longreads/"
 ```
 
-> Hint: One approach could be to subset the fastq file to just retain lines with the actually sequence info. Play around with these commands, first with the short read data.
+Lets break this down into steps.
 
+1) Subset only lines containing read information from our fastqs
 ```bash
-
 cat $shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | head #why doesn't this work?
 zcat $shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 #what does the A option do?
-#what could you add to this pipe to only keep the sequence length? hint: egrep -v "match1|match2"
-#pipe the final output that is just the read sequence lines to the following awk command. 
+
+#we still have some extra information being printed.
+#what could you add to this pipe to only keep the sequence? hint: egrep -v "match1|match2"
+```
+
+2) Get the length of every line (read)
+```bash
+#pipe the output above (every line = seperate read) to the following awk command. 
 awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" option do?
 #save the output to shortread_lengths.txt
 ```
@@ -89,13 +105,16 @@ awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" 
 What read lengths did you get? Was there any variation?
 Now take a similar approach for the long read data ($longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz) and save the output to longread_lengths.txt
 
-You can get the mean of columns using awk pretty easily `awk '{ total += $2 } END { print total/NR }' longread_lengths.txt` #this gets the mean of column two. 
+Remember that you can get column means pretty quickly with awk: `awk '{ total += $2 } END { print total/NR }' longread_lengths.txt` #this gets the mean of column two. 
 
-The mean read length of our long-read data is informative but you might have noticed alot of variation across reads, and be curious what the distribution of read length looks like. While R is a great place for quick and efficient statistical analyses, bash can also handle doing some intuitve stats. For example, we can get the quartiles of read length pretty easily with basic bash.
+**total += $2** <= set the variable "total" equal to the sum of all items in column 2
+**print total/NR** <= once finished (END), print the column sum after dividing by NR (number of rows)
 
-> Hint:  `wc -l` gives a count of the number of lines \
-> Note: Math is doable in command lind but can be a bit annoying. Bc (basic calculator) works pretty well though for basic purposes. \
-> Note: Variables are one of the most powerful parts about command line. In addition to saving paths as variables, you can also do cool things like save the output of commands to a variable using "` `"
+The mean read length of our long-read data is informative but you might have noticed alot of variation across reads, and be curious what the distribution of read length looks like. While R is a great place for quick and efficient statistical analyses, bash can also handle doing some intuitve stats, which will save us the headache of importing data into R. \
+
+For example, we can get the quartiles of read length pretty easily with basic bash.
+
+> Note:  We've used variables alot and seen how powerful a part of programming they are. Don't forget in addition to their use as shortcuts (e.g. for paths), they can also be set to the output of a set of commands using the notation "` `"
 
 ```bash
 LINECOUNT=`wc -l longread_lengths.txt | cut -d" " -f1`
@@ -104,6 +123,10 @@ THIRDQUART=`echo "$LINECOUNT * 3 / 4" | bc`
 cut -f2 longread_lengths.txt | sort -n | sed -n "$FIRSTQUART p" 
 cut -f2 longread_lengths.txt | sort -n | sed -n "$THIRDQUART p" 
 ```
+**wc -l** <= number of lines
+**cut -d" " -f1** <= keeps only the first column (based on a space delimeter)
+**sed -n "N p"** <= prints (p) the line at value N
+
 
 Nice. While theres some variance in our long-read lengths, its nice to see its actually quite consistent. 
 
@@ -118,7 +141,7 @@ echo "mean coverage = $MEANCOV"
 
 ```
 
-Our short read coverage is only 40x. Whats our long read coverage? This is good information to have before we start trying to assemble our genome.
+Our short read coverage is 40x. Whats our long read coverage? This is good information to have before we start trying to assemble our genome.
 
 ## Genome Assembly
 
@@ -131,9 +154,9 @@ Genome assembly can take a long time. Because our course is short, we won't have
 #mkdir spades
 #/ohta1/julia.kreiner/software/SPAdes-3.
 #15.3-Linux/bin/spades.py \
-	--pe1-1 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz \
-	--pe1-2 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz \
-	-o ./spades/
+#	--pe1-1 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz \
+#	--pe1-2 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz \
+#	-o ./spades/
 ````
 
 
@@ -141,27 +164,27 @@ Genome assembly can take a long time. Because our course is short, we won't have
 #haslr takes ~15 minutes
 ```bash
 #make new dir
-mkdir hybridspades
+#mkdir hybridspades
 #run
 #/ohta1/julia.kreiner/software/SPAdes-3.15.3-Linux/bin/spades.py \
-	--pe1-1 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz \
-	--pe1-2 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz \
-	--pacbio ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz \
-	-t 20 \
-	-o /hybridspades/ 
+#	--pe1-1 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz \
+#	--pe1-2 ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz \
+#	--pacbio ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz \
+#	-t 20 \
+#	-o /hybridspades/ 
 
 #mkdir hybridhaslr
 #install
 #conda install -c bioconda haslr
 #run
 #haslr.py \
-	-t 20 \
-	-s ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz \
-	-l ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz \
-	-x pacbio \
-	-g 10m \
-	-o hybridhaslr \
-	--cov-lr 40 #takes 15 minutes
+#	-t 20 \
+#	-s ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz ${shortreads}/SalmonSim.Stabilising.p1.1.6400000_R2.fastq.gz \
+#	-l ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz \
+#	-x pacbio \
+#	-g 10m \
+#	-o hybridhaslr \
+#	--cov-lr 40 #takes 15 minutes
 #
 ```
 
@@ -173,11 +196,11 @@ mkdir hybridspades
 #conda install flye
 
 #run flye assuming lower quality pacbio reads
-flye \
-	--pacbio-raw ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz \
-	--threads 20 \
-	-o flye/ 
-	--genome-size 10m
+#flye \
+#	--pacbio-raw ${longreads}/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz \
+#	--threads 20 \
+#	-o flye/ 
+#	--genome-size 10m
 ```
 
 Now we have four assemblies, 1 short read (spades), 2 hybrid (spades, haslr), and one long-read (flye).
@@ -253,6 +276,7 @@ Making new folders `mkdir` \
 Renaming files `mv` and moving them  `mv file path/new_file_name` \
 Counting `wc -l` \
 Find and replace `sed 's/find/replace/g'` \
+Printing a particuar row `sed -n "10p" SalmonReference.genes \
 Column means with `awk '{ total += $2 } END { print total/NR }'` \
 Assigning variables `shortreads="/home/biol525d/data/shortreads/"` and calling them `echo ${shortreads}` \
 
