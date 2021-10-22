@@ -151,12 +151,11 @@ Programs like `man` and `less` show an on-screen navigation system:
 
 ## 2 Interface: STDIO
 
-There are three data streams that programs have access to in UNIX like systems - and remember, everything is a file!
+There are three data streams that programs have access to in UNIX like systems. Remember, everything is a file, so we can work with each element as we see fit.
 
 ![](pics/STDIN_diagram.png){: width="100%"}
 
-
-You can manage the flow and access each of the streams using certain characters.
+You can manage the flow and access each of the streams using certain commands.
 
 ### STDOUT
 Many programs will write their output directly to a file that you have specified, but many will print the results directly to the screen. The results of a program that did not run with errors will typically be sent to STDOUT. As you may imagine, being able to save the output of a program or process is very important, so we need to be able to direct STDOUT to a file.
@@ -190,7 +189,8 @@ echo "Lisa Needs Braces" > Braces.txt
 ```
 
 In each of the above cases, we saved STDOUT to a file. If it worked, you should have 6 files in your directory now, one for each of the redirects we just used.
-________________
+____________________
+
 ### STDERR
 
 STDERR is another stream that is often used to print program logs and error messages to screen. For example, let's run a program incorrectly and see what happens.
@@ -232,18 +232,18 @@ cat letters_log.txt
 
 This time, we saved the error message in a file using `2>`. The `2>` tells UNIX to send stream #2 (a.k.a. STDERR) to a the file that we specified.
 
-FYI, stream #1 is actually STDIN, Unix assumes STDOUT when redirecting by default, so if you want to work with STDERR you need to be specific.
+FYI, stream #1 is actually STDOUT. You could save STDOUT by writing `1>`, and there are times when you need to  be specific. However, Unix assumes STDOUT when redirecting by default, so when you're starting out you probably won't need to specify that.
 
 ___________________
 
 
 ### Pipes
 
-One of the major advantages of working with the Unix command line is the control over the flow of STDIN/STDOUT. Taking the output of one program and feeding to another is very computationally efficent as it means that you don't have to write intermediate files and waste a whole bunch of time.
+One of the major advantages of working with the Unix command line is the control over the flow of STDIN/STDOUT. Taking the output of one program and feeding to another is very computationally efficent as it means that you don't have to write intermediate files, which wastes a whole bunch of time.
 
-For the sake of demonstration, let's say that we wanted to count how many files there were in our working directory. We could run `ls` then count how many things are printed to screen. With a small number of files, that's not a big deal, but if you have tens or hundreds of files, that's a big waste of time.
+For the sake of demonstration, let's say that we wanted to get a count of how many files there were in our working directory. We could run `ls` then count how many things were printed to screen. With a small number of files that's not a big deal, but if you have tens or hundreds of files, that's becomes a big waste of time.
 
-Using some simple UNIX commands we can count how many files we have generated so far.
+Using some simple UNIX commands we can count how many files we have generated so far and hopefully demonstrate how we can make use of the flow of STDIN/STDOUT.
 
 We know that the following will print a list of our files in our wd to STDOUT:
 ```
@@ -259,32 +259,37 @@ wc -l list_o_files.txt
 ```
 and this should tell us how many files we have. However, now we have an annoying intermediate file in our directory that we'll have to clean up.
 
-Instead, let's send the STDOUT of `ls` as input to `wc`:
+It's easy to remove the intermediate file:
+```
+rm list_o_files.txt
+```
+But the point is that it takes time to remove the file and not only that, it takes time for the computer to write the intermediate file to disc and then it takes time for the next program to read the file. When you're working with massive datasets like you will later on in the week, generating a lot of intermediate files can really hammer productivity and take up precious disc space.
+
+Let's take the above example and send the STDOUT of `ls` as input to `wc`:
 
 ```
 ls | wc -l
 ```
-We'll get the exact same answer, but we've skipped a step and saved ourselves some time.
+We'll get the exact same answer, but we've skipped a step and saved ourselves the use of an unnecesarry intermediate file.
 
 The `|` character we used is referred to as a "pipe" and is another form of redirection.
 
 Even though this example is fairly trivial, piping is incredibly useful and can be used to great effect in bioinformatics, saving precious disc space and making analyses more efficient.
 
-
-In the exercises below we'll get some more practice using pipes.
+In the exercises below we'll get some more practice using pipes. There is no rule saying that you must use pipes when you're writing your scripts and running code, but it is good to be aware of how your choices will affect performance.
 ____________________
 
 <a name="editing"></a>
 ### Editing
 
-We'll have to edit files often in the course. You can edit files
-locally on your computer and copy them over (we show you how to copy
-files to the server in this topic). If you don't have an editor
-on your laptop, we can suggest Sublime Text, or Visual Studio Code (VS Code).
-A simple text editor builtin to your os will do. e.g. Wordpad or gedit. Avoid
-notepad or word.
+In your life as a bioinformatician, you'll spend a lot of time writing and editing scripts. Scripts are human readable text documents so you'll need software to write and edit your code.
 
-We also have several editors which you can run directly on the server. Editing directly on the server is faster because you'll be debugging iteratively.
+
+*Do not use word processing software like Pages, Notepad or Word at all when you're working with scripts or code*. These programs do not typically generate plain  documents. Even opening files in those programs can cause you headaches, so they should be avoided at all costs! Instead, look up some script editing software. There are lots of options. My personal favourite is Atom ([https://atom.io/](https://atom.io/)), but there are others such as Sublime Text, Visual Studio Code (VS Code) or Gedit. Script editing software often has lots of handy features like syntax highlighting which make coding and scripting much easier.  Your computer will have shipped with a simple plain text editor (e.g. Wordpad or gedit), and these are totally fine for using during the workshop.
+
+Additionally, it pays dividends to get to grips with a text editor that you can access at the command line. In this workshop we'll be going back and forth from the servers to your local machines. If you downloaded your scripts to your local machine, edited them then reuploaded them everytime you wanted to made slight changes you'd soon go mad. It would take a ton of your precious time and you'd likely incur errors going back and forth.
+
+There are several editors that you can run directly on the server. Editing directly on the server is faster because you'll be debugging iteratively.
 
  - `nano filename`. a barebones editor with key bindings similar to notepad. good for small edits. **easiest option**
     - `nano -l filename` shows line numbers.
@@ -305,18 +310,22 @@ We also have several editors which you can run directly on the server. Editing d
 
 ### Reference: Creating a script
 
-   You will be asked to type commands interactively, but in later topics you will be asked to create scripts. Here is an example to create a bash script, which by convention ends with `.sh`.
+ You will be asked to type commands interactively, but in later topics you will be asked to create scripts. Here is an example to create a bash script, which by convention ends with `.sh`.
 
-    # here we use nano, but you could use any other editor of choice
-    nano my_first_script.sh
-
+# here we use nano, but you could use any other editor of choice
+```
+nano my_first_script.sh
+```
 If the file doesn't exist, you will see an empty file. You can then type content (i.e. a series of bash commands) in the file. Example:
 
 ![](nano_first_script.png "first script"){:width="70%"}
 
 Save the file, and exit. You can then run this script with:
 
-    bash my_first_script.sh
+```
+bash my_first_script.sh
+```
+
 
 If you add the special line `#!/bin/bash` (aka "hashbang") at the top of your script, and mark the script executable (`chmod +x my_first_script.sh`), then you will be able to run it more easily:
 
@@ -338,14 +347,6 @@ If you see a window come up, then your X forwarding is configured correctly. Oth
    copy across computers, you have to rely on networking tools. We
    have collected information on copying files into [Copying across
    machines](./copying_across_machines).
-
-### Pipes and redirection
-A key feature of command line use is piping the output of one command to the input of another command. This means that large files can be analyzed in multiple scripts without having to write to disk repeatedly.
-
-##### *Key terms*
-* **STDOUT** : Standard output. The regular output of a script. Can be directed to a file with ">" or "1>", and directed to another command with `|`.
-* **STDIN** : Standard input. The input of STDOUT, piped in from another command.
-* **STDERR** : Standard error. The error output of a script. Generally prints to screen but can be saved to a file using `2>`. It is also conventionally used to provide progress information to the user.
 
 ##### *sed*
 *Stream editor*. It parses and transforms text using regular expressions. Very powerful, but most easily used to reformat files based on patterns.\
@@ -369,7 +370,13 @@ A key feature of command line use is piping the output of one command to the inp
 * Print all lines with "1" or "2"
     * `seq 10 | grep "1\|2"`
 
-**Exercise 1 -- build a pipeline that**:
+____________________
+
+
+## Exercise 1
+
+The solutions are given below. If you feel confident, give them a crack. If you are still a little shaky, look at the solution and reverse engineer it to understand what each part does.
+
 * Print the even numbers up to 100. Hint: `man seq`{: .spoiler}
 * Remove all numbers divisible by 10. Hint: <span class="spoiler">no arithmetic operator is needed</span>
 * Add "!" after every number ending in 2.
@@ -434,7 +441,10 @@ run the command `byobu-quiet`.  This can be undone with `byobu-quiet
 --undo`.
 
 
-**Optional Exercise 2**:
+## Exercise 2
+
+The solutions are given below. If you feel confident, give them a crack. If you are still a little shaky, look at the solution and reverse engineer it to understand what each part does.
+
 * Open a new byobu session.
 * Make a new window.
 * In the new window print numbers 1 to 10000000
@@ -462,9 +472,16 @@ run the command `byobu-quiet`.  This can be undone with `byobu-quiet
 </details>
 
 
-### Other Tutorials
-Here are some good tutorials if you're interested in learning a programming language
-* [Python](https://www.codecademy.com/learn/python)
+# Developing your skills
+
+Obviously no one could reasonably expect that you'd come out of a 2 hour class feeling totally confident working at the command line if you've never done it before.
+
+The best way to get better working with the command line is to practice. Having a problem in front of you that needs to be solved at the command line really is the best way to get to improve and gain confidence. In this session we have really only scratched the surface of what you can do at the command line and how you can use the many tools that are available. There are many solutions to any problem, part of the fun of the command line is coming up with solutions to problems in creative ways.
+
+We have not even touched upon programming in this session. If you would like to get started with programming - writing your own programs I would recommend starting with Python. Python is widely used in scientific research but is also well used in non-academic settings, so it's a useful skill to develope no matter what you go on to do. Here's a good tutorial for getting started with Python
+ [https://www.codecademy.com/learn/python](https://www.codecademy.com/learn/python)
+
+There are other programming languages out there of course, and there nice tutorials for those too:
 * [Perl](http://www.perl.com/pub/2000/10/begperl1.html)
 * [R](http://swirlstats.com/)
 
