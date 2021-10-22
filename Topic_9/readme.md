@@ -34,7 +34,7 @@ done
 
 #Use vcftools to calcluate fst in 10kb windows, across all pop pairs 
 
-#vcftools can't read bgzipped files, but can read gzipped
+#vcftools expects a vcf.gz to have been zipped through gzip, not bgzip. lets fix that.
 gunzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
 gzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf
 ```
@@ -88,7 +88,7 @@ do
 	do
 
 	vcftools \
-	--gzvcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
+	--bcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
 	--weir-fst-pop ~/analysis/fst_comparisons/p$i.samples \
 	--weir-fst-pop ~/analysis/fst_comparisons/p$k.samples \
 	--out ~/analysis/fst_comparisons/pop${i}_pop${k}_10kb \
