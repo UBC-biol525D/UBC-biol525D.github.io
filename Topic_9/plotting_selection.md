@@ -145,11 +145,13 @@ ggplot(data=fst_10kb, aes(BIN_START, MEAN_FST)) +
 ![](fst_4.jpeg)
 
 
-While there are some windows with big Fst values (e.g. on chr1 near 3e06), we're not seeing any super obvious regions popping out from a basic fst scan. Another way we will look at this is through Genome-wide association.
+While there are some windows with big Fst values (e.g. on chr1 near 3e06), we're not seeing any super obvious regions popping out from a basic fst scan. **How should we interpret this?**
 
-Rather than looking for allele-frequency differences between populations of interest, GWAS allows us to test whether phenotypes across individuals are well explained by genotypes across individuals, at each locus.
+We can also look for alleles that underly differences between populations in a distinct, but conceptually related way. Instead of focusing on how differentiated alleles are between populations of interest, we can ask how phenotypic differences among populations might be relate to particular loci via genome-wide association.
 
-*GWAS*
+GWA explictly tests whether phenotypic variation across individuals is well explained by genotypic variation, at every locus.
+
+###*GWAS*
 
 ```r
 gwas<-read.table("analysis/gwas/Chinook_GWAS.assoc.txt",header=T)
@@ -219,8 +221,9 @@ ggarrange(p_uncor, p_cor, nrow=2, align = "v")
 ![](gwas_3.jpeg)
 
 
-We have a bunch of hits in the uncorrected GWA, but in the corrected GWA - just one - on chromsome 2 around 2Mb.
-Upon closer inspection, we find that this SNP falls within the XXX gene, which has been showon to function in X and Y.
+We have a bunch of hits in the uncorrected GWA, but in the corrected GWA - just one - on chromsome 2 at 1728226.
+_It turns out that this  SNP is actually neutral, but there is a cluster of tightly linked causal SNPs just upstream at chr_2:1753234-1754473!
+_
 
 Plotting Challenge
 -------------------
