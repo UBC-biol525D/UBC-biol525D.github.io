@@ -76,7 +76,7 @@ For our assembly, since we only sequence one individual, we have two files for o
 
 We just got back our high coverage illumina paired-end data and long-read pacbio data from the sequencing facility! Let's see how it turned out.
 
-The first thing we might want to check is how long the reads are in our different sequence data sets are.
+_The first thing we'll check is how long the reads are in our different sequence data sets ._
 
 First lets specify variables for the paths to our data since we'll be working with them alot
 ```bash
