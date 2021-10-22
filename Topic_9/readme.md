@@ -25,7 +25,7 @@ We are also interested whether this any signatures of selection driven by temper
 ```bash
 #For vcftools --wier-fst-pop, we need a file containing sample names, for each pop
 
-for pop in `cut -d"." -f2 vcf/Chinook_GWAS_filtered_fixedsamps.fam | uniq`
+for pop in `cut -d"." -f2 analysis/Chinook_GWAS_filtered_fixedsamps.fam | uniq`
 do
 cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam | grep -w "$pop" > ${pop}.samples
 done
