@@ -87,7 +87,7 @@ for name in `cat ~/samplelist.txt | head -n +1 `
 do 
 java -Xmx10g -jar $gatk HaplotypeCaller \
 -R ref/SalmonReference.fasta \
---native-pair-hmm-threads 10 \
+--native-pair-hmm-threads 3 \
 -I bam/$name.sort.dedup.bam \
 -ERC GVCF \
 -O gvcf/$name.sort.dedup.g.vcf
@@ -96,7 +96,7 @@ done
 ```
  Check your gvcf file to make sure it has a .idx index file. If the haplotypecaller crashes, it will produce a truncated gvcf file that will eventually crash the genotypegvcf step. Note that if you give genotypegvcf a truncated file without a idx file, it will produce an idx file itself, but it still won't work.
 
-We would run the HaplotypeCaller on the rest of the samples, but that will take too much time, so once you're satisfied that your script works, you can copy the rest of the gvcf files (+ idx files) from /mnt/data/gvcf into ~/gvcf.
+We would run the HaplotypeCaller on the rest of the samples, but that will take too much time, so once you're satisfied that your script works, you can copy the rest of the gvcf files (+ idx files) from `/mnt/data/gvcf` into `~/gvcf`.
 
 
 The next step is to import our gvcf files into a genomicsDB file. This is a compressed database representation of all the read data in our samples. It has two important features to remember:
@@ -141,7 +141,7 @@ Next we call GenomicsDBImport to actually create the database. This command requ
 ```bash
 java -Xmx10g -jar $gatk \
        GenomicsDBImport \
-       --genomicsdb-workspace-path db/Chinook \
+       --genomicsdb-workspace-path db/Chinook_chr1 \
        --batch-size 50 \
        -L  chr_1 \
        --sample-name-map ~/biol525d.sample_map \
@@ -178,7 +178,7 @@ bcftools concat \
 
 ```
 
-You've done it! We have a VCF. Tomorrow we will filter our VCF file and use it for some analyses.
+You've done it! We have a full VCF. Tomorrow we will filter our VCF file and use it for some analyses.
 
 
 ### Coding challenge
