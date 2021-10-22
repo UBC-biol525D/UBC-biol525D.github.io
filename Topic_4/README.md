@@ -107,8 +107,9 @@ Now take a similar approach for the long read data ($longreads/SalmonSim.Stabili
 
 Remember that you can get column means pretty quickly with awk: `awk '{ total += $2 } END { print total/NR }' longread_lengths.txt` #this gets the mean of column two. 
 
-**total += $2** <= set the variable "total" equal to the sum of all items in column 2
-**print total/NR** <= once finished (END), print the column sum after dividing by NR (number of rows)
+**total += $2** <= set the variable "total" equal to the sum of all items in column 2 \
+
+**print total/NR** <= once finished (END), print the column sum after dividing by NR (number of rows) \
 
 The mean read length of our long-read data is informative but you might have noticed alot of variation across reads, and be curious what the distribution of read length looks like. While R is a great place for quick and efficient statistical analyses, bash can also handle doing some intuitve stats, which will save us the headache of importing data into R. \
 
