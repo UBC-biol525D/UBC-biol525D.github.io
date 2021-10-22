@@ -52,7 +52,8 @@ A common first pass analysis is to use structure to look at clustering in your d
 cd ~/
 mkdir analysis
 
-#we had a bug in our pipeline that appended some extra characters to the beginning of sample names - you can check sample names by greping for "#CHROM", which is the first string of the sample header line
+#we had a bug in our pipeline that appended some extra characters to the beginning of sample names
+#you can check sample names by greping for "#CHROM", which is the first string of the sample header line
 zgrep "#CHROM" vcf/Chinook_GWAS_filtered.vcf.gz
 #we could use a specialty software like bedtools reheader to fix this, but lets just use basic bash commands
 
@@ -183,7 +184,10 @@ This shows that the lowest CV error is with K=1, but actually K=2 is a close sec
 ```bash
 paste <(cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam) analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.Q
 
-#what was that <( ) notation? this is another cool bash trick called *subprocessing*. Instead of making an intermediate file of sample names to join with our K values, we can use subprocessing to take the output of the cut command and pass that to paste. 
+#what was that <( ) notation? 
+#this is another cool bash trick called *subprocessing*. 
+#Instead of making an intermediate file of sample names to join with our K values...
+#...we can use subprocessing to take the output of the cut command and pass that to paste. 
 
 #Chinook.p1.i0	0.999990 0.000010
 #Chinook.p1.i1	0.999990 0.000010
