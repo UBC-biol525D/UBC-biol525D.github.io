@@ -22,7 +22,35 @@ Programming Resources
 * Spades Paper. A New Genome Assembly Algorithm and Its Applications to Single-Cell Sequencing [Paper](https://cab.spbu.ru/files/release3.15.3/manual.html).
 
 
-# Code break questions
+## Code break questions
+
+1. Write a one liner to find all the overlaps (i.e. the beginning or the end) exactly 4bp in length between CTCTAGGCC and a list of other sequences in the file /home/biol525d/Topic_5/data/overlaps.fa
+
+2. Find all the unique 9mers in a fasta sequence /home/biol525d/Topic_5/data/kmer.fa
+
+This might be a tricky one and there are likely many ways to do this. First try out these commands that might help you complete this task. It might also be helpful to determine how many characters are in the sequence (wc -c).
+
+Hints: test out the following commands:
+
+```bash
+cut -c1- kmer.fa
+```
+
+```bash
+cut -c1-4 kmer.fa
+```
+
+```bash
+for num in {1..10}
+    do
+        echo $num >> file.txt
+    done
+```
+What do these commands do? Can you use commands like this to find all the kmers in the sequence?
+
+3. Sort them and keep the unique kmers
+
+Hint: try sort (look up the options)
 
 
 
