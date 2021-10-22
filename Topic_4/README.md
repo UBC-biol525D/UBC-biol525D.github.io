@@ -24,9 +24,9 @@ Programming Resources
 
 ## Code break questions
 
-1. Write a one liner to find all the overlaps (i.e. the beginning or the end) exactly 4bp in length between CTCTAGGCC and a list of other sequences in the file /home/biol525d/Topic_5/data/overlaps.fa
+1. Write a one liner to find all the overlaps (i.e. the beginning or the end) exactly 4bp in length between CTCTAGGCC and a list of other sequences in the file /mnt/data/codebreaks/overlaps.fa
 
-2. Find all the unique 9mers in a fasta sequence /home/biol525d/Topic_5/data/kmer.fa
+2. Find all the unique 9mers in a fasta sequence /mnt/data/codebreaks/kmer.fa
 
 This might be a tricky one and there are likely many ways to do this. First try out these commands that might help you complete this task. It might also be helpful to determine how many characters are in the sequence (wc -c).
 
@@ -94,7 +94,7 @@ You can get the mean of columns using awk pretty easily `awk '{ total += $2 } EN
 The mean read length of our long-read data is informative but you might have noticed alot of variation across reads, and be curious what the distribution of read length looks like. While R is a great place for quick and efficient statistical analyses, bash can also handle doing some intuitve stats. For example, we can get the quartiles of read length pretty easily with basic bash.
 
 > Hint:  `wc -l` gives a count of the number of lines \
-> Note: Math is doable in command lind but can be a bit annoying. Bc (basic calculator) works pretty well though for basic purposes.
+> Note: Math is doable in command lind but can be a bit annoying. Bc (basic calculator) works pretty well though for basic purposes. \
 > Note: Variables are one of the most powerful parts about command line. In addition to saving paths as variables, you can also do cool things like save the output of commands to a variable using "` `"
 
 ```bash
