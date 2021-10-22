@@ -32,11 +32,6 @@ Your goal for today is to see how well we can assemble a portion of the Salmon r
 
 You've already spent some time getting familiar with the data we're working with - Our overall aim is to understand the evolutionary processes that allow salmon populations to persist across a key temperature gradient, and having a high quality reference genome will be indispensible for looking at not just the the frequency of variant nucleotides but their position relative to one another and other features of the genome. 
 
-
-```bash
-mkdir fastqc && cd fastqc
-```
-
 For our assembly, since we only sequence one individual, we have two files for our short reads (one for forward reads and one for reverse) and one for long reads. We're going to be referring to these files alot so lets first make a short cut path to these files and then run fastqc on each.
 
 ## First, lets check out our sequencing data!
