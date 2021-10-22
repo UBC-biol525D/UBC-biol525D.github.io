@@ -57,6 +57,7 @@ zgrep "#CHROM" vcf/Chinook_GWAS_filtered.vcf.gz
 #we could use a specialty software like bedtools reheader to fix this, but lets just use basic bash commands
 
 zcat vcf/Chinook_GWAS_filtered.vcf.gz | sed 's/-e Chinook/Chinook/g' | bgzip > vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
+#the key command here is the sed 's/find/replace/g'
 
 plink=/mnt/software/plink
 $plink --make-bed \
@@ -89,7 +90,7 @@ $plink \
 --out vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned \
 --allow-extra-chr 
 
-#this actually extracts that snps that remain after LD pruning
+#this actually extracts the snps that remain after LD pruning
 
 ```bash 
 admixture=/mnt/software/dist/admixture_linux-1.3.0/admixture
