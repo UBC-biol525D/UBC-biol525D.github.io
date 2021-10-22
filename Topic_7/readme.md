@@ -139,12 +139,11 @@ Lets break down this loop to understand how its working
 
 Next we call GenomicsDBImport to actually create the database. This command requires a list of scaffolds so we'll make that too.
 ```bash
-cut -f1 ref/SalmonReference.fasta.fai > scaffold.list
 java -Xmx10g -jar $gatk \
        GenomicsDBImport \
        --genomicsdb-workspace-path db/Chinook \
        --batch-size 50 \
-       -L  scaffold.list \
+       -L  chr_1 \
        --sample-name-map ~/biol525d.sample_map \
        --reader-threads 3
 ```
@@ -153,13 +152,13 @@ With the genomicsDB created, we're finally ready to actually call variants and o
 ```bash
 java -Xmx10g -jar $gatk GenotypeGVCFs \
    -R ref/SalmonReference.fasta \
-   -V gendb://db/Chinook \
-   -O vcf/Chinook_p1p10_i1i2.vcf.gz
+   -V gendb://db/Chinook_chr1 \
+   -O vcf/Chinook_p1p10_i1i2_chr1.vcf.gz
 ```
 Now we can actually look at the VCF file
 
 ```bash
-less -S vcf/Chinook_p1p10_i1i2.vcf.gz
+less -S vcf/Chinook_p1p10_i1i2_chr1.vcf.gz
 ```
 
 Try to find an indel. Do you see any sites with more than 1 alternate alleles? 
@@ -173,14 +172,14 @@ Once you have three VCF files, one for each chromosome, you can concatenate them
 ```bash
 
 bcftools concat \
-  vcf/HanXRQChr01.vcf.gz \
-  vcf/HanXRQChr02.vcf.gz \
-  vcf/HanXRQChr03.vcf.gz \
+  vcf/Chinook_p1p10_i1i2_chr1.vcf.gz \
+  vcf/Chinook_p1p10_i1i2_chr2.vcf.gz \
   -O z > vcf/full_genome.vcf.gz
 
 ```
 
-You've done it! We have a VCF. Tomorrow we will fliter this file and use it for some analyses.
+You've done it! We have a VCF. Tomorrow we will filter our VCF file and use it for some analyses.
+
 
 ### Coding challenge
 * Use command line tools to extract a list of all the samples in your VCF file, from the vcf file itself. They should be one name per line.
@@ -191,11 +190,3 @@ You've done it! We have a VCF. Tomorrow we will fliter this file and use it for 
 1. Another program that is useful for filtering and formatting vcf files is [vcftools](https://vcftools.github.io/index.html). It is installed on the server. It can also do basic pop gen stats. Use it to calculate Fst between samples with ARG and ANN names.
 2. You're trying to create a very stringent set of SNPs. Based on the site information GATK produces, what filters would you use? Include the actual GATK abbreviations.
 3. What is strand bias and why would you filter based on it?
-
-
-
-sudo apt-get install openjdk-8-jdk
-sudo update-java-alternatives -s java-1.8.0-openjdk-amd64
-
-sudo wget https://github.com/broadinstitute/gatk/releases/download/4.2.2.0/gatk-4.2.2.0.zip
-sudo unzip gatk-4.2.2.0.zip
