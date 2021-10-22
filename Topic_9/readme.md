@@ -32,8 +32,6 @@ do
 cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam | grep -w "$pop" > ~/analysis/fst_comparisons/${pop}.samples
 done
 
-#Use vcftools to calcluate fst in 10kb windows, across all pop pairs 
-
 #vcftools expects a vcf.gz to have been zipped through gzip, not bgzip. lets fix that.
 gunzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
 gzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf
@@ -52,12 +50,7 @@ For population 9, 10
 Breaking this down helps outline two major steps 1) that for each population of interest (left side), we can loop over every population that comes after it. This is a nested loop structure.
 
 ```bash
-#the first thing we will have to figure out is addition - since we know the value of the comparison depends on the focal population - remember bc.
-echo "1+1" | bc
-#another way to do arithmitic in bash is through the $(( )) syntax which tells shell to evaluate the contents
-echo $((1+1))
-
-#we can use this to set our second pop comparitor as a variable that changes depending on the focal population.
+#we can use basic arithimitic in bash to set our second pop comparitor as a variable that changes depending on the focal population.
 #for instance if our focal population is 1, we can set our second population to 2 as follows
 pop2=`echo $((1+1))`
 echo $pop2
@@ -106,26 +99,29 @@ grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log
 
 Make a results file of the pairwise weighted fst estimates based on the grep command above. Use pipes and basic UNIX commands like _tr_, _cut_,and _sed_ to split the output into a space seperated file with three columns: 1) pop A, 2) pop B, and 3) Fst. Save it as analysis/fst_comparisons/weighted_fst_pairwise.txt
 
-SOLUTION (don't click me unless your stuck!):	
+SOLUTION (don't click me unless your really stuck! try asking your neighbour their approach first):	
 * ```grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt```
 {: .spoiler}
 
 
 ## Genome-wide Association ##
 
-A nice thing about plink, the program we used in the previous tutorial, is that alot of programs take the .bed/.fam format for input, including the GWA program GEMMA. We're going to use the same VCF we used to infer patterns of population structure. It's amazing how easy it is to run a GWA, but we have to be careful about the statistical design and interpretation of these type of analyses.
+A nice thing about plink, the program we used in the previous tutorial, is that alot of programs take the .bed/.fam format for input, including the GWA program GEMMA. We're going to use the same VCF we used to infer patterns of population structure. It's amazing how easy (and fast!!) it is to run a GWA, but we have to be careful about the statistical design and interpretation of these type of analyses.
 
 By default, GEMMA knows to take the 6th column of the plink .fam file as the dependent variable. So first, we need to modify this fam file to include or phenotype of interest.
 
 ```bash
 #modify the fam file, replacing the 6th column with our actual phenotypes
-#first, check whether they are in the same order using comm (how do we interpret the output?)
-comm --help
-comm  <( cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam  ) <( cut -d"," -f-1 /mnt/data/vcf/phenos.txt ) #all in common
+comm --help #make sure you know how to interpret the output!
+comm  <( cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam  ) <( cut -d"," -f-1 /mnt/data/vcf/phenos.txt ) #notice only column 2 prints
 
 #make modified fam file
 paste -d " "  <( cut -d" " -f1-5 vcf/Chinook_GWAS_filtered_fixedsamps.fam) <( cut -d"," -f2 /mnt/data/vcf/phenos.txt) > vcf/Chinook_GWAS_filtered_fixedsamps.fammod
 
+```
+For operations like above, we're lucky that our information we're interested in merging is in the same order (alphanumeric sample order). Otherwise we'd want to incorporate a couple sort commands in there. This is a super important thing to make sure of before merging!
+
+```bash
 #plink expects the phenotype to be in the -bfile <prefix>.fam, but right now its in <prefix>.fammod. lets do some quick renaming
 mv vcf/Chinook_GWAS_filtered_fixedsamps.fam vcf/Chinook_GWAS_filtered_fixedsamps.famnophenos
 mv vcf/Chinook_GWAS_filtered_fixedsamps.fammod vcf/Chinook_GWAS_filtered_fixedsamps.fam
