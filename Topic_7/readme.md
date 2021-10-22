@@ -20,7 +20,7 @@ mkdir db
 mkdir vcf
 mkdir ref
 ```
-We also have a few programs we're going to use. Since we will be calling them repeatedly, its helpful to save their full path to a variable. This will only last for the current session so if you log out you'll have to set them up again.
+We also have a few programs we're going to use. Since we will be calling them repeatedly, we're going to save their full paths asv ariable. This will only last for the current session so if you log out you'll have to set them up again.
 
 ```bash
 gatk=/mnt/software/gatk-4.2.2.0/gatk-package-4.2.2.0-local.jar
