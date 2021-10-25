@@ -279,6 +279,17 @@ Even though this example is fairly trivial, piping is incredibly useful and can 
 In the exercises below we'll get some more practice using pipes. There is no rule saying that you must use pipes when you're writing your scripts and running code, but it is good to be aware of how your choices will affect performance.
 ____________________
 
+
+
+
+
+
+
+
+
+
+
+
 <a name="editing"></a>
 ### Editing
 

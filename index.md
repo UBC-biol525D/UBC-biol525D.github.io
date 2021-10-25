@@ -11,7 +11,7 @@ menuPosition: 1
 The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic. The course will be presented as a series of short lectures and lab exercises over a one week period in October 2021.
 
 ## Instructors
-Dr. Tom Booker, Julia Kreiner
+Tom Booker, Julia Kreiner
 
 ## Format
 A mix of lecture and lab exercises, running in a 2-hour block.
@@ -43,9 +43,9 @@ To get up to speed on working with a Unix system, take a look at the [unix help]
 ## Syllabus
 1. [Topic 1](./Topic_1/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics [Booker,T]
 2. [Topic 2](./Topic_2/) Programming Basics [Booker, T]
-3. [Topic 3]  Bioinformatics Gotchyas [Booker, T]
-4. [Topic 4](./Topic_3n4/) Genome Assembly
-5. [Topic 5](./Topic_6/) RNAseq + differential expression analysis
+3. [Topic 3](./Topic_3) Sequence Data and Bioinformatics Gotchyas [Booker, T]
+4. [Topic 4](./Topic_3n4/) Genome Assembly [Kreiner, J]
+5. [Topic 5](./Topic_6/) RNAseq + differential expression analysis [Booker, T]
 6. [Topic 6](./Topic_4/) Alignment: algorithms and tools [Booker, T]
 7. [Topic 7](./Topic_7/) SNP and variant calling [Kreiner, J]
 8. [Topic 8](./Topic_8/) Patterns of population structure [Kreiner, J]
