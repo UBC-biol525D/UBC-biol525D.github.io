@@ -285,9 +285,23 @@ ____________________
 
 Metacharacters are a class of characters that convey specific instructions to the operating system The pipe and redirect symbols ("|", "<" and ">") are examples of metacharacters.
 
-There are numerous metacharacters ([here's a comprehensive list](http://faculty.salina.k-state.edu/tim/unix_sg/shell/metachar.html)). It's a good idea to familiarize yourself with some of the more commonly used ones.
-
 ### Wild cards
+
+As covered in the lecture, there are numerous times when it is convenient to refer to a whole bunch of files that have similar names. These might be files containing information for lots of samples. The wild-card character (`*`) is useful for that. 
+
+
+For example, let's list all the files in our directory that begin with the letter "n"
+
+```
+ls n*
+
+```
+
+_______________________
+_
+What this command does is list all files whose names start with "n".
+
+There are numerous metacharacters ([here's a comprehensive list](http://faculty.salina.k-state.edu/tim/unix_sg/shell/metachar.html)). It's a good idea to familiarize yourself with some of the more commonly used ones.
 
 
 ## Paths
@@ -296,23 +310,23 @@ As mentioned in the lecture, getting used to navigating the file hierarchy in Un
 
 Here we'll introduce several commands that are incredibly important.
 
-## `mkdir`
+### `mkdir`
 
 The `mkdir` command stands for "make directory". As you might have guessed, this makes a new directory (a.k.a. folder). You can call the new directory whatever you want. For example:
 
 ```
-mkdir my_results
+mkdir my_scripts
 ```
-The above generate a new file in the current working directory called "my_results".
+The above generate a new file in the current working directory called `my_scripts`.
 
-## `cd`
+### `cd`
 
 Now we've made a new directory, it would be to move into it to do some work.
 
 To navigate into a directory, use the `cd` command (it stands for "change directory"). For example:
 
 ```
-cd my_results
+cd my_scripts
 ```
 
 Now we're in the folder we made. To demonstrate that point, let's ask the computer where we are currently located (or, what our current working directory is). To print the current working directory to screenrun:
@@ -321,24 +335,121 @@ Now we're in the folder we made. To demonstrate that point, let's ask the comput
 pwd
 ```
 
+This should have printed a piece of text to your screen.  This text is the absolute path of your working directory. 
+
 Now let's go back to where we were. We can go back one step in the file hierarchy by running:
 
 ```
 cd ../
 ```
 
-The text `../` refers to the folded one step back from where we were.
+The text `../` refers to the parent directory - the folder one step back from where we are currently located. By running `cd ../`, we are saying, change directory to one step back in the hierarchy.
 
-A  piece of text refers to the file we are currently in
+_______________________
+
+In UNIX like systems, you can refer to locations in two ways.
+
+1. You can give the exact address of a file (the absolute path)
+2. You can give the address of a file relative to your current working directory.
+
+Let's make a new file in a the directory we just made. To do that, run the following commands:
+
+```
+echo '#!/bin/bash' > my_scripts/myCmd.sh 
+
+echo 'age=$1' >> my_scripts/myCmd.sh
+
+echo 'echo "I am $age years young"'  >> my_scripts/myCmd.sh
 
 
+``` 
+
+There are a couple of new things here, but first look at the name of the file we created. You'll note that we included the folder where we wanted to save the file as part of the file name. Because we are currently located in the directory that contains the `my_scripts/` directory, we can refer to the `myCmd.sh` file in this way. However, if we create a new directory, move into it and then try to look at the contents of the file, we'll have no luck:
+
+```
+mkdir my_data
+
+cd my_data
+
+cat my_data/myCmd.sh
+
+``` 
+
+This will throw an error, as the `my_scripts` directory is not present in the current location (`my_data`). We know that `myCmd.sh` is located in a directory stored one step up in the file hierarchy, so we can refer to the file that way:
+
+```
+
+cat ../my_scripts/myCmd.sh # The relative path to the 'myCmd.sh' file
+
+``` 
+
+When your machine reads a relative path, it adds it to the current location, so it knows where you're referring to. You could also specify the absolute path as follows (this varies depending on your username):
+
+```
 
 
+cat /home/booker/my_scripts/myCmd.sh # The absolute path to the 'myCmd.sh' file
+
+``` 
+
+* `./` the working directory
+* `/` the root directory
+* `../` the parent directory
 
 
+______________________
 
+## Executable files and permissions
 
+The little file we named `myCmd.sh` is actually a small script. It contains a line of code that will print a users age to screen if it is given at the command line.
 
+Let's look at the contents of that file:
+
+```
+#!/bin/bash
+age=$1
+echo "I am $age years young"
+```
+The first thing in the file is the line `#!/bin/bash`. This is called a shebang (don't ask why!). This tells your computer where to find the program that runs this code. In this case the code is sent to the program called `bash` -  the command line program you are currently using - `bash` is a program like `R` or `python` are programs.
+
+If we want to run our little bash script we can run the following:
+
+```
+
+cd ## navigate back to your home directory
+
+bash my_scripts/myCmd.sh 32
+
+```
+This should print a message to screen incorporating the input you gave the script (i.e. the number 32).
+
+Congratulations, you just ran a script. Scripts are just lists of instructions that you want to the system to run. 
+
+In the case of `shell`/`bash` scripting, you can run the script by specifying the `bash` program like we did above.
+
+Alternatively, you can make a script executable. To make a program executable you need to change the permissions on the file. 
+
+To check the permissions of a file a quick way is to use the command:
+```
+ls -l my_scripts/myCmd.sh
+```
+
+This will have printed a table of text to screen. As we discussed in the lecture the combination of letters here tell you what can and cannot be done to this file by certain users. 
+
+To make a file executable by you (the current user), you can run:
+```
+chmod +x my_scripts/myCmd.sh
+
+ls -l
+```
+Now when we inspect that table we'll have seen we added an "x" to the permissions string. That means we can run the script as an executable:
+
+```
+./my_scripts/myCmd.sh 32
+
+```
+
+The above should have run happily and printed our nice message to screen. 
 
 
 <a name="editing"></a>
