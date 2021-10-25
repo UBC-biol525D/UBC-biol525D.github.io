@@ -48,7 +48,7 @@ for num in {1..10}
 ```
 What do these commands do? Can you use commands like this to find all the kmers in the sequence? 
 
-Think about how you could incorporate some basic algebra and variable assignment (k=`<some command here>`) to solve this problem.
+Think about how you could incorporate some basic algebra and variable assignment (k=\`<some command here>\`) to solve this problem.
 
 ```bash
 #one way to do math in bash is by piping to bc (basic calculator).
@@ -122,9 +122,9 @@ THIRDQUART=`echo "$LINECOUNT * 3 / 4" | bc`
 cut -f2 longread_lengths.txt | sort -n | sed -n "$FIRSTQUART p" 
 cut -f2 longread_lengths.txt | sort -n | sed -n "$THIRDQUART p" 
 ```
-**wc -l** <= number of lines
-**cut -d" " -f1** <= keeps only the first column (based on a space delimeter)
-**sed -n "N p"** <= prints (p) the line at value N
+**wc -l** <= number of lines \
+**cut -d" " -f1** <= keeps only the first column (based on a space delimeter) \
+**sed -n "N p"** <= prints (p) the line at value N \
 
 
 Nice. While theres some variance in our long-read lengths, its nice to see its actually quite consistent. 
