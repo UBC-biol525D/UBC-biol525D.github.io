@@ -1,9 +1,14 @@
+<!---
 ---
 title: Course Evaluation
 menuItem: Course Evaluation
 layout: page
 menuPosition: 2
 ---
+
+--->
+
+## *This information is relevant for past years, not 2021*
 
 The student evualtion in Biol 525D is based on the following:
 
