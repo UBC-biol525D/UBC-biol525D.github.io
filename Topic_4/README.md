@@ -103,7 +103,7 @@ awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" 
 ```
 
 What read lengths did you get? Was there any variation?
-Now take a similar approach for the long read data ($longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz) and save the output to longread_lengths.txt
+Now take a similar approach for the long read data ($longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz) and save the output to `longread_lengths.txt`
 
 Remember that you can get column means pretty quickly with awk: `awk '{ total += $2 } END { print total/NR }' longread_lengths.txt` #this gets the mean of column two. 
 
