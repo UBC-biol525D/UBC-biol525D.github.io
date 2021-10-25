@@ -11,6 +11,8 @@ topictitle: "Introduction"
 
 In this workshop, we aim to cover the basics of bioinformatics. This course is aimed at those who have some familiarity with computational tools.
 
+## Accompanying material
+[Lecture Slides](./Topic_1.pdf)
 ______
 # Part 1
 

@@ -20,7 +20,7 @@ mkdir db
 mkdir vcf
 mkdir ref
 ```
-We also have a few programs we're going to use. Since we will be calling them repeatedly, its helpful to save their full path to a variable. This will only last for the current session so if you log out you'll have to set them up again.
+We also have a few programs we're going to use. Since we will be calling them repeatedly, we're going to save their full paths asv ariable. This will only last for the current session so if you log out you'll have to set them up again.
 
 ```bash
 gatk=/mnt/software/gatk-4.2.2.0/gatk-package-4.2.2.0-local.jar
@@ -87,7 +87,7 @@ for name in `cat ~/samplelist.txt | head -n +1 `
 do 
 java -Xmx10g -jar $gatk HaplotypeCaller \
 -R ref/SalmonReference.fasta \
---native-pair-hmm-threads 10 \
+--native-pair-hmm-threads 3 \
 -I bam/$name.sort.dedup.bam \
 -ERC GVCF \
 -O gvcf/$name.sort.dedup.g.vcf
@@ -96,7 +96,7 @@ done
 ```
  Check your gvcf file to make sure it has a .idx index file. If the haplotypecaller crashes, it will produce a truncated gvcf file that will eventually crash the genotypegvcf step. Note that if you give genotypegvcf a truncated file without a idx file, it will produce an idx file itself, but it still won't work.
 
-We would run the HaplotypeCaller on the rest of the samples, but that will take too much time, so once you're satisfied that your script works, you can copy the rest of the gvcf files (+ idx files) from /mnt/data/gvcf into ~/gvcf.
+We would run the HaplotypeCaller on the rest of the samples, but that will take too much time, so once you're satisfied that your script works, you can copy the rest of the gvcf files (+ idx files) from `/mnt/data/gvcf` into `~/gvcf`.
 
 
 The next step is to import our gvcf files into a genomicsDB file. This is a compressed database representation of all the read data in our samples. It has two important features to remember:
@@ -141,7 +141,7 @@ Next we call GenomicsDBImport to actually create the database. This command requ
 ```bash
 java -Xmx10g -jar $gatk \
        GenomicsDBImport \
-       --genomicsdb-workspace-path db/Chinook \
+       --genomicsdb-workspace-path db/Chinook_chr1 \
        --batch-size 50 \
        -L  chr_1 \
        --sample-name-map ~/biol525d.sample_map \
@@ -165,7 +165,7 @@ Try to find an indel. Do you see any sites with more than 1 alternate alleles?
 
 Pick a site and figure out, whats the minor allele frequency? How many samples were genotyped? 
 
-We've now called variants for a single chromosome, but there are other chromosomes. In this case there are only three, but for many genomes there will be thousands of contigs. Your next challenge is to write a loop to create the genomicsdb file and then VCF for each chromosome. 
+We've now called variants for a single chromosome, but there are other chromosomes. In this case there are only three, but for many genomes there will be thousands of contigs. Your next challenge is to write a loop to create the genomicsdb file and then VCF for each chromosome (...check out gatk's genomicsdb documentation... is there another way to create a db for multiple chromosomes more efficiently?) 
 
 Once you have three VCF files, one for each chromosome, you can concatenate them together to make a single VCF file. We're going to use _bcftools_ which is a very fast program for manipulating vcfs as well as bcfs (the binary version of a vcf).
 
@@ -178,7 +178,11 @@ bcftools concat \
 
 ```
 
-You've done it! We have a VCF. Tomorrow we will filter our VCF file and use it for some analyses.
+You've done it! We have a full VCF. Tomorrow we will filter our VCF file and use it for some analyses.
+
+In the meantime, take a look at this. We've ran the exact same pipeline from read data simulated to a higher coverage. Check out how important coverage is for identifying high quality SNPs.
+
+![](stats by coverage.jpeg)
 
 
 ### Coding challenge
@@ -186,7 +190,4 @@ You've done it! We have a VCF. Tomorrow we will filter our VCF file and use it f
 * Take the original vcf file produced and create a vcf of only biallelic SNPs for P1 samples. 
 * Use bcftools to filter your vcf file and select for sites with alternate allele frequencies > 0.01, including multi-allelic sites. 
 
-### Daily assignments
-1. Another program that is useful for filtering and formatting vcf files is [vcftools](https://vcftools.github.io/index.html). It is installed on the server. It can also do basic pop gen stats. Use it to calculate Fst between samples with ARG and ANN names.
-2. You're trying to create a very stringent set of SNPs. Based on the site information GATK produces, what filters would you use? Include the actual GATK abbreviations.
-3. What is strand bias and why would you filter based on it?
+

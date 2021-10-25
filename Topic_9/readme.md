@@ -23,17 +23,16 @@ We are also interested whether this any signatures of selection driven by temper
 
 
 ```bash
+mkdir analysis/fst_comparisons
+
 #For vcftools --wier-fst-pop, we need a file containing sample names, for each pop
 
 for pop in `cut -d"." -f2 vcf/Chinook_GWAS_filtered_fixedsamps.fam | uniq`
 do
-cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam | grep -w "$pop" > ${pop}.samples
+cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam | grep -w "$pop" > ~/analysis/fst_comparisons/${pop}.samples
 done
 
-#Use vcftools to calcluate fst in 10kb windows, across all pop pairs
-mkdir analysis/fst_comparisons
-
-#vcftools can't read bgzipped files, but can read gzipped
+#vcftools expects a vcf.gz to have been zipped through gzip, not bgzip. lets fix that.
 gunzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
 gzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf
 ```
@@ -51,13 +50,7 @@ For population 9, 10
 Breaking this down helps outline two major steps 1) that for each population of interest (left side), we can loop over every population that comes after it. This is a nested loop structure.
 
 ```bash
-#this first problem to solve is how to do addition in bash, since we want to compare our focal population to only those that come after it.
-echo $((1+1)) #$((EXPR)) is bash for arithmetic expression
-
-#it also allows us to do some more complicated expressions like:
-echo $(((1+10)*10))
-
-#we can use this to set our second pop comparitor as a variable that changes depending on the focal population.
+#we can use basic arithimitic in bash to set our second pop comparitor as a variable that changes depending on the focal population.
 #for instance if our focal population is 1, we can set our second population to 2 as follows
 pop2=`echo $((1+1))`
 echo $pop2
@@ -65,9 +58,9 @@ echo $pop2
 #but we want to compare our focal pop not just to the next one, but all pops that follow. seq helps with this.
 
 pop_comp=`seq $((1+1)) 10`
-echo $pop2
+echo $pop_comp
 
-#Now we can put this all together in a nested subloop to perform all population comparisons
+#Now we can put this all together in a nested loop to perform all population comparisons
 #testing:
 for pop1 in {1..9}
 do
@@ -88,10 +81,10 @@ do
 	do
 
 	vcftools \
-	--gzvcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
-	--weir-fst-pop p$i.samples \
-	--weir-fst-pop p$k.samples \
-	 --out analysis/fst_comparisons/pop${i}_pop${k}_10kb \
+	--bcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
+	--weir-fst-pop ~/analysis/fst_comparisons/p$i.samples \
+	--weir-fst-pop ~/analysis/fst_comparisons/p$k.samples \
+	--out ~/analysis/fst_comparisons/pop${i}_pop${k}_10kb \
 	--fst-window-size 10000 \
 	--fst-window-step 10000
 
@@ -106,32 +99,35 @@ grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log
 
 Make a results file of the pairwise weighted fst estimates based on the grep command above. Use pipes and basic UNIX commands like _tr_, _cut_,and _sed_ to split the output into a space seperated file with three columns: 1) pop A, 2) pop B, and 3) Fst. Save it as analysis/fst_comparisons/weighted_fst_pairwise.txt
 
-SOLUTION (don't click me unless your stuck!):	
+SOLUTION (don't click me unless your really stuck! try asking your neighbour their approach first):	
 * ```grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt```
 {: .spoiler}
 
 
 ## Genome-wide Association ##
 
-A nice thing about plink, the program we used in the previous tutorial, is that alot of programs take the .bed/.fam format for input, including the GWA program GEMMA. We're going to use the same VCF we used to infer patterns of population structure. It's amazing how easy it is to run a GWA, but we have to be careful about the statistical design and interpretation of these type of analyses.
+A nice thing about plink, the program we used in the previous tutorial, is that alot of programs take the .bed/.fam format for input, including the GWA program GEMMA. We're going to use the same VCF we used to infer patterns of population structure. It's amazing how easy (and fast!!) it is to run a GWA, but we have to be careful about the statistical design and interpretation of these type of analyses.
 
 By default, GEMMA knows to take the 6th column of the plink .fam file as the dependent variable. So first, we need to modify this fam file to include or phenotype of interest.
 
 ```bash
 #modify the fam file, replacing the 6th column with our actual phenotypes
-#first, check whether they are in the same order using comm (how do we interpret the output?)
-comm --help
-comm  <( cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam | sort ) <( cut -d"," -f-1 phenos.txt | sort) #all in common
+comm --help #make sure you know how to interpret the output!
+comm  <( cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam  ) <( cut -d"," -f-1 /mnt/data/vcf/phenos.txt ) #notice only column 2 prints
 
 #make modified fam file
-paste -d " "  <( cut -d" " -f1-5 vcf/Chinook_GWAS_filtered_fixedsamps.fam) <( cut -d"," -f2 phenos.txt) > vcf/Chinook_GWAS_filtered_fixedsamps.fammod
+paste -d " "  <( cut -d" " -f1-5 vcf/Chinook_GWAS_filtered_fixedsamps.fam) <( cut -d"," -f2 /mnt/data/vcf/phenos.txt) > vcf/Chinook_GWAS_filtered_fixedsamps.fammod
 
+```
+For operations like above, we're lucky that our information we're interested in merging is in the same order (alphanumeric sample order). Otherwise we'd want to incorporate a couple sort commands in there. This is a super important thing to make sure of before merging!
+
+```bash
 #plink expects the phenotype to be in the -bfile <prefix>.fam, but right now its in <prefix>.fammod. lets do some quick renaming
 mv vcf/Chinook_GWAS_filtered_fixedsamps.fam vcf/Chinook_GWAS_filtered_fixedsamps.famnophenos
 mv vcf/Chinook_GWAS_filtered_fixedsamps.fammod vcf/Chinook_GWAS_filtered_fixedsamps.fam
 
 #actually running the GWA is as simple as:
-~/software/gemma-0.98.1-linux-static \
+/mnt/software/gemma-0.98.5-linux-static-AMD64 \
 	-bfile vcf/Chinook_GWAS_filtered_fixedsamps \
 	-lm \
 	-o Chinook_GWAS \
@@ -142,13 +138,13 @@ mv vcf/Chinook_GWAS_filtered_fixedsamps.fammod vcf/Chinook_GWAS_filtered_fixedsa
 We talked aobut in lecture how population structure can have effects on GWA that are very important to control for. Lets compare the above GWA to one that controls for population structure via the relatedness matrix in a linear mixed model framework
 
 ```r
-~/software/gemma-0.98.1-linux-static \
+/mnt/software/gemma-0.98.5-linux-static-AMD64 \
 	-bfile vcf/Chinook_GWAS_filtered_fixedsamps \
 	-gk \
 	-o Chinook_GWAS_filtered_fixedsamps #gk is the option for generating the relatedness matrix 
 
 #run the GWA controlling for relatedness
-~/software/gemma-0.98.1-linux-static \
+/mnt/software/gemma-0.98.5-linux-static-AMD64 \
 	-bfile vcf/Chinook_GWAS_filtered_fixedsamps \
 	-k output/Chinook_GWAS_filtered_fixedsamps.cXX.txt \
 	-lmm 4 \
@@ -166,7 +162,7 @@ head analysis/gwas/Chinook_GWAS_relatedness.assoc.txt #note that the p_wald colu
 sort -g -k11,11 analysis/gwas/Chinook_GWAS.assoc.txt | head -n 2 | cut -d$'\t' -f11  #g tells sort to interpret scientific notation
 sort -g -k14,14 analysis/gwas/Chinook_GWAS_relatedness.assoc.txt | head -n 2 | cut -d$'\t' -f14
 
-#our minimum p-value is much lower when we account for relatedness..
+#Note that our minimum p-value is much lower when we account for relatedness
 
 ```
 
