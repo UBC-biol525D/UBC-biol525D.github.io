@@ -13,7 +13,7 @@ In this workshop, we aim to cover the basics of bioinformatics. This course is a
 
 ## Accompanying material
 [Lecture Slides](./Topic_1.pdf)
-______
+____________________
 # Part 1
 
 ## The Integrative Genomics Viewer
