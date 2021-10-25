@@ -14,6 +14,10 @@ In this workshop, we aim to cover the basics of bioinformatics. This course is a
 ## Accompanying material
 [Lecture Slides](./Topic_1.pdf)
 
+## Download link for the tutorial data
+
+[Google Drive link](https://drive.google.com/drive/folders/17wNzwy8BWywonhpggyiM17UTagVx8X12?usp=sharing)
+
 ____________________
 
 # Part 1

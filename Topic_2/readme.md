@@ -12,14 +12,15 @@ There is a very steep learning curve when it comes to the command line.  The pur
 The purpose of this workshop is to demonstrate the fundamentals of bioinformatic analysis. We will need to use the command line throughout the week, so it would be best if participants had taken part in an introduction to the Unix command line workshop before participating in this one, if you not had the time to do that, that's Ok, but there may be places where some things seem a bit opaque.
 
 Please do not hesitate to ask questions and do not be put off if you find certain things difficult to begin with, but remember that the primary purpose of this workshop is to become familiar with bioinformatic tools and a general familiarity with UNIX command line environments is strongly encouraged.
-______________
+
+________________
 
 We have tried to focus on concepts rather than particular software packages in this workshop. This field is moving so fast that most programs and packages are out of date before too long. That being said, we have had to choose some packages to use for the tutorial, but these should not be seen as the be-all and end-all. There are many packages for specific purposes that we do not have time to go over.
 
 
 ### Accompanying material
 
-* [Slides](./Topic 2.pdf)
+* [Slides](./Topic_2.pdf)
 * [Software Carpentry Tutorial](http://swcarpentry.github.io/shell-novice/)
 
 # Part 0: Logging on to the servers:
@@ -279,6 +280,56 @@ Even though this example is fairly trivial, piping is incredibly useful and can 
 In the exercises below we'll get some more practice using pipes. There is no rule saying that you must use pipes when you're writing your scripts and running code, but it is good to be aware of how your choices will affect performance.
 ____________________
 
+
+### Metacharacters
+
+Metacharacters are a class of characters that convey specific instructions to the operating system The pipe and redirect symbols ("|", "<" and ">") are examples of metacharacters.
+
+There are numerous metacharacters ([here's a comprehensive list](http://faculty.salina.k-state.edu/tim/unix_sg/shell/metachar.html)). It's a good idea to familiarize yourself with some of the more commonly used ones.
+
+### Wild cards
+
+
+## Paths
+
+As mentioned in the lecture, getting used to navigating the file hierarchy in Unix is probably one of the most important skills to develop. Knowing how to access data stored in locations other than your home directory is, as you can imagine, pretty important.
+
+Here we'll introduce several commands that are incredibly important.
+
+## `mkdir`
+
+The `mkdir` command stands for "make directory". As you might have guessed, this makes a new directory (a.k.a. folder). You can call the new directory whatever you want. For example:
+
+```
+mkdir my_results
+```
+The above generate a new file in the current working directory called "my_results".
+
+## `cd`
+
+Now we've made a new directory, it would be to move into it to do some work.
+
+To navigate into a directory, use the `cd` command (it stands for "change directory"). For example:
+
+```
+cd my_results
+```
+
+Now we're in the folder we made. To demonstrate that point, let's ask the computer where we are currently located (or, what our current working directory is). To print the current working directory to screenrun:
+
+```
+pwd
+```
+
+Now let's go back to where we were. We can go back one step in the file hierarchy by running:
+
+```
+cd ../
+```
+
+The text `../` refers to the folded one step back from where we were.
+
+A  piece of text refers to the file we are currently in
 
 
 
