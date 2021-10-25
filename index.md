@@ -7,13 +7,11 @@ menuPosition: 1
 
 <h1>{{ site.courseName }}</h1>
 
-<img src="{{ site.baseurl }}/style/header.jpg" width="100%" alt="Nitobe Memorial Gardens -- CC BY-NC 2.0 - @kardboard604 https://www.flickr.com/photos/moov4/10157685024/" title="Nitobe Memorial Gardens -- flickr @kardboard604">
-
 ## Description
-The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic and phylogenomic approaches. The course will be presented as a series of short lectures and lab exercises over a one week period in August.
+The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic. The course will be presented as a series of short lectures and lab exercises over a one week period in October 2021.
 
 ## Instructors
-Dr. Kathryn Hodgins, Dr. Tom Booker, Julia Kreiner
+Tom Booker, Julia Kreiner
 
 ## Format
 A mix of lecture and lab exercises, running in a 2-hour block.
@@ -30,11 +28,11 @@ Consult [Grading Information](resources/grading.md).
 Consult [Daily Assignments](resources/daily_assignments.md)
 
 ## Lectures/seminars
-30th November 2020 - 4th of December 2020.
+25th October 2021 - 29th of October 2021.
 
-There are two sessions a day, from 10am to Noon and from 1pm to 3pm.
+There are two sessions a day, from 10am to Noon and from 2pm to 4pm.
 
-The course will be run entirely over Zoom - links to the sessions will be sent to those who registered interest. 
+The course will be run in person on the UBC campus in the Darwin room in the Biodiversity Research Centre (Room 303 in the BRC).
 
 ## Basic course structure
 
@@ -43,21 +41,32 @@ The course material is organized in several topics, with slides and coding examp
 To get up to speed on working with a Unix system, take a look at the [unix help](resources/unix_ref.pdf) file. There are some resources there that will help you find the specific command you need for each task.
 
 ## Syllabus
-1. [Topic 1](./Topic_11/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics, and the future of sequencing [Booker,T]
-2. [Topic 2](./Topic_2/) Programming Basics
-3. [Topic 3]  Bioinformatics Gotchyas
-4. [Topic 4](./Topic_3n4/) Genome Assembly
-5. [Topic 5](./Topic_6/) RNAseq + differential expression analysis
+1. [Topic 1](./Topic_1/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics [Booker,T]
+2. [Topic 2](./Topic_2/) Programming Basics [Booker, T]
+3. [Topic 3](./Topic_3) Sequence Data and Bioinformatics Gotchyas [Booker, T]
+4. [Topic 4](./Topic_3n4/) Genome Assembly [Kreiner, J]
+5. [Topic 5](./Topic_6/) RNAseq + differential expression analysis [Booker, T]
 6. [Topic 6](./Topic_4/) Alignment: algorithms and tools [Booker, T]
 7. [Topic 7](./Topic_7/) SNP and variant calling [Kreiner, J]
 8. [Topic 8](./Topic_8/) Patterns of population structure [Kreiner, J]
 9. [Topic 9](./Topic_8/) Signals of adaptation [Kreiner, J]
 10. [Topic 10](./Topic_12/) Data visualization in R [Kreiner, J]
 
-In previous years, there has been a short introduction to phylogenetic analysis included in the workshop. We have not included that topic this year, but the slides and materials are available for those who are interested:
 
-11. [Topic 11](./Topic_10/) Phylogenetic analysis
 
+## Extras
+
+In previous years, there have been other topics that were included in the workshop as well as brief tutorials on other aspects of bioinformatics. In this section we include the slides and materials for those topics for those who are interested:
+
+[Phylogenetic analysis](./Topic_10/)
+
+
+## Chinook
+
+In this workshop we make use of simulated datasets for all of the tutorials and demonstrations. The simutions model a populations of Chinook Salmon living in the Fraser River in Southern British Columbia. We use a population genetic simulation modelling local adaptation to varying environmental conditions. These simulations are used to generate DNA and RNA sequence data that we use to demonstrate bioinformatic principles and give workshop participants experience using standard tools. The biggest benefit to using simulations is that we can compare bioinformatic estimates to a ground truth, which is not possible when using real data.
+
+The GitHub page for Chinook is here:
+[https://github.com/TBooker/Chinook](https://github.com/TBooker/Chinook)
 
 ## Obtaining all the files on this site
 

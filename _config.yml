@@ -1,7 +1,7 @@
 # configuration
 # fill in the course details
 
-courseName: "UBC Biol525D -- Fall 2020"
+courseName: "UBC Biol525D -- Fall 2021"
 
 # small title that is at the top of every page
 subtitle: "Topics in Systematics and Evolution: Bioinformatics for Evolutionary Biology"
@@ -39,5 +39,3 @@ markdown: kramdown
 # blocks.
 kramdown:
   parse_block_html: true
-  
-  

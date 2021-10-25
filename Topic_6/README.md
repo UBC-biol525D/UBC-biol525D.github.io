@@ -1,9 +1,14 @@
+<!---
 ---
-title: "Topic 6: RNAseq analysis exercise"
+title: "Topic 6: RNAseq analysis"
 permalink: /Topic_6/
 topickey: 6
 topictitle: "RNASeq Analysis"
 ---
+-->
+
+
+
 
 
 ## Lecture recordings
@@ -66,7 +71,7 @@ Make a directory in your home drive for Topic_6
 mkdir ~/Topic_6
 ```
 
-Run the remaining commands from this directory. 
+Run the remaining commands from this directory.
 
 command:
 extract-transcript-to-gene-map-from-trinity <fasta_reference> <output_map_name>
@@ -96,7 +101,7 @@ example:
 bowtie2-build -f /home/biol525d/Topic_6/data/Pine_reference_rnaseq_reduced.fa Pine_reference_rnaseq_reduced_ref
 ```
 
-Step 6. Calculate expression. Previous versions of RSEM specified the "--no-polyA" flag to be used if the data have already been cleaned to remove polyA tails, but this is now the default, so poly-A tails are not added unless you specify. 
+Step 6. Calculate expression. Previous versions of RSEM specified the "--no-polyA" flag to be used if the data have already been cleaned to remove polyA tails, but this is now the default, so poly-A tails are not added unless you specify.
 
 I have provided the example command for one of the individuals. Be sure to repeat the alignments and expression counts for all three individuals (PmdT_147, PmdT_191 and PmwT_171).
 
@@ -113,13 +118,13 @@ Examine the output of RSEM, both the output to the screen and the files that it 
 
 #################
 
-Recap: 
+Recap:
 
 Use "ls" to discover what the output is called, and use "less" or "head" to see what the files look like.
 
 ################
 
-Now rerun this command on the other two paired .fq libraries, generating three RSEM alignments. 
+Now rerun this command on the other two paired .fq libraries, generating three RSEM alignments.
 
 Step 7. To plot some quality statistics, run the following command, replacing the <NAME> with the appropriate filename prefix, without the .stat ending (and removing the <> characters):
 
@@ -180,14 +185,14 @@ They have been created by using RSEM to align libraries to a lodgepole pine refe
 
 The script "process_hot_cold_expression.R" will show you some of the basic steps for analyzing expression data. For more details, the EdgeR user guide (included in the folder background reading) provides an excellent resource with well worked examples. Use these examples to play around with the data and try to answer the following questions:
 
-### Question 1. How many genes are differentially expressed by treatment in the simple contrast of C vs H (using dataset "cold_hot_expression.txt")? How does the choice of FDR cutoff or p-value affect this number? 
- 
+### Question 1. How many genes are differentially expressed by treatment in the simple contrast of C vs H (using dataset "cold_hot_expression.txt")? How does the choice of FDR cutoff or p-value affect this number?
+
 ### Question 2. How many genes are differentially expressed in the three-way contrast (using "cold_hot_mwh_expression.txt")? Which treatment is driving differential expression here? How do you know?
 
 ### Question 3. How much does model fitting with common dispersion vs. tagwise dispersion affect the answers you get from the data? (think in terms of the number of DE genes, the evidence for a single gene, etc.)
 
 
-## STEPS for bash commands to prepare input files for add_RSEM_data_to_table.pl 
+## STEPS for bash commands to prepare input files for add_RSEM_data_to_table.pl
 
 List all files with .genes.results in their name (you may want to delete some if you've made more copies than you should have during testing, or chain multiple "\| grep" commands together)
 
@@ -200,9 +205,3 @@ Find all lines that have ">" in them, which are the contig names. Then pass thes
 ```bash
 grep ">" /home/biol525d/Topic_6/data/Pine_reference_rnaseq_reduced.fa | sed 's/>//' > gene_names.txt
 ```
-
-
-
-
-
- 

@@ -1,0 +1,119 @@
+<p>This page contains instructions to load up a key into the ssh-agent. The exercise is part of <a href="./">Topic 1</a>. It assumes you have followed steps in <a href="./generate_a_key">Generate a key</a>.</p>
+
+<p>Instructions: Read the general text, and then follow only the instructions that pertain to your operating system and software.</p>
+
+<p>Time needed to complete: 5 minutes.</p>
+
+<p>One way to think about the ssh-agent is that it is a program which has a keyring on which you add keys. When a program needs to log in to a server over SSH, it will check with the agent to see if it has a valid key for that server.</p>
+
+<blockquote>
+  <p>ssh-agent is a program to hold private keys used for public key authentication (RSA, DSA). The idea is that ssh-agent is started in the beginning of an X-session or a login session, and all other windows or programs are started as clients to the ssh-agent program. Through use of environment variables the agent can be located and automatically used for authentication when logging in to other machines using ssh(1).</p>
+
+  <p>(excerpt from the <a href="https://linux.die.net/man/1/ssh-agent">manual page</a>)</p>
+</blockquote>
+
+<p><em>Other Info</em>:</p>
+<ul>
+  <li><a href="https://en.wikipedia.org/wiki/Ssh-agent">wikipedia</a></li>
+</ul>
+
+<h3 id="instructions-for-mac-or-gnulinux">Instructions for Mac or GNU/Linux</h3>
+
+<ol>
+  <li>
+    <p>Open a terminal.</p>
+  </li>
+  <li>
+    <p>Check if your agent is already running:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> # lists identities currently loaded in the agent
+ ssh-add -l
+</code></pre></div>    </div>
+
+    <ul>
+      <li>If it says “The agent has no identities.” then it is running, but no keys are loaded in it yet. Skip step 3 (starting the agent).</li>
+      <li>
+        <p>If it lists one or more key fingerprints, such as</p>
+
+        <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>4096 SHA256:W/q4wBqfovIxIL7iO6mnDM/IPl0pjW5SqbjwinYmu70 /home/foo/.ssh/id_rsa2 some name (RSA)
+</code></pre></div>        </div>
+
+        <p>then skip step 3 (starting the agent).</p>
+      </li>
+      <li>If it says It “cannot connect to the agent”, or “Connection
+refused” then it needs to be started. This would be surprising,
+but not impossible. Typically the agent will be available from
+all terminals started locally in your desktop session.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Starting the agent: For whichever reason, <em>if it’s not already running</em>, you can start an Agent with the following command:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> eval "$(ssh-agent -s)"
+</code></pre></div>    </div>
+
+    <p><em>Note:</em> This will start the agent in the background of the <em>current</em> shell session <em>only</em>. (Optional: To ensure your agent is running
+        whenever you open a new terminal (or another tab), you may add the following to the end of file <code class="language-plaintext highlighter-rouge">~/.bashrc</code>):</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> #
+ # ssh-agent configuration
+ #
+ if [ -z "$(pgrep ssh-agent)" ]; then
+     rm -rf /tmp/ssh-*
+     eval "$(ssh-agent -s)" &gt; /dev/null
+ else
+     export SSH_AGENT_PID=$(pgrep ssh-agent)
+     export SSH_AUTH_SOCK=$(find /tmp/ssh-* -name agent.*)
+ fi
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Add the key to your agent (you want the private key, not the .pub). You will be prompted for your passphrase. You will have to perform this operation once <em>per computer session</em> (i.e. next time you reboot your computer).</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-add ~/.ssh/biol525D
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h3 id="instructions-for-windows-mobaxterm">Instructions for Windows: MobaXTerm</h3>
+
+<ol>
+  <li>
+    <p>Open MobaXTerm settings. <code class="language-plaintext highlighter-rouge">Menu</code> -&gt; <code class="language-plaintext highlighter-rouge">Settings</code> -&gt; <code class="language-plaintext highlighter-rouge">Configuration</code></p>
+  </li>
+  <li>
+    <p>Under the <code class="language-plaintext highlighter-rouge">SSH</code> tab, in the <code class="language-plaintext highlighter-rouge">SSH Agents</code> section, enable <code class="language-plaintext highlighter-rouge">Use Internal SSH Agent MobAgent</code></p>
+  </li>
+  <li>
+    <p>In the list of keys to load on Startup, click <code class="language-plaintext highlighter-rouge">+</code> and add your <code class="language-plaintext highlighter-rouge">biol525D.ppk</code> file that you generated following the <a href="./generate_a_key">previous instructions</a>. You will be prompted to restart MobaXTerm.</p>
+  </li>
+  <li>
+    <p>When Moba restarts, it will prompt you for the passphrase for your key.</p>
+  </li>
+  <li>
+    <p>If you go back to that SSH configuration tab later, in the configuration, you should see your key in the list.</p>
+  </li>
+</ol>
+
+<h3 id="instructions-for-windows-putty">Instructions for Windows: PuTTY</h3>
+
+<p>The PuTTY suite comes with Pagent.exe which runs in the background. When it is running, it will signal its presence with an icon in the system tray.</p>
+
+<ol>
+  <li>
+    <p>Run Pagent.exe. <kbd>Winkey</kbd>+<kbd>r</kbd>, type Pageant + <kbd>Enter</kbd></p>
+  </li>
+  <li>
+    <p>Pageant runs silently, but it adds a little icon in your system tray – a computer with a hat. Right click on the icon and choose “Add Key”.</p>
+  </li>
+  <li>
+    <p>Select your <code class="language-plaintext highlighter-rouge">biol525D.ppk</code> file that you selected earlier, and enter its passphrase. You will have to perform this operation <em>once</em> every time you login to your computer after boot. Optional: You may add Pageant to the list of programs to start automatically when you login to Windows.</p>
+  </li>
+  <li>
+    <p>If you don’t remember if your key is loaded or not, you can do “List keys” in the right-click menu of Pageant.</p>
+  </li>
+</ol>
+
+<h3 id="next-step">Next step</h3>
+
+<p>Follow instructions at <a href="./finalize_tool_config">finalize tool config</a>.</p>

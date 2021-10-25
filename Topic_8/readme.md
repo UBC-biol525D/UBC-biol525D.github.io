@@ -13,11 +13,9 @@ topictitle: "Population genomics - Structure"
 2. What effect does missing data have on a PCA? What about linkage?
 3. What distinguishes PCA from Structure-based analyses?
 
-### NOTE:
-* If you didn't complete creating _Chinook_GWAS.vcf.gz_ in Topic 7, you can copy it to ~/vcf from /mnt/data/vcf
 
+Last topic we called variants across the two chromosomes. If you look at the VCF, you'll notice there are a lot of sites only genotyped in a small subset of the samples. This can happen with lower overall read depth (in this case this is whole genome sequencing at ~8X depth), but can be due to other factors like divergence been sample and reference. We also have indels, and SNPs with more than two alleles. Many programs strictly require biallelic sites so lets first filter the VCF to a smaller set of usable sites.
 
-Last topic we called variants across the two chromosomes. If you look at the VCF, you'll notice there are a lot of sites only genotyped in a small subset of the samples. This can happen with lower overall read depth (in this case this is whole genome sequencing at ~10X depth), but can be due to other factors like divergence been sample and reference. We also have indels, and SNPs with more than two alleles. Many programs strictly require biallelic sites so lets first filter the VCF to a smaller set of usable sites.
 We're going to use _bcftools_ a very fast program for processing and filtering VCF files. Here are what we want to filter for:
 * At least 80/100 samples genotyped (which is 160 alleles since they're diploid).
 * Variant call quality (QUAL) > 30 - a 99.9% chance there is a variant at the site given genotype calls across samples
@@ -25,24 +23,23 @@ We're going to use _bcftools_ a very fast program for processing and filtering V
 * No indels.
 * At least 2 copies of the alternate allele
 
+### NOTE:
+* We are going to be doing some data hungry analyses, so will be working with a much larger VCF then we made last tutorial. Copy it to from `/mnt/data/vcf/Chinook_GWAS.vcf.gz` to `~/vcf`
+
 
 ```bash
-cd vcf
-#for BCFtools to work as quickly as it does, VCFs need to be converted to binary format (look for a gz/bcf ending) and make sure its and indexed (for quick referencing)
-bgzip Chinook_GWAS.vcf
-tabix Chinook_GWAS.vcf.gz #be careful, gzip also produces .gz suffixes, but isn't compatible with tabix indexing, needed for bcftools!
+cd ~/vcf
+bcftools view \
+    -c 2 \
+    -i 'INFO/AN >= 160 && QUAL > 30' \
+    -m 2 \
+    -M 2 \
+    -v snps \
+    -O z \
+    Chinook_GWAS.vcf.gz > Chinook_GWAS_filtered.vcf.gz
 
-bcftools  view \
-	-c 2 \
-	-i 'INFO/AN >= 160 && QUAL > 30' \
-	-m 2 \
-	-M 2 \
-	-v snps \
-	Chinook_GWAS.vcf.gz \
-	-O z > Chinook_GWAS_filtered.vcf.gz
-
-#Again, lets index the vcf file for future use
-tabix -p vcf Chinook_GWAS.filtered.vcf.gz
+#Lets index the vcf file for future use
+tabix Chinook_GWAS_filtered.vcf.gz
 ```
 
 ##Coding challenge
@@ -55,18 +52,21 @@ A common first pass analysis is to use structure to look at clustering in your d
 cd ~/
 mkdir analysis
 
-#we had a bug in our pipeline that appended some extra characters to the beginning of sample names - you can check sample names by greping for "#CHROM", which is the first string of the sample header line
+#we had a bug in our pipeline that appended some extra characters to the beginning of sample names
+#you can check sample names by greping for "#CHROM", which is the first string of the sample header line
 zgrep "#CHROM" vcf/Chinook_GWAS_filtered.vcf.gz
 #we could use a specialty software like bedtools reheader to fix this, but lets just use basic bash commands
 
 zcat vcf/Chinook_GWAS_filtered.vcf.gz | sed 's/-e Chinook/Chinook/g' | bgzip > vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
+#the key command here is the sed 's/find/replace/g'
 
-/mnt/bin/plink --make-bed \
+plink=/mnt/software/plink
+$plink --make-bed \
 	--vcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
 	--out vcf/Chinook_GWAS_filtered_fixedsamps \
 	--set-missing-var-ids @:# \
 	--double-id \
-	--allow-extra-chr
+	--allow-extra-chr 
 ```
 This produces files with the suffix .nosex, .log, .fam, .bim, .bed. We can use these in Admixture.
 
@@ -75,12 +75,27 @@ NOTE: When inferring patterns of population structure (i.e. admixture/pca) its g
 To prune for LD, we'll ask plink to slide across the genome (10 snps at a time),and in windows of 100snps, calculate LD between each snp, removing those with an LD (r2) > .5
 
 ```bash
-plink --bfile vcf/Chinook_GWAS_filtered_fixedsamps --indep-pairwise 100 10 0.5 --out vcf/Chinook_GWAS_filtered_fixedsamps --allow-extra-chr --make-founders #this produces two files, .in (to include) and .out (to exclude) 
+$plink \
+	--bfile vcf/Chinook_GWAS_filtered_fixedsamps \
+	--indep-pairwise 100 10 0.5 \
+	--out vcf/Chinook_GWAS_filtered_fixedsamps \
+	--make-founders \
+	--allow-extra-chr 
 
-plink --bfile vcf/Chinook_GWAS_filtered_fixedsamps --extract vcf/Chinook_GWAS_filtered_fixedsamps.prune.in --make-bed --out vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned --allow-extra-chr
+#this produces two files, .in (to include) and .out (to exclude) 
+
+$plink \
+--bfile vcf/Chinook_GWAS_filtered_fixedsamps \
+--extract vcf/Chinook_GWAS_filtered_fixedsamps.prune.in \
+--make-bed \
+--out vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned \
+--allow-extra-chr 
+
+#this actually extracts the snps that remain after LD pruning
 
 ```bash 
-/mnt/bin/admixture vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned.bed 2
+admixture=/mnt/software/dist/admixture_linux-1.3.0/admixture
+$admixture vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned.bed 2
 ```
 Uh oh that doesn't work, it produces this error message.
 ```bash
@@ -107,49 +122,59 @@ zcat vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz |\
 	sed s/^chr_//g |\
 	gzip > vcf/Chinook_GWAS_filtered_fixedsamps_numericChr.vcf.gz
 	
+#sed s/^chr_//g <- removes "chr_" from the beginning of lines 
+	
 #make new bed from vcf
-/mnt/bin/plink --make-bed \
+$plink --make-bed \
 	--vcf vcf/Chinook_GWAS_filtered_fixedsamps_numericChr.vcf.gz \
 	--out vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
 	--set-missing-var-ids @:# \
 	--double-id \
 	--allow-extra-chr
+	
 #redo LD analysis
-/mnt/bin/plink \
+$plink \
 	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
 	--out vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
 	--allow-extra-chr \
 	--make-founders \
 	--indep-pairwise 100 10 0.5 
+	
 #make new bed with snps in low LD
-/mnt/bin/plink \
+$plink \
 	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
 	--extract vcf/Chinook_GWAS_filtered_fixedsamps_numericChr.prune.in \
 	--make-bed \
 	--out vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned \
 	--allow-extra-chr
+	
 #run admixture
-/mnt/bin/admixture --cv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed 2
-```
-This works! With 100 samples and ~31000 SNPs across two chromosomes it finishes in less than a minute. We only ran it for one value of K (2) but we should also test different K values and select the best K value. Common practice is to run from 1 to number of populations (10). Lets do that but skip some in between. This will take a couple minutes.
-```bash 
-for K in 1 2 3 4 10; \
-do /mnt/bin/admixture --cv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed $K |\
-tee vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.${K}.out; \
-done
+$admixture --cv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed 2 |\
+tee analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.out; \
+
 #NOTE: "tee" takes the output of a command and saves it to a file, while 
 # also printing letting it print to the screen. So we can watch the progress while also 
 # saving that output. 
+```
+This works! With 100 samples and ~31000 SNPs across two chromosomes it finishes in less than a minute. We only ran it for one value of K (2) but we should also test different K values and select the best K value. Common practice is to run from 1 to number of populations (10). Lets do that but skip some in between. This will take a couple minutes.
 
-#Now move all the output files to the analysis directory v
-mv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.*.out analysis/
+```bash 
+for K in 1 3 4 10; \
+do 
+$admixture --cv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed $K |\
+tee analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.${K}.out; \
+done
+
+#now move the admixture output files to the analysis folder
+mv Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned*.P Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned*.Q analysis/
+
 ```
 The best K value for Admixture is typically the K value with the lowest cross-validation (CV) error. The CV error are in the .out files we saved. One easy way to look at all those scores is to print all the .out files and then keep only the lines that include "CV" using grep. 
 
 ```
 cat analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned*out | grep CV
-CV error (K=10): 0.79357
 CV error (K=1): 0.49626
+CV error (K=10): 0.79357
 CV error (K=2): 0.51421
 CV error (K=3): 0.54330
 CV error (K=4): 0.57121
@@ -158,6 +183,11 @@ This shows that the lowest CV error is with K=1, but actually K=2 is a close sec
 
 ```bash
 paste <(cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam) analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.Q
+
+#what was that <( ) notation? 
+#this is another cool bash trick called *subprocessing*. 
+#Instead of making an intermediate file of sample names to join with our K values...
+#...we can use subprocessing to take the output of the cut command and pass that to paste. 
 
 #Chinook.p1.i0	0.999990 0.000010
 #Chinook.p1.i1	0.999990 0.000010
@@ -180,7 +210,7 @@ We're going to plot these results, but before we leave the command line, lets al
 We can do this with just one line of code in plink.
 
 ```bash
-plink \
+$plink \
 	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr \
 	--pca \
 	--allow-extra-chr \
@@ -191,7 +221,7 @@ This was on our full dataset, but we learned above it might be a good idea to pr
 
 ```bash
 #we already have an LD pruned bed, so subbing in that input file
-plink \
+$plink \
 	--bfile vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned \
 	--pca \
 	--allow-extra-chr \
