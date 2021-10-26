@@ -10,7 +10,7 @@ topictitle: "Genome Assembly"
 <iframe src="https://monash.au.panopto.com/Panopto/Pages/Embed.aspx?id=835dc4b6-e73c-4892-88cc-ac820189a883&autoplay=false&offerviewer=true&showtitle=true&showbrand=false&start=0&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay"></iframe>
 
 ## Accompanying material
-* Slides 2020: [UBC - De novo Assembly 2020](./Assembly2021Julia - JK.pdf)
+* Slides 2020: [UBC - De novo Assembly 2020](Assembly2021Julia - JK.pdf)
 * Background reading: The present and future of de novo whole-genome assembly [Paper](https://academic.oup.com/bib/article/19/1/23/2339783?login=true#119542667). 
 
 Programming Resources
@@ -43,9 +43,9 @@ wc -c /mnt/data/codebreaks/kmer.fa
 
 ```bash
 for num in {1..10}
-    do
-        echo $num >> file.txt
-    done
+do
+echo $num >> file.txt
+done
 ```
 What do these commands do? Can you use commands like this to find all the kmers in the sequence? 
 
@@ -73,8 +73,9 @@ echo $((1+1))
 </summary>
 ```bash
 for i in {1..52} 
-	do k=$(($i+8))
-	cut -c $i-$k /mnt/data/codebreaks/kmer.fa
+do 
+k=$(($i+8))
+cut -c $i-$k /mnt/data/codebreaks/kmer.fa
 done
 ```
 </details>
