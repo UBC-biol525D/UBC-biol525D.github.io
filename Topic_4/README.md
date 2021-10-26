@@ -260,6 +260,7 @@ Importantly, this allows us to get not just the number and length of our contigs
 
 ```bash
 #it would be nice to know how well our assemblies have captured known genes. Lets extract this information from the true reference genome's gff file and format it as quast expects 
+head /mnt/data/gff/SalmonAnnotations_forIGV.gff
 #quast expects the column order as follows: chromosome, gene id, end, start
 awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' /mnt/data/gff/SalmonAnnotations_forIGV.gff | sed 's/ID=//g' > SalmonReference.genes
 
