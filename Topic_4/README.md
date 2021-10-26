@@ -111,7 +111,7 @@ While R is typically the go to place for statistical analyses, bash can also han
 For example, remember that awk is a super useful trick for working with column and row based analyses. A one-liner in awk can help us calculate the mean read length.
 
 ```bash
-awk '{ total += $2 } END { print total/NR }' longread_lengths.txt` #this gets the mean of column two.
+awk '{ total += $2 } END { print total/NR }' longread_lengths.txt #this gets the mean of column two.
 ```
 
 **total += $2** <= set the variable "total" equal to the sum of all items in column 2 \
