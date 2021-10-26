@@ -135,7 +135,9 @@ cut -f2 longread_lengths.txt | sort -n | sed -n "$FIRSTQUART p"
 cut -f2 longread_lengths.txt | sort -n | sed -n "$THIRDQUART p" 
 ```
 **wc -l** <= number of lines \
+
 **cut -d" " -f1** <= keeps only the first column (based on a space delimeter) \
+
 **sed -n "N p"** <= prints (p) the line at value N \
 
 
