@@ -232,6 +232,9 @@ cp /mnt/data/fasta/spades_shortreadonly.fasta ./
 cp /mnt/data/fasta/spades_hybrid.fasta ./
 cp /mnt/data/fasta/haslr_hybrid.fasta ./
 cp /mnt/data/fasta/flye_longread.fasta ./
+
+#we could have done this in one line
+#cp /mnt/data/fasta/*.fasta
 ```
 
 bbmap is command line alignment program that has a collection of nice scripts for library and sequence quality control. We're going to use its stats.sh script to get at some basic stats related to the number and length of sequences in our assembly.
