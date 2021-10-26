@@ -48,7 +48,7 @@ for num in {1..10}
 ```
 What do these commands do? Can you use commands like this to find all the kmers in the sequence? 
 
-Think about how you could incorporate some basic algebra and variable assignment (k=``<some command here>``) to solve this problem.
+Think about how you could incorporate some basic algebra and variable assignment (k=\``<some command here>`\`) to solve this problem.
 
 ```bash
 #one way to do math in bash is by piping to bc (basic calculator).
