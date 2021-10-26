@@ -69,11 +69,7 @@ echo $((1+1))
 
 <details>
   <summary>Solution spoiler! </summary>
-	for i in {1..52}
-	do
-	k=$(($i+8))
-	cut -c $i-$k /mnt/data/codebreaks/kmer.fa
-	done
+	for i in {1..52}; do k=$(($i+8)); cut -c $i-$k /mnt/data/codebreaks/kmer.fa; done
 </details>
 
 
@@ -88,9 +84,7 @@ For our assembly, since we only sequence one individual, we have two files for o
 
 ## First, lets check out our sequencing data!
 
-We just got back our high coverage illumina paired-end data and long-read pacbio data from the sequencing facility! Let's see how it turned out.
-
-_The first thing we'll check is how long the reads are in our different sequence data sets ._
+We just got back our high coverage illumina paired-end data and long-read pacbio data from the sequencing facility! Let's see how it turned out. We know that we expect all reads to be 150bp (including adapters) for our short read data, but we're curious _how long our long-read data is_.
 
 First lets specify variables for the paths to our data since we'll be working with them alot
 ```bash
@@ -102,8 +96,8 @@ Lets break this down into steps.
 
 1) Subset only lines containing read information from our fastqs
 ```bash
-cat $shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | head #why doesn't this work?
-zcat $shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 #what does the A option do?
+cat $longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz | head #why doesn't this work?
+zcat $longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz | grep "chr" -A1 #what does the A option do?
 
 #we still have some extra information being printed.
 #what could you add to this pipe to only keep the sequence? hint: egrep -v "match1|match2"
@@ -113,16 +107,14 @@ zcat $shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1
 ```bash
 #pipe the output above (every line = seperate read) to the following awk command. 
 awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" option do?
-#save the output to shortread_lengths.txt
+#save the output to longread_lengths.txt
 ```
 
-Now take a similar approach for the long read data ($longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz) and save the output to `longread_lengths.txt`
-
-Instead of just investigating by eye, it would be nice to get some quick stats of the read lengths of these datasets - _what is the average read length for our short and long read datasets? how much variation is there around the mean?_ \
+Instead of just investigating by eye, it would be nice to get some quick stats of the read lengths of these datasets _i.e. what is the average read length for our long read datasets? how much variation is there around the mean?_ \
 
 While R is typically the go to place for statistical analyses, bash can also handle doing some intuitve stats, which will save us the headache of importing data into R.
 
-For example, remember that awk is a super useful trick for working with column and row based analyses. A one-liner in awk can help us calculate the mean read length.
+For example, awk is a super useful tool for working with column and row based analyses. A one-liner in awk can help us calculate the mean read length.
 
 ```bash
 awk '{ total += $2 } END { print total/NR }' longread_lengths.txt #this gets the mean of column two.
