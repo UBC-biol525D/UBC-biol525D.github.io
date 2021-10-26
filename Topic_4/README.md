@@ -33,11 +33,12 @@ This might be a tricky one and there are likely many ways to do this. First try 
 Hints: test out the following commands:
 
 ```bash
-cut -c1- kmer.fa
+cut -c1- /mnt/data/codebreaks/kmer.fa
+cut -c1-4 /mnt/data/codebreaks/kmer.fa
 ```
 
 ```bash
-cut -c1-4 kmer.fa
+wc -c /mnt/data/codebreaks/kmer.fa
 ```
 
 ```bash
@@ -48,19 +49,28 @@ for num in {1..10}
 ```
 What do these commands do? Can you use commands like this to find all the kmers in the sequence? 
 
-Think about how you could incorporate some basic algebra and variable assignment (k=\``<some command here>`\`) to solve this problem.
+
+One approach we could use involves variable assignment. Variable assignment is a super powerful part of bash coding. A variable can be used as a shortcut for long path, or it can even contain the output of a command. The notation is as follows:
+
+```bash
+shortpath=/some/path/here/
+cmdout=`echo "test"`
+```
+
+Think about how you could incorporate some basic algebra and variable assignment to solve this problem.
 
 ```bash
 #one way to do math in bash is by piping to bc (basic calculator).
 echo "1+1" | bc
 #another way to do arithmitic in bash is through the $(( )) syntax which tells shell to evaluate its contents
 echo $((1+1))
-
 ```
 
-3. Sort them and keep the unique kmers
-
-Hint: try sort (look up the options)
+for i in {1..52}
+do
+k=$(($i+8))
+cut -c $i-$k /mnt/data/codebreaks/kmer.fa
+done
 
 
 
