@@ -54,7 +54,7 @@ One approach we could use involves variable assignment. Variable assignment is a
 
 ```bash
 shortpath="/mnt/data/shortreads/"
-echo $shortpath
+ls $shortpath
 cmdout=`echo "test"`
 echo $cmdout
 ```
