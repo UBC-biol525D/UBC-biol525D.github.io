@@ -53,7 +53,8 @@ What do these commands do? Can you use commands like this to find all the kmers 
 One approach we could use involves variable assignment. Variable assignment is a super powerful part of bash coding. A variable can be used as a shortcut for long path, or it can even contain the output of a command. The notation is as follows:
 
 ```bash
-shortpath=/some/path/here/
+shortpath="/mnt/data/shortreads/"
+echo $shortpath
 cmdout=`echo "test"`
 echo $cmdout
 ```
@@ -103,15 +104,16 @@ Lets break this down into steps.
 ```bash
 cat $longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz | head #why doesn't this work?
 zcat $longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz | grep "chr" -A1 #what does the A option do?
+#dont forget about man to read the manual of the command grep!
 
 #we still have some extra information being printed.
-#what could you add to this pipe to only keep the sequence? hint: egrep -v "match1|match2"
+#what could you add to this pipe to only keep the sequence? hint: grep -v -E "match1|match2"
 ```
 
 2) Get the length of every line (read)
 ```bash
 #pipe the output above (every line = seperate read) to the following awk command. 
-awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" option do?
+awk -F "" '{print NR "\t" NF}'  #from the output, can you figure out what NR and NF is? what does the -F "" option do?
 #save the output to longread_lengths.txt
 ```
 
@@ -152,14 +154,14 @@ Another thing we might want to know is how much coverage our reads give us for e
 
 
 ```bash
-READLENGTH=`cat shortread_lengths.txt | awk '{ total += $2 } END { print total/NR }' `
-NUMREADS=`wc -l shortread_lengths.txt | cut -d" " -f1`
+READLENGTH=`cat longread_lengths.txt | awk '{ total += $2 } END { print total/NR }' `
+NUMREADS=`wc -l longread_lengths.txt | cut -d" " -f1`
 MEANCOV=`echo "$READLENGTH * $NUMREADS / 10000000" | bc`
 echo "mean coverage = $MEANCOV" 
 
 ```
 
-Our short read coverage (from just forward oriented reads) is 40x. Whats our long read coverage? This is good information to have before we start trying to assemble our genome.
+Both the average read length and expected coverage are good things to know for setting expectations for your genome assembly!
 
 ## Genome Assembly
 
