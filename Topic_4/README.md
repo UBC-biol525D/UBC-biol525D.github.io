@@ -102,16 +102,22 @@ awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" 
 #save the output to shortread_lengths.txt
 ```
 
-What read lengths did you get? Was there any variation?
 Now take a similar approach for the long read data ($longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz) and save the output to `longread_lengths.txt`
 
-Remember that you can get column means pretty quickly with awk: `awk '{ total += $2 } END { print total/NR }' longread_lengths.txt` #this gets the mean of column two. 
+Instead of just investigating by eye, it would be nice to get some quick stats of the read lengths of these datasets - _what is the average read length for our short and long read datasets? how much variation is there around the mean?_ \
+
+While R is typically the go to place for statistical analyses, bash can also handle doing some intuitve stats, which will save us the headache of importing data into R.
+
+For example, remember that awk is a super useful trick for working with column and row based analyses. A one-liner in awk can help us calculate the mean read length.
+
+```bash
+awk '{ total += $2 } END { print total/NR }' longread_lengths.txt` #this gets the mean of column two.
+```
 
 **total += $2** <= set the variable "total" equal to the sum of all items in column 2 \
 
 **print total/NR** <= once finished (END), print the column sum after dividing by NR (number of rows) \
 
-The mean read length of our long-read data is informative but you might have noticed alot of variation across reads, and be curious what the distribution of read length looks like. While R is a great place for quick and efficient statistical analyses, bash can also handle doing some intuitve stats, which will save us the headache of importing data into R. \
 
 For example, we can get the quartiles of read length pretty easily with basic bash.
 
