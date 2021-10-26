@@ -48,7 +48,7 @@ for num in {1..10}
 ```
 What do these commands do? Can you use commands like this to find all the kmers in the sequence? 
 
-Think about how you could incorporate some basic algebra and variable assignment (k=`<some command here>`) to solve this problem.
+Think about how you could incorporate some basic algebra and variable assignment (k=\``<some command here>`\`) to solve this problem.
 
 ```bash
 #one way to do math in bash is by piping to bc (basic calculator).
@@ -102,18 +102,24 @@ awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" 
 #save the output to shortread_lengths.txt
 ```
 
-What read lengths did you get? Was there any variation?
-Now take a similar approach for the long read data ($longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz) and save the output to longread_lengths.txt
+Now take a similar approach for the long read data ($longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz) and save the output to `longread_lengths.txt`
 
-Remember that you can get column means pretty quickly with awk: `awk '{ total += $2 } END { print total/NR }' longread_lengths.txt` #this gets the mean of column two. 
+Instead of just investigating by eye, it would be nice to get some quick stats of the read lengths of these datasets - _what is the average read length for our short and long read datasets? how much variation is there around the mean?_ \
+
+While R is typically the go to place for statistical analyses, bash can also handle doing some intuitve stats, which will save us the headache of importing data into R.
+
+For example, remember that awk is a super useful trick for working with column and row based analyses. A one-liner in awk can help us calculate the mean read length.
+
+```bash
+awk '{ total += $2 } END { print total/NR }' longread_lengths.txt #this gets the mean of column two.
+```
 
 **total += $2** <= set the variable "total" equal to the sum of all items in column 2 \
 
 **print total/NR** <= once finished (END), print the column sum after dividing by NR (number of rows) \
 
-The mean read length of our long-read data is informative but you might have noticed alot of variation across reads, and be curious what the distribution of read length looks like. While R is a great place for quick and efficient statistical analyses, bash can also handle doing some intuitve stats, which will save us the headache of importing data into R. \
 
-For example, we can get the quartiles of read length pretty easily with basic bash.
+We can get the quartiles of read length pretty easily with bash and some simple arithmetic.
 
 ```bash
 LINECOUNT=`wc -l longread_lengths.txt | cut -d" " -f1`
@@ -122,9 +128,9 @@ THIRDQUART=`echo "$LINECOUNT * 3 / 4" | bc`
 cut -f2 longread_lengths.txt | sort -n | sed -n "$FIRSTQUART p" 
 cut -f2 longread_lengths.txt | sort -n | sed -n "$THIRDQUART p" 
 ```
-**wc -l** <= number of lines
-**cut -d" " -f1** <= keeps only the first column (based on a space delimeter)
-**sed -n "N p"** <= prints (p) the line at value N
+**wc -l** <= number of lines \
+**cut -d" " -f1** <= keeps only the first column (based on a space delimeter) \
+**sed -n "N p"** <= prints (p) the line at value N \
 
 
 Nice. While theres some variance in our long-read lengths, its nice to see its actually quite consistent. 
@@ -140,11 +146,11 @@ echo "mean coverage = $MEANCOV"
 
 ```
 
-Our short read coverage is 40x. Whats our long read coverage? This is good information to have before we start trying to assemble our genome.
+Our short read coverage (from just forward oriented reads) is 40x. Whats our long read coverage? This is good information to have before we start trying to assemble our genome.
 
 ## Genome Assembly
 
-Genome assembly can take a long time. Because our course is short, we won't have time to run these commands in tutorial, but you could try them out outside of class and see if you're patient enough to let them finish. During tutorial, we'll focus on comparing the output of these different assembly programs.
+Genome assembly can take a long time. Because our course is short, we won't have time to run these commands in tutorial. Instead, today we'll focus on comparing the quality of the assemblies produced through a few different programs, using short, short + long, or long read only data. 
 
 
 #### Short read assembly: SPADES - *don't run*
@@ -206,9 +212,12 @@ Now we have four assemblies, 1 short read (spades), 2 hybrid (spades, haslr), an
 
 ## Assess quality of assemblies
 
-Lets compare assemblies. Copy these out of the 
+Lets compare assemblies. First, copy these out of the /mnt/data/fasta directory
 
 ```bash
+mkdir assemblies
+cd assemblies
+
 cp /mnt/data/fasta/spades_shortreadonly.fasta ./
 cp /mnt/data/fasta/spades_hybrid.fasta ./
 cp /mnt/data/fasta/haslr_hybrid.fasta ./
@@ -247,17 +256,20 @@ awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' /mnt/data/gff/SalmonA
 
 #run quast on all 4 assemblies at once
 mkdir quast
+/mnt/software/quast-5.0.2/quast.py --help #check out the manual
+#notice we're not going to worry about the advanced options 
+
 /mnt/software/quast-5.0.2/quast.py flye_longread.fasta haslr_hybrid.fasta spades_hybrid.fasta spades_shortreadonly.fasta \
 	-r /mnt/data/fasta/SalmonReference.fasta \
 	-g SalmonReference.genes \
 	-o quast
 
-scp -r <username@ip.address>:/home/<usr>/assembly/quast/ ./
+scp -r <username@ip.address>:/home/<usr>/assemblies/quast/ ./
 ```
 
 Open the report.html results file in your browser and explore the outcome of our assembly efforts. Make sure to eventually click the "View in icarus contig browser".
 
-Question: what new information does this report give us? how does it inform on completeness and correctness?
+Question: what new information does this report give us?
 
 
 
@@ -275,9 +287,9 @@ Making new folders `mkdir` \
 Renaming files `mv` and moving them  `mv file path/new_file_name` \
 Counting `wc -l` \
 Find and replace `sed 's/find/replace/g'` \
-Printing a particuar row `sed -n "10p" SalmonReference.genes \
+Printing a particuar row `sed -n "10p" SalmonReference.genes` \
 Column means with `awk '{ total += $2 } END { print total/NR }'` \
-Assigning variables `shortreads="/home/biol525d/data/shortreads/"` and calling them `echo ${shortreads}` \
+Assigning variables `shortreads="/mnt/data/shortreads/"` and calling them `echo ${shortreads}` \
 
 Printing and splitting certain columns (specified with $) with awk 
 ```bash
