@@ -69,7 +69,7 @@ echo $((1+1))
 
 <details>
   <summary>Solution spoiler! </summary>
-for i in {1..52}; do k=$(($i+8)); cut -c $i-$k /mnt/data/codebreaks/kmer.fa; done
+	for i in {1..52}; do k=$(($i+8)); cut -c $i-$k /mnt/data/codebreaks/kmer.fa; done
 </details>
 
 
