@@ -55,6 +55,7 @@ One approach we could use involves variable assignment. Variable assignment is a
 ```bash
 shortpath=/some/path/here/
 cmdout=`echo "test"`
+echo $cmdout
 ```
 
 Think about how you could incorporate some basic algebra and variable assignment to solve this problem.
