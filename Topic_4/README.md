@@ -119,7 +119,7 @@ awk '{ total += $2 } END { print total/NR }' longread_lengths.txt` #this gets th
 **print total/NR** <= once finished (END), print the column sum after dividing by NR (number of rows) \
 
 
-For example, we can get the quartiles of read length pretty easily with basic bash.
+We can get the quartiles of read length pretty easily with bash and some simple arithmetic.
 
 ```bash
 LINECOUNT=`wc -l longread_lengths.txt | cut -d" " -f1`
@@ -146,11 +146,11 @@ echo "mean coverage = $MEANCOV"
 
 ```
 
-Our short read coverage is 40x. Whats our long read coverage? This is good information to have before we start trying to assemble our genome.
+Our short read coverage (from just forward oriented reads) is 40x. Whats our long read coverage? This is good information to have before we start trying to assemble our genome.
 
 ## Genome Assembly
 
-Genome assembly can take a long time. Because our course is short, we won't have time to run these commands in tutorial, but you could try them out outside of class and see if you're patient enough to let them finish. During tutorial, we'll focus on comparing the output of these different assembly programs.
+Genome assembly can take a long time. Because our course is short, we won't have time to run these commands in tutorial. Instead, today we'll focus on comparing the quality of the assemblies produced through a few different programs, using short, short + long, or long read only data. 
 
 
 #### Short read assembly: SPADES - *don't run*
@@ -212,9 +212,12 @@ Now we have four assemblies, 1 short read (spades), 2 hybrid (spades, haslr), an
 
 ## Assess quality of assemblies
 
-Lets compare assemblies. Copy these out of the 
+Lets compare assemblies. First, copy these out of the /mnt/data/fasta directory
 
 ```bash
+mkdir assemblies
+cd assemblies
+
 cp /mnt/data/fasta/spades_shortreadonly.fasta ./
 cp /mnt/data/fasta/spades_hybrid.fasta ./
 cp /mnt/data/fasta/haslr_hybrid.fasta ./
@@ -253,17 +256,20 @@ awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' /mnt/data/gff/SalmonA
 
 #run quast on all 4 assemblies at once
 mkdir quast
+/mnt/software/quast-5.0.2/quast.py --help #check out the manual
+#notice we're not going to worry about the advanced options 
+
 /mnt/software/quast-5.0.2/quast.py flye_longread.fasta haslr_hybrid.fasta spades_hybrid.fasta spades_shortreadonly.fasta \
 	-r /mnt/data/fasta/SalmonReference.fasta \
 	-g SalmonReference.genes \
 	-o quast
 
-scp -r <username@ip.address>:/home/<usr>/assembly/quast/ ./
+scp -r <username@ip.address>:/home/<usr>/assemblies/quast/ ./
 ```
 
 Open the report.html results file in your browser and explore the outcome of our assembly efforts. Make sure to eventually click the "View in icarus contig browser".
 
-Question: what new information does this report give us? how does it inform on completeness and correctness?
+Question: what new information does this report give us?
 
 
 
