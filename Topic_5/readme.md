@@ -16,96 +16,158 @@ The first step is to set up a directory structure so the resulting files will be
 
 ```bash
 
-#Navigate to your working directory
+# Navigate to your working directory
 cd ~
 
-#Copy the reference directory to your working directory
-cp -r /mnt/data/ref ./
+# Copy the reference directory to your working directory
+cp -r /mnt/data/fasta ./
 
-#Copy the fastq files to your working directory
+# Copy the fastq files to your working directory
 cp -r /mnt/data/fastq ./
 
-#Make a new directory for your resulting bam files
+# Make a new directory for your resulting BAM files
 mkdir bam
-
 ```
-Once that is done, we have to index our reference genome.
+
+
+Once that is done, we have to index our reference genomes.
+
+We are going to work with three of the reference genomes that you explored yesterday.
+
+We are going to use the reference genomes built using `approach 1` and `approach 2` as well as the actual genome.
+
+* approach_1.fasta
+
+* approach_2.fasta
+
+* true_genome.fasta
+
 
 ```bash
-#Index the reference for BWA. 
+# Index the references for BWA. 
 
-bwa index ref/HanXRQr1.0-20151230.1mb.fa
+bwa index ref/approach_1.fasta
+
+bwa index ref/approach_2.fasta
+
+bwa index ref/true_genome.fasta
 
 ```
-Now finally we can run BWA and align our data
+
+Now finally we can run BWA and align our short read data. 
+
+Using the approach 1 genome assembly:
+
+
 ```bash
+
 /usr/bin/bwa mem \
-  ref/HanXRQr1.0-20151230.1mb.fa \
-  fastq/ANN1133.R1.fastq.gz \
-  fastq/ANN1133.R2.fastq.gz \
-  -t 2 \
-  -R '@RG\tID:ANN1133\tSM:ANN1133\tPL:illumina\tPU:biol525d\tLB:ANN1133_lib' \
-  > bam/ANN1133.sam
+  ref/approach_1.fasta \
+  fastq/sample_1.R1.fastq.gz \
+  fastq/sample_1.R2.fastq.gz \
+  -t 2 \ 
+  -R '@RG\tID:sample_1\tSM:1\tPL:illumina\tPU:biol525d\tLB:sample_1_library' \
+  > bam/sample_1.sam
   
 ```
+
+
+
+
 Lets break this command down since it has several parts:
 **/usr/bin/bwa** <= We're calling the program _bwa_ from the directory _/usr/bin/_. This is the full path to that program so you can call this no matter where you are in the file system.
 
-**mem** <= This is the bwa command we are calling. It is specific to bwa and not a unix command.
+* **mem** <= This is the bwa command we are calling. It is specific to bwa and not a unix command.
 
-**\\** <= Having this at the end of the line tells the shell that the line isn't finished and keeps going. You don't need to use this when typing commands in, but it helps break up really long commands and keeps your code more organized.
+* **\\** <= Having this at the end of the line tells the shell that the line isn't finished and keeps going. You don't need to use this when typing commands in, but it helps break up really long commands and keeps your code more organized.
 
-**ref/HanXRQr1.0-20151230.1mb.fa** <= This is the reference genome. We're using a relative path here so you need be in /mnt/<USERNAME> or it won't be able to find this file.
+* **ref/approach_1.fasta** <= This is the reference genome. We're using a relative path here so you need be in /mnt/<USERNAME> or it won't be able to find this file.
   
-**fastq/ANN1133.R1.fastq.gz** <= This is the forward read (e.g. read 1)  set for the first sample. It's also a relative path and we can see that the file has been gzipped (since it has a .gz ending).
+* **fastq/sample_1.R1.fastq.gz** <= This is the forward read (e.g. read 1)  set for the first sample. It's also a relative path and we can see that the file has been gzipped (since it has a .gz ending).
 
-**fastq/ANN1133.R2.fastq.gz** <= This is the reverse read (e.g. read 2)  set for the first sample.
+* **fastq/sample_1.R2.fastq.gz** <= This is the reverse read (e.g. read 2)  set for the first sample.
   
-**-t 2** <= This is telling the program how many threads (i.e. cpus) to use. In this case we're only using two because we're sharing the machine with the other students.
+* **-t 2** <= This is telling the program how many threads (i.e. cpus) to use. In this case we're only using two because we're sharing the machine with the other students.
 
-**-R '@RG\tID:ANN1133\tSM:ANN1133\tPL:illumina\tPU:biol525d\tLB:ANN1133_lib'** <= This is adding read group information to the resulting sam file. Read group information lets other programs know what the sample name along with other factors. It is necessary for GATK to run later on.
+* **-R '@RG\tID:sample_1\tSM:1\tPL:illumina\tPU:biol525d\tLB:sample_1_library'** <= This is adding read group information to the resulting SAM file. Read group information lets other programs know what the sample name along with other factors. It is necessary for GATK to run later on.
 
-**> bam/ANN1133.sam** <= This is directing the output of the program into the file _bam/ANN1133.sam_
+* **> bam/sample_1.sam** <= This is directing the output of the program into the file bam/sample_1.sam
 
-We now have our reads aligned to the genome in a human readable format (sam) instead of binary format (bam) which we will use later. Generally we keep our data in bam format because its more compressed but we can use this opportunity to better understand the format. 
+We now have our reads aligned to the genome in a human readable format (SAM) instead of binary format (bam) which we will use later. Generally we keep our data in BAM format because its more compressed but we can use this opportunity to better understand the format. 
+
+
+Lets examine the SAM file. It contains all the information on the reads from the fastq file, but also alignment information. 
 
 ```bash
 
-#Lets examine that bam file
-less -S bam/ANN1133.sam
-#Notice the @PG line that includes the program call that created the sam file. 
-#This is useful for record keeping.
+# Let's view that SAM file
+less -S bam/sample_1.sam
+# Notice the @PG line that includes the program call that created the SAM file. 
+# This is useful for record keeping.
 
 ```
-Lets examine the sam file. It contains all the information on the reads from the fastq file, but also alignment information. 
+
+
 ### Questions:
-1. How are reads ordered in the sam file? 
+1. How are reads ordered in the SAM file? 
 2. What does the 6th column represent? What would the string "1S93M6S" mean?
 3. What are three possible reasons why mapping quality could be low for a particular read?
-4. What percent of your reads mapped to the genome? Hint: <span>Samtools</span>{: .spoiler}
+
+
+At this point we'll introduce a very useful - and incredibly widely used - piece of software called `samtools`. As the name suggests, `samtools` is a program for working with SAM/BAM files. 
+
+A question that you might ask of an alignment would be, what proportion of my reads mapped to the genome? At this stage, our SAM file contains all the read data, whether reads mapped or not. Using `samtools`, we can easily get a count of the number of reads that successfully mapped to the genome.
+
 
 ```bash
 
-#The next step is to convert our same file (human readable) to a 
-#bam file (machine readable) and sort reads by their aligned position.
-samtools view -bh bam/ANN1133.sam | samtools sort > bam/ANN1133.sort.bam 
+samtools view -c -F 4 bam/sample_1.sam
+
+
 ```
+
+Lets break this command down:
+* `samtools`  - the program tat we want to run
+* `view` - the mode we want to run the program in
+* `-c` - this flag indicates that we want a count of reads
+* `-F 4` - sam format uses a system of bit-code flags to specify information
+* `bam/sample_1.sam`
+
+
+This should have printed the total number of mapped reads to screen. Make a note of this number and the reference genome that you used.
+
+
+```
+# The next step is to convert our SAM file (human readable) to a 
+# BAM file (machine readable) and sort reads by their aligned position.
+samtools view -bh bam/sample_1.sam | samtools sort > bam/sample_1.sort.bam
+```
+
 With this command we're using the pipe "|" to pass data directly between commands without saving the intermediates. This makes the command faster since its not saving the intermediate file to hard disk (which is slower). It can be more risky though because if any steps fails you have to start from the beginning. 
 
 
 Next we want to take a look at our aligned reads. First we index the file, then we use samtools tview.
+
 ```bash
-samtools index bam/ANN1133.sort.bam  
-samtools tview bam/ANN1133.sort.bam  --reference ref/HanXRQr1.0-20151230.1mb.fa
+samtools index bam/sample_1.sort.bam
+samtools tview bam/sample_1.sort.bam  --reference ref/approach_1.fasta
+
 #use ? to open the help menu. Scroll left and right with H and L. 
 #Try to find positions where the sample doesn't have the reference allele. 
+
 ```
 
+`samtools tview` is similar to IGV but is accessible directly from the command like.
 
+## Excercise 1
 
+We have just aligned data for sample_1 to the reference genome we built using APRIACH_1. Now, using the above steps as a template, can you align the same data to the two other reference genomes that you built? 
 
+For each alignment, obtain a count of the number of mapped/unmapped reads. How does that number differ between assemblies? Why?
 
-We have 10 samples, so we don't want to have to type these commands out 10 times. Write a bash script to produced a sorted bam file for each sample.
+## Excercise 2
+
+We have 10 samples, so we don't want to have to type these commands out 10 times. Write a bash script to produced a sorted BAM file for each sample.
 
 A bash script is a plain text file (i.e. not rich text, nor a word doc) which contains bash commands. You can create the file on your computer and copy it over, or you can edit it directly from the server with one of the installed editors (this is covered in [topic 2, Editing](../Topic_2/#editing). The name of the file is up to you, but bash scripts are given the `.sh` extension by convention:
 
@@ -165,8 +227,8 @@ MORE HINTS:
 ```
 </details>
 
-After your final bam files are created, and you've checked that they look good, you should remove intermediate files to save space. You can build file removal into your bash scripts, but it is often helpful to only add that in once the script works. It's hard to troubleshoot a failed script if it deletes everything as it goes.
-### By topic 7, you should have created cleaned bam files for all samples.
+After your final BAM files are created, and you've checked that they look good, you should remove intermediate files to save space. You can build file removal into your bash scripts, but it is often helpful to only add that in once the script works. It's hard to troubleshoot a failed script if it deletes everything as it goes.
+### By topic 7, you should have created cleaned BAM files for all samples.
 
 ## Daily assignments
 1. Is an alignment with a higher percent of mapped reads always better than one with a lower percent? Why or why not?
