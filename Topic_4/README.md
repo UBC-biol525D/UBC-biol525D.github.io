@@ -10,7 +10,7 @@ topictitle: "Genome Assembly"
 <iframe src="https://monash.au.panopto.com/Panopto/Pages/Embed.aspx?id=835dc4b6-e73c-4892-88cc-ac820189a883&autoplay=false&offerviewer=true&showtitle=true&showbrand=false&start=0&interactivity=all" height="405" width="720" style="border: 1px solid #464646;" allowfullscreen allow="autoplay"></iframe>
 
 ## Accompanying material
-* Slides 2020: [UBC - De novo Assembly 2020](./Assembly2020.pdf)
+* Slides 2020: [UBC - De novo Assembly 2021](https://github.com/UBC-biol525D/UBC-biol525D.github.io/blob/master/Topic_4/Assembly2021Julia%20%20-%20JK.pdf)
 * Background reading: The present and future of de novo whole-genome assembly [Paper](https://academic.oup.com/bib/article/19/1/23/2339783?login=true#119542667). 
 
 Programming Resources
@@ -33,35 +33,52 @@ This might be a tricky one and there are likely many ways to do this. First try 
 Hints: test out the following commands:
 
 ```bash
-cut -c1- kmer.fa
+cut -c1- /mnt/data/codebreaks/kmer.fa
+cut -c1-4 /mnt/data/codebreaks/kmer.fa
 ```
 
 ```bash
-cut -c1-4 kmer.fa
+wc -c /mnt/data/codebreaks/kmer.fa
 ```
 
 ```bash
 for num in {1..10}
-    do
-        echo $num >> file.txt
-    done
+do
+echo $num >> file.txt
+done
 ```
 What do these commands do? Can you use commands like this to find all the kmers in the sequence? 
 
-Think about how you could incorporate some basic algebra and variable assignment (k=\``<some command here>`\`) to solve this problem.
+
+One approach we could use involves variable assignment. Variable assignment is a super powerful part of bash coding. A variable can be used as a shortcut for long path, or it can even contain the output of a command. The notation is as follows:
+
+```bash
+shortpath="/mnt/data/shortreads/"
+ls $shortpath
+cmdout=`echo "test"`
+echo $cmdout
+```
+
+Think about how you could incorporate some basic algebra and variable assignment to solve this problem.
 
 ```bash
 #one way to do math in bash is by piping to bc (basic calculator).
 echo "1+1" | bc
 #another way to do arithmitic in bash is through the $(( )) syntax which tells shell to evaluate its contents
 echo $((1+1))
-
 ```
 
-3. Sort them and keep the unique kmers
-
-Hint: try sort (look up the options)
-
+<details>
+<summary markdown="span">**Answer**
+</summary>
+```bash
+for i in {1..52} 
+do 
+k=$(($i+8))
+cut -c $i-$k /mnt/data/codebreaks/kmer.fa
+done
+```
+</details>
 
 
 ## Tutorial 
@@ -74,9 +91,7 @@ For our assembly, since we only sequence one individual, we have two files for o
 
 ## First, lets check out our sequencing data!
 
-We just got back our high coverage illumina paired-end data and long-read pacbio data from the sequencing facility! Let's see how it turned out.
-
-_The first thing we'll check is how long the reads are in our different sequence data sets ._
+We just got back our high coverage illumina paired-end data and long-read pacbio data from the sequencing facility! Let's see how it turned out. We know that we expect all reads to be 150bp (including adapters) for our short read data, but we're curious _how long our long-read data is_.
 
 First lets specify variables for the paths to our data since we'll be working with them alot
 ```bash
@@ -88,27 +103,26 @@ Lets break this down into steps.
 
 1) Subset only lines containing read information from our fastqs
 ```bash
-cat $shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | head #why doesn't this work?
-zcat $shortreads/SalmonSim.Stabilising.p1.1.6400000_R1.fastq.gz | grep "chr" -A1 #what does the A option do?
+cat $longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz | head #why doesn't this work?
+zcat $longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz | grep "chr" -A1 #what does the A option do?
+#dont forget about man to read the manual of the command grep!
 
 #we still have some extra information being printed.
-#what could you add to this pipe to only keep the sequence? hint: egrep -v "match1|match2"
+#what could you add to this pipe to only keep the sequence? hint: grep -v -E "match1|match2"
 ```
 
 2) Get the length of every line (read)
 ```bash
 #pipe the output above (every line = seperate read) to the following awk command. 
-awk -F "" '{print NR "\t" NF}'  #what is NR and what is NF? what does the -F "" option do?
-#save the output to shortread_lengths.txt
+awk -F "" '{print NR "\t" NF}'  #from the output, can you figure out what NR and NF is? what does the -F "" option do?
+#save the output to longread_lengths.txt
 ```
 
-Now take a similar approach for the long read data ($longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz) and save the output to `longread_lengths.txt`
-
-Instead of just investigating by eye, it would be nice to get some quick stats of the read lengths of these datasets - _what is the average read length for our short and long read datasets? how much variation is there around the mean?_ \
+Instead of just investigating by eye, it would be nice to get some quick stats of the read lengths of these datasets _i.e. what is the average read length for our long read datasets? how much variation is there around the mean?_ \
 
 While R is typically the go to place for statistical analyses, bash can also handle doing some intuitve stats, which will save us the headache of importing data into R.
 
-For example, remember that awk is a super useful trick for working with column and row based analyses. A one-liner in awk can help us calculate the mean read length.
+For example, awk is a super useful tool for working with column and row based analyses. A one-liner in awk can help us calculate the mean read length.
 
 ```bash
 awk '{ total += $2 } END { print total/NR }' longread_lengths.txt #this gets the mean of column two.
@@ -129,7 +143,9 @@ cut -f2 longread_lengths.txt | sort -n | sed -n "$FIRSTQUART p"
 cut -f2 longread_lengths.txt | sort -n | sed -n "$THIRDQUART p" 
 ```
 **wc -l** <= number of lines \
+
 **cut -d" " -f1** <= keeps only the first column (based on a space delimeter) \
+
 **sed -n "N p"** <= prints (p) the line at value N \
 
 
@@ -139,14 +155,14 @@ Another thing we might want to know is how much coverage our reads give us for e
 
 
 ```bash
-READLENGTH=`cat shortread_lengths.txt | awk '{ total += $2 } END { print total/NR }' `
-NUMREADS=`wc -l shortread_lengths.txt | cut -d" " -f1`
+READLENGTH=`cat longread_lengths.txt | awk '{ total += $2 } END { print total/NR }' `
+NUMREADS=`wc -l longread_lengths.txt | cut -d" " -f1`
 MEANCOV=`echo "$READLENGTH * $NUMREADS / 10000000" | bc`
 echo "mean coverage = $MEANCOV" 
 
 ```
 
-Our short read coverage (from just forward oriented reads) is 40x. Whats our long read coverage? This is good information to have before we start trying to assemble our genome.
+Both the average read length and expected coverage are good things to know for setting expectations for your genome assembly!
 
 ## Genome Assembly
 
@@ -222,6 +238,9 @@ cp /mnt/data/fasta/spades_shortreadonly.fasta ./
 cp /mnt/data/fasta/spades_hybrid.fasta ./
 cp /mnt/data/fasta/haslr_hybrid.fasta ./
 cp /mnt/data/fasta/flye_longread.fasta ./
+
+#we could have done this in one line
+#cp /mnt/data/fasta/*.fasta
 ```
 
 bbmap is command line alignment program that has a collection of nice scripts for library and sequence quality control. We're going to use its stats.sh script to get at some basic stats related to the number and length of sequences in our assembly.
@@ -249,6 +268,7 @@ Importantly, this allows us to get not just the number and length of our contigs
 
 ```bash
 #it would be nice to know how well our assemblies have captured known genes. Lets extract this information from the true reference genome's gff file and format it as quast expects 
+head /mnt/data/gff/SalmonAnnotations_forIGV.gff
 #quast expects the column order as follows: chromosome, gene id, end, start
 awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' /mnt/data/gff/SalmonAnnotations_forIGV.gff | sed 's/ID=//g' > SalmonReference.genes
 
@@ -284,11 +304,17 @@ done
 ```
 
 Making new folders `mkdir` \
+
 Renaming files `mv` and moving them  `mv file path/new_file_name` \
+
 Counting `wc -l` \
+
 Find and replace `sed 's/find/replace/g'` \
+
 Printing a particuar row `sed -n "10p" SalmonReference.genes` \
+
 Column means with `awk '{ total += $2 } END { print total/NR }'` \
+
 Assigning variables `shortreads="/mnt/data/shortreads/"` and calling them `echo ${shortreads}` \
 
 Printing and splitting certain columns (specified with $) with awk 
