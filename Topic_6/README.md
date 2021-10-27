@@ -113,7 +113,7 @@ STAR --runThreadN 2 \ # The number of threads to spawn this process on
                               --runMode genomeGenerate \ # The mode of operation for STAR
                               --genomeDir fasta/STAR_index/ \ # A place to store the index file
                               --genomeFastaFiles SalmonReference.fasta \ # The location of the reference genome
-                              --sjdbGTFfile SalmonAnnotations_forIGV.gff # The location of the genome annotations, in GFF format
+                              --sjdbGTFfile SalmonAnnotations.gff # The location of the genome annotations, in GFF format
 
 
 ```
@@ -140,7 +140,7 @@ STAR --runThreadN 2 \ # The number of threads to spawn this process on
                               --runMode genomeGenerate \ # The mode of operation for STAR
                               --genomeDir fasta/STAR_index/ \ # A place to store the index file
                               --genomeFastaFiles SalmonReference.fasta \ # The location of the reference genome
-                              --sjdbGTFfile SalmonAnnotations_forIGV.gff \# The location of the genome annotations, in GFF format
+                              --sjdbGTFfile SalmonAnnotations.gff \ # The location of the genome annotations, in GFF format
                               --genomeSAindexNbases 10
 
 
