@@ -5,6 +5,14 @@ topickey: 6
 topictitle: "RNASeq Analysis"
 ---
 
+
+### Accompanying material
+
+* [Slides](./Topic_6.pdf)
+
+__________________________________
+
+
 In this tutorial we are going to do the following:
 
 1. Align the RNAseq data to the reference
