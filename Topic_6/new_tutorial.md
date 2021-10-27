@@ -9,7 +9,7 @@ In this tutorial we are going to do the following:
 
 1. Align the RNAseq data to the reference
 2. Obtain counts of the reads mapping to genes in the Salmon genome
-3. Test for differential gene expression between fish from warm and cold parts of the river  
+3. Test for differential gene expression between fish from warm and cold parts of the river - This last step will be done in Rstudio
 
 We have data for 12 fish, 6 from each location in the river.
 
@@ -129,8 +129,10 @@ To obtain counts of reads we will use the `htseq-count` tool. This is a popular 
 htseq-count -s no \
             -r pos \
             -t exon \ # What type of feature will our data have mapped to?
-            -i transcript_id \
+            -i gene \
             -f BAM \
             cold_sample_07.Aligned.sortedByCoord.out.bam \
             /mnt/data/anno/SalmonAnnotations.gff  > cold_sample_07.read_counts.txt
 ```
+
+The file
