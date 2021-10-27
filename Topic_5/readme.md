@@ -23,7 +23,7 @@ cd ~
 cp -r /mnt/data/fasta ./
 
 # Copy the fastq files to your working directory
-cp -r /mnt/data/GWAS_samples/ ./
+cp -r /mnt/data/fastq/GWAS_samples/ ./
 
 # Make a new directory for your resulting BAM files
 mkdir bam
@@ -35,7 +35,7 @@ First let's index our reference genome.
 ```bash
 # Index the references for BWA.
 
-bwa index ref/SalmonReference.fasta
+bwa index fasta/SalmonReference.fasta
 
 ```
 
@@ -46,8 +46,8 @@ Using the approach 1 genome assembly:
 
 ```bash
 
-/usr/bin/bwa mem \
-  ref/SalmonReference.fasta \
+bwa mem \ # We have installed BWA on the VMs, but that might not always be the case
+  fasta/SalmonReference.fasta \
   GWAS_samples/Salmon.p1.3.i1.400000_R1.fastq.gz \
   GWAS_samples/Salmon.p1.3.i1.400000_R2.fastq.gz \
   -t 2 \
@@ -65,11 +65,11 @@ Lets break this command down since it has several parts:
 
 * **\\** <= Having this at the end of the line tells the shell that the line isn't finished and keeps going. You don't need to use this when typing commands in, but it helps break up really long commands and keeps your code more organized.
 
-* **ref/approach_1.fasta** <= This is the reference genome. We're using a relative path here so you need be in /mnt/<USERNAME> or it won't be able to find this file.
+* **fasta/SalmonReference.fasta** <= This is the reference genome. We're using a relative path here so you need be in /mnt/<USERNAME> or it won't be able to find this file.
 
-* **fastq/sample_1.R1.fastq.gz** <= This is the forward read (e.g. read 1)  set for the first sample. It's also a relative path and we can see that the file has been gzipped (since it has a .gz ending).
+* **GWAS_samples/Salmon.p1.3.i1.400000_R1.fastq.gz** <= This is the forward read (e.g. read 1)  set for the first sample. It's also a relative path and we can see that the file has been gzipped (since it has a .gz ending).
 
-* **fastq/sample_1.R2.fastq.gz** <= This is the reverse read (e.g. read 2)  set for the first sample.
+* **GWAS_samples/Salmon.p1.3.i1.400000_R2.fastq.gz** <= This is the reverse read (e.g. read 2)  set for the first sample.
 
 * **-t 2** <= This is telling the program how many threads (i.e. cpus) to use. In this case we're only using two because we're sharing the machine with the other students.
 
@@ -86,11 +86,15 @@ Lets examine the SAM file. It contains all the information on the reads from the
 
 # Let's view that SAM file
 less -S bam/Salmon.p1.3.i1.sam
+
 # Notice the @PG line that includes the program call that created the SAM file.
 # This is useful for record keeping.
 
 ```
+### *Note*
+The option `-S` when running less chops lines that are longer than the page. This is normally just an aesthetic choice. When looking at SAM/BAM files this is quite necessary!
 
+ 
 
 ### Questions:
 1. How are reads ordered in the SAM file?
@@ -101,13 +105,15 @@ ____________________________
 
 At this point we'll introduce a very useful - and incredibly widely used - piece of software called `samtools`. As the name suggests, `samtools` is a program for working with SAM/BAM files.
 
+### *Note*
+`samtools` can produce very useful summaries of alignments - try running `samtools flagstat bam/Salmon.p1.3.i1.sam`.
+
 A question that you might ask of an alignment would be, what proportion of my reads mapped to the genome? At this stage, our SAM file contains all the read data, whether reads mapped or not. Using `samtools`, we can easily get a count of the number of reads that successfully mapped to the genome.
 
 
 ```bash
 
 samtools view -c bam/Salmon.p1.3.i1.sam
-
 
 ```
 
@@ -154,14 +160,58 @@ samtools tview bam/Salmon.p1.3.i1.sort.bam  --reference ref/approach_1.fasta
 
 `samtools tview` is similar to IGV but is accessible directly from the command line.
 
+You can jump to a specific location in a BAM file with `samtools tview` using the following command:
+
+```
+
+samtools tview bam/Salmon.p1.3.i1.sort.bam  --reference fasta/SalmonReference.fasta -p chr_1:80000 
+
+```
+The additional option ` -p chr_1:80000 ` tells `tview` to jump straight to chr_1 position 80000. Any valid location in the SAM/BAM can be referenced that way.
+
+### *Note*
+
+Another useful summary that `samtools` can produce very quickly is coverage stats. Try running `samtools depth bam/Salmon.p1.3.i1.sort.bam`. Can you think of how you could use the tools you were learning yesterday could be used to take the output from `samtools` to quickly calculate the average depth?
+
+
 
 ## Exercise
 
+
+A bash script is a plain text file (i.e. not rich text, nor a word doc) which contains bash commands. You can create the file on your computer and copy it over, or you can edit it directly from the server with one of the installed editors (this is covered in [topic 2, Editing](../Topic_2/#editing). The name of the file is up to you, but bash scripts are given the `.sh` extension by convention.
+
+Here's an example of what you might see inside a bash script:
+
+```
+age=10
+echo "I am $age years young"
+
+```
+(we used a similar example the other day)
+
+The lines of this script do the following:
+
+* `age=10` - this assigns the number 10 to a variable called `age`
+* `echo "I am $age years young"` - this prints a piece of text to the screen containing that age variable
+
+
+
+So a bash script (a.k.a. shell script) is a just set of commands saved as a file. If you named the shell script from above as a file named `myScript.sh`, you could execute the commands by simply running:
+
+```bash
+sh myScript.sh
+```
+
+_____________________________
+
+Obviously that example is a little silly, but hopefully you can see how writing shell scripts is a very useful and efficient way of organising your work at the command line. 
+
 If you look in the `/mnt/data/fastq/GWAS_samples/` directory, you'll see that we have data here for 10 samples. It would be very tedious to align each one of these as we have for the single file above.
 
-For this exercise, try writing a bash script to produced a sorted BAM file for each sample.
+For this exercise, try writing a bash script to produced a sorted BAM file for each sample as you have done for the single sample above. 
 
-A bash script is a plain text file (i.e. not rich text, nor a word doc) which contains bash commands. You can create the file on your computer and copy it over, or you can edit it directly from the server with one of the installed editors (this is covered in [topic 2, Editing](../Topic_2/#editing). The name of the file is up to you, but bash scripts are given the `.sh` extension by convention:
+When writing a shell script, try to think of the steps that do not need to be repeated over and over again.
+
 
 HINTS:
   * Use variables for directory paths e.g. `bwa=/mnt/bin/bwa-0.7.17/bwa`
@@ -196,8 +246,8 @@ MORE HINTS:
   # First set up variable names
   # These may be slightly different on the VMs
   bam=~/bam
-  fastq=~/fastq
-  bwa=/usr/bin/bwa
+  fastq=~/GWAS_samples
+  bwa=bwa
   ref_file=~/fasta/SalmonReference.fasta
 
   #Then get a list of sample names, without suffixes
@@ -214,13 +264,17 @@ MORE HINTS:
     -t 1 > $bam/$name.sam;
 
     samtools view -bh $bam/$name.sam |\
-    samtools sort > $bam/$name.sort.bam;
+    samtools sort > $bam/$name.sort.bam; 
     samtools index $bam/$name.sort.bam
+    
+    rm $bam/$name.sam # Remove intermediate file
+    
   done < $bam/samplelist.txt
 ```
 </details>
 
-After your final BAM files are created, and you've checked that they look good, you should remove intermediate files to save space. You can build file removal into your bash scripts, but it is often helpful to only add that in once the script works. It's hard to troubleshoot a failed script if it deletes everything as it goes.
+After your final BAM files are created, and you've checked that they look good, you should remove intermediate files to save space. You can build file removal into your bash scripts as we've done in the worked example, but it is often helpful to only add that in once the script is up and running. It's hard to troubleshoot a failed script if it deletes everything as it goes.
+
 ### By topic 7, you should have created cleaned BAM files for all samples.
 
 ## Questions for Discussion
