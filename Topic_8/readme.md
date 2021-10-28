@@ -38,7 +38,7 @@ tabix Chinook_GWAS_filtered.vcf.gz
 ```
 
 ##Coding challenge
-* How many sites remain in the filtered VCF? How many were removed? How many on each chromosome? Don't forget about grep/zgrep!
+* How many sites remain in the filtered VCF? How many were removed? How many on each chromosome? Don't forget about `grep -v` ad `wc -l`!
 
 A common first pass analysis is to use structure to look at clustering in your data. Admixture is similar to STRUCTURE but orders of magnitude faster. We're going use that, but before that we have to convert our VCF to the bed format. We're going to use plink to do that. Plink is a large set of tools for manipulating genetic data, running GWAS and calculating various stats. It's geared towards human data, so sometimes you have to force it to work with non-human data. For example, it assumes you have human chromosomes (eg 23 of them) and will complain if it doesn't see them.
 
