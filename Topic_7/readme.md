@@ -58,7 +58,7 @@ while read name; do
   java -jar $picard MarkDuplicates \
   I=~/bams/$name.rg.bam O=~/bams/$name.sort.dedup.bam \
   M=log/$name.duplicateinfo.txt
-  samtools index bam/$name.sort.dedup.bam
+  samtools index bams/$name.sort.dedup.bam
 done < samplelist.txt
 
 ```
