@@ -145,7 +145,7 @@ ggplot(data=fst_10kb, aes(BIN_START, MEAN_FST)) +
 ![](fst_4.jpeg)
 
 
-While there are some windows with big Fst values (e.g. on chr1 near 3e06), we're not seeing any super obvious regions popping out from a basic fst scan. **How should we interpret this?**
+While there are some windows with big Fst values (e.g. on chr1 near 3e06), we're not seeing any super obvious regions popping out from a basic fst scan. 
 
 We can also look for alleles that underly differences between populations in a distinct, but conceptually related way. Instead of focusing on how differentiated alleles are between populations of interest, we can ask how phenotypic differences among populations might be relate to particular loci via genome-wide association.
 
@@ -177,8 +177,8 @@ qq(gwas$p_wald)
 
 ![](gwas_1.jpeg)
 
-The observed p-values start deviating from expected values, even at smaller -log10 pvalues. This is the issue we were worried about - an overrepresentation of false positives. 
-The nice thing about our qqplot though, is that there is an uptick in this difference at our highest pvalues, which might indicate we have a few true positives.
+The observed p-values start deviating from expected values, even at smaller -log10 pvalues. **Based on what we talked about in class, how would you interpret this?**
+
 Remember, we also ran a GWAS analysis where we explitly controlled for population structure by including the relatedness matrix as a mixed effect variable. We'll read this in now and compare our two qqplots.
 
 ```r
@@ -191,9 +191,9 @@ qq(gwas_rltdns$p_wald)
 
 Notice how much how much closer our observed values are to our expected values, especially on the left side of the plot. There is some hint of overcorrection, where are observed values are lower than expect, which might happen if population structure is confounded with our selective signal, or because we do not have power given our sample size.
 
-We want to see where these strongly associated loci lie in the genome. Lets do this for both our uncorrected and corrected gwas. 
+We want to see where those couple strongly associated loci lie in the genome. Lets do this for both our uncorrected and corrected gwas. 
 
-We will control for multiple testing using a false-discovery rate correction that uses a similar logic as the qqplot.
+We will control for multiple testing using a false-discovery rate correction.
 
 ```r
 gwas$p_fdr<-p.adjust(gwas$p_wald,method = "fdr")
@@ -222,8 +222,7 @@ ggarrange(p_uncor, p_cor, nrow=2, align = "v")
 
 
 We have a bunch of hits in the uncorrected GWA, but in the corrected GWA - just one - on chromsome 2 at 1728226.
-_It turns out that this  SNP is actually neutral, but there is a cluster of tightly linked causal SNPs just upstream at chr_2:1753234-1754473!
-_
+_It turns out that this  SNP is actually neutral, but there is a cluster of tightly linked causal SNPs just upstream at chr_2:1753234-1754473!_
 
 Plotting Challenge
 -------------------
