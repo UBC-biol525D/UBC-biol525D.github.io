@@ -88,7 +88,6 @@ $plink \
 
 #this actually extracts the snps that remain after LD pruning
 
-```bash 
 admixture=/mnt/software/dist/admixture_linux-1.3.0/admixture
 $admixture vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned.bed 2
 ```
