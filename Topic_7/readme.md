@@ -56,7 +56,7 @@ The first step is to mark duplicate reads using picardtools - this is important 
 
 while read name; do
   java -jar $picard MarkDuplicates \
-  I=bam/$name.rg.bam O=bam/$name.sort.dedup.bam \
+  I=~/bams/$name.rg.bam O=~/bams/$name.sort.dedup.bam \
   M=log/$name.duplicateinfo.txt
   samtools index bam/$name.sort.dedup.bam
 done < samplelist.txt
@@ -88,13 +88,12 @@ This step can take a few minutes so lets first test it with a single sample to m
 for name in `cat ~/samplelist.txt | head -n +1 ` 
 do 
 java -Xmx10g -jar $gatk HaplotypeCaller \
--R ref/SalmonReference.fasta \
+-R ~/ref/SalmonReference.fasta \
 --native-pair-hmm-threads 3 \
--I bam/$name.sort.dedup.bam \
+-I ~/bams/$name.sort.dedup.bam \
 -ERC GVCF \
--O gvcf/$name.sort.dedup.g.vcf
+-O ~/gvcf/$name.sort.dedup.g.vcf
 done
-
 ```
  Check your gvcf file to make sure it has a .idx index file. If the haplotypecaller crashes, it will produce a truncated gvcf file that will eventually crash the genotypegvcf step. Note that if you give genotypegvcf a truncated file without a idx file, it will produce an idx file itself, but it still won't work.
 
