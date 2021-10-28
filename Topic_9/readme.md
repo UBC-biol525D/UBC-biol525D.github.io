@@ -78,7 +78,7 @@ do
 	do
 
 	vcftools \
-	--bcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
+	--gzvcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
 	--weir-fst-pop ~/analysis/fst_comparisons/p$i.samples \
 	--weir-fst-pop ~/analysis/fst_comparisons/p$k.samples \
 	--out ~/analysis/fst_comparisons/pop${i}_pop${k}_10kb \
@@ -88,30 +88,14 @@ do
 	done
 done
 
-#shoot. vcftools expects our bgzipped file (bcf file) to have the suffix *.bcf
-#lets fix that
-
-mv vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz vcf/Chinook_GWAS_filtered_fixedsamps.bcf
-
-#try again
-for i in {1..9}
-do
-	for k in `seq $((i+1)) 10`
-	do
-
-	vcftools \
-	--bcf vcf/Chinook_GWAS_filtered_fixedsamps.bcf \
-	--weir-fst-pop ~/analysis/fst_comparisons/p$i.samples \
-	--weir-fst-pop ~/analysis/fst_comparisons/p$k.samples \
-	--out ~/analysis/fst_comparisons/pop${i}_pop${k}_10kb \
-	--fst-window-size 10000 \
-	--fst-window-step 10000
-
-	done
-done
-
-
+#list all the log files from the vcftools fst calc runs
 ls analysis/fst_comparisons/*.log
+
+#lets check out one
+less analysis/fst_comparisons/pop1_pop10_10kb.log
+#what we're interested in is the weighted fst estimate
+#this accounts for differences in coverage across sites
+
 grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log
 ```
 
@@ -120,7 +104,9 @@ grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log
 Make a results file of the pairwise weighted fst estimates based on the grep command above. Use pipes and basic UNIX commands like _tr_, _cut_,and _sed_ to split the output into a space seperated file with three columns: 1) pop A, 2) pop B, and 3) Fst. Save it as analysis/fst_comparisons/weighted_fst_pairwise.txt
 
 SOLUTION (don't click me unless your really stuck! try asking your neighbour their approach first):	
-* ```grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt```
+* ```grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt
+* #if you couldn't figure how this works, try breaking it down, iteratively increasing the number of pipes and checking the output each time
+* ```
 {: .spoiler}
 
 
