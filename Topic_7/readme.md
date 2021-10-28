@@ -19,6 +19,7 @@ mkdir gvcf
 mkdir db
 mkdir vcf
 mkdir ref
+mkdir bams
 ```
 We also have a few programs we're going to use. Since we will be calling them repeatedly, we're going to save their full paths asv ariable. This will only last for the current session so if you log out you'll have to set them up again.
 
@@ -31,10 +32,11 @@ There are 4 different samples (2 individuals [i1, i2] each from 2 populations [p
 
 We're going to have to run multiple steps on each sample, so to make this easier, we make a list of all the sample names.
 
-In case you didn't finish last tutorial, and since we have some extra bams you didn't generate, copy the \*bam files and their index (\*.bai) to your ~/bam directory (`cp /mnt/data/bams/*r400000.rg.bam /mnt/data/bams/*r400000.rg.bam.bai ~/bam/`).
+In case you didn't finish last tutorial, and since we have some extra bams you didn't generate, copy the \*bam files and their index (\*.bai) to your ~/bam directory 
+(`cp /mnt/data/bams/*r400000.rg.bam /mnt/data/bams/*r400000.rg.bam.bai ~/bams/`).
 
 ```bash
-ls bam/ | grep .rg.bam$ | sed s/.rg.bam//g  > samplelist.txt
+ls bams/ | grep .rg.bam$ | sed s/.rg.bam//g  > samplelist.txt
 
 ```
 Lets break this down. 
