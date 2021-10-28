@@ -7,7 +7,7 @@ datafiles: [1,2,3,4,5,6,7,8]
   
 Just like before, we're going to need download the output files of the GWA and FST analyses from the server to our local computers.
 
-Use scp again to copy over the updated analysis folder that contains the fst_comparisons/ and the gwas/ folders.
+Use scp again to copy over the updated `analysis` folder that contains the `fst_comparisons/` and the `gwas/` folders we'll be working with.
 
 
 Lets start with *Fst*. 
