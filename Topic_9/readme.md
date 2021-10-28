@@ -32,9 +32,6 @@ do
 cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam | grep -w "$pop" > ~/analysis/fst_comparisons/${pop}.samples
 done
 
-#vcftools expects a vcf.gz to have been zipped through gzip, not bgzip. lets fix that.
-gunzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
-gzip vcf/Chinook_GWAS_filtered_fixedsamps.vcf
 ```
 
 Our input data is all set up for VCFtools but we have to consider how we can get all pairwise comparisons efficiently.
@@ -47,11 +44,11 @@ For population 3, 4:10
 ...  
 For population 9, 10  
 
-Breaking this down helps outline two major steps 1) that for each population of interest (left side), we can loop over every population that comes after it. This is a nested loop structure.
+Breaking this down helps outline two major steps 1) that **for each population of interest** (left side), we want to compare **each population that comes after it**. This is a nested loop structure.
 
 ```bash
-#we can use basic arithimitic in bash to set our second pop comparitor as a variable that changes depending on the focal population.
-#for instance if our focal population is 1, we can set our second population to 2 as follows
+#how can we set our comparison pop to be dependent on the intial focal pop?
+#dont forget how to do basic arithmetic in bash!
 pop2=`echo $((1+1))`
 echo $pop2
 
@@ -90,6 +87,29 @@ do
 
 	done
 done
+
+#shoot. vcftools expects our bgzipped file (bcf file) to have the suffix *.bcf
+#lets fix that
+
+mv vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz vcf/Chinook_GWAS_filtered_fixedsamps.bcf
+
+#try again
+for i in {1..9}
+do
+	for k in `seq $((i+1)) 10`
+	do
+
+	vcftools \
+	--bcf vcf/Chinook_GWAS_filtered_fixedsamps.bcf \
+	--weir-fst-pop ~/analysis/fst_comparisons/p$i.samples \
+	--weir-fst-pop ~/analysis/fst_comparisons/p$k.samples \
+	--out ~/analysis/fst_comparisons/pop${i}_pop${k}_10kb \
+	--fst-window-size 10000 \
+	--fst-window-step 10000
+
+	done
+done
+
 
 ls analysis/fst_comparisons/*.log
 grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log
