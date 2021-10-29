@@ -101,7 +101,6 @@ Make a results file of the pairwise weighted fst estimates based on the grep com
 SOLUTION (don't click me unless your really stuck! try asking your neighbour their approach first):	
 * grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt
 * #if you couldn't figure how this works, try breaking it down, iteratively increasing the number of pipes and checking the output each time
-* ```
 {: .spoiler}
 
 
