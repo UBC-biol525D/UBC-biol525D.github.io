@@ -114,7 +114,7 @@ zcat $longreads/SalmonSim.Stabilising.p1.3.30k.PacBio.fastq.gz | grep "chr" -A1 
 2) Get the length of every line (read)
 ```bash
 #pipe the output above (every line = seperate read) to the following awk command. 
-awk -F "" '{print NR "\t" NF}'  #from the output, can you figure out what NR and NF is? what does the -F "" option do?
+awk -F "" '{print NR "\t" NF}'  #from the output, can you figure out what the awk variables NR and NF are? what does the -F "" option do?
 #save the output to longread_lengths.txt
 ```
 
@@ -151,7 +151,7 @@ cut -f2 longread_lengths.txt | sort -n | sed -n "$THIRDQUART p"
 
 Nice. While theres some variance in our long-read lengths, its nice to see its actually quite consistent. 
 
-Another thing we might want to know is how much coverage our reads give us for each locus in our genome. We are working with a genome size of 10Mb. What is the expected estimate of coverage/bp in just the forward reads?
+Another thing we might want to know is how much coverage our reads give us for each locus in our genome. We are working with a genome size of 10Mb. What is the expected estimate of coverage/bp in our long reads?
 
 
 ```bash
@@ -255,7 +255,7 @@ mkdir assembly_stats
 for i in spades_shortreadonly spades_hybrid haslr_hybrid flye_longread
 do
 
-/mnt/software/bbmap/stats.sh in=${i}.fasta > assembly_stats/${i}.stats
+stats.sh in=${i}.fasta > assembly_stats/${i}.stats
 
 done
 ```
@@ -269,17 +269,19 @@ Importantly, this allows us to get not just the number and length of our contigs
 ```bash
 #it would be nice to know how well our assemblies have captured known genes. Lets extract this information from the true reference genome's gff file and format it as quast expects 
 head /mnt/data/gff/SalmonAnnotations_forIGV.gff
+
 #quast expects the column order as follows: chromosome, gene id, end, start
+cd /assemblies
 awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' /mnt/data/gff/SalmonAnnotations_forIGV.gff | sed 's/ID=//g' > SalmonReference.genes
 
 #what does $1 and $5 represent in the command above? What about a[1]?
 
 #run quast on all 4 assemblies at once
 mkdir quast
-/mnt/software/quast-5.0.2/quast.py --help #check out the manual
+quast --help #check out the manual
 #notice we're not going to worry about the advanced options 
 
-/mnt/software/quast-5.0.2/quast.py flye_longread.fasta haslr_hybrid.fasta spades_hybrid.fasta spades_shortreadonly.fasta \
+quast flye_longread.fasta haslr_hybrid.fasta spades_hybrid.fasta spades_shortreadonly.fasta \
 	-r /mnt/data/fasta/SalmonReference.fasta \
 	-g SalmonReference.genes \
 	-o quast
