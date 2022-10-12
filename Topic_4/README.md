@@ -53,7 +53,7 @@ What do these commands do? Can you use commands like this to find all the kmers 
 One approach we could use involves variable assignment. Variable assignment is a super powerful part of bash coding. A variable can be used as a shortcut for long path, or it can even contain the output of a command. The notation is as follows:
 
 ```bash
-shortpath="/mnt/data/shortreads/"
+shortpath="/mnt/data/fastq/shortreads/"
 ls $shortpath
 cmdout=`echo "test"`
 echo $cmdout
