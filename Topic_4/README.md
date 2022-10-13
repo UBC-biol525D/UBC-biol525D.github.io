@@ -168,6 +168,20 @@ Both the average read length and expected coverage are good things to know for s
 
 Genome assembly can take a long time. Because our course is short, we won't have time to run these commands in tutorial. Instead, today we'll focus on comparing the quality of the assemblies produced through a few different programs, using short, short + long, or long read only data. 
 
+Theres a few programs we're going to need. Installing programs can be a big pain in the butt, so we're going to use a package manager to (mostly) automate this for us. Lets use miniconda.
+
+```bash
+#from your home directory, run:
+bash /mnt/software/Miniconda3-py37_4.12.0-Linux-x86_64.sh #type enter (x infinity), yes, enter, yes
+#exit and restart your session
+exit 
+ssh <your.user>@serveraddress
+#now conda will be installed on your user #test this by typing conda
+#lets create an environment (directory) which has all the packages you'll need now
+conda create --name assembly_env
+conda activate assembly_env #activated it
+
+
 
 #### Short read assembly: SPADES - *don't run*
 #using a single core this takes ~14 minutes
@@ -255,7 +269,7 @@ mkdir assembly_stats
 for i in spades_shortreadonly spades_hybrid haslr_hybrid flye_longread
 do
 
-stats.sh in=${i}.fasta > assembly_stats/${i}.stats
+/mnt/software/bbmap/stats.sh in=${i}.fasta > assembly_stats/${i}.stats
 
 done
 ```
@@ -277,16 +291,15 @@ awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' /mnt/data/gff/SalmonA
 #what does $1 and $5 represent in the command above? What about a[1]?
 
 #run quast on all 4 assemblies at once
-mkdir quast
-quast --help #check out the manual
+/mnt/software/quast-5.2.0/quast.py --help #check out the manual
 #notice we're not going to worry about the advanced options 
 
-quast flye_longread.fasta haslr_hybrid.fasta spades_hybrid.fasta spades_shortreadonly.fasta \
+/mnt/software/quast-5.2.0/quast.py flye_longread.fasta haslr_hybrid.fasta spades_hybrid.fasta spades_shortreadonly.fasta \
 	-r /mnt/data/fasta/SalmonReference.fasta \
 	-g SalmonReference.genes \
-	-o quast
+	-o quast_out
 
-scp -r <username@ip.address>:/home/<usr>/assemblies/quast/ ./
+scp -r <username@ip.address>:/home/<usr>/assemblies/quast_out/ ./
 ```
 
 Open the report.html results file in your browser and explore the outcome of our assembly efforts. Make sure to eventually click the "View in icarus contig browser".
