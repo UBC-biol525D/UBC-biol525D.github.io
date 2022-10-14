@@ -88,7 +88,7 @@ $plink \
 
 #this actually extracts the snps that remain after LD pruning
 
-admixture=/mnt/software/dist/admixture_linux-1.3.0/admixture
+admixture=/mnt/software/admixture
 $admixture vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned.bed 2
 ```
 Uh oh that doesn't work, it produces this error message.
