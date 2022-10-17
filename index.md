@@ -8,7 +8,7 @@ menuPosition: 1
 <h1>{{ site.courseName }}</h1>
 
 ## Description
-The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic. The course will be presented as a series of short lectures and lab exercises over a one week period in October 2021.
+The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic. The course will be presented as a series of short lectures and lab exercises over a one week period in October 2022.
 
 ## Instructors
 Tom Booker, Julia Kreiner
@@ -28,7 +28,7 @@ Consult [Grading Information](resources/grading.md).
 Consult [Daily Assignments](resources/daily_assignments.md)
 
 ## Lectures/seminars
-25th October 2021 - 29th of October 2021.
+24th October 2022 - 28th of October 2022.
 
 There are two sessions a day, from 10am to Noon and from 2pm to 4pm.
 
@@ -102,6 +102,9 @@ Modified work (c) 2019 Gregory Owens, Kathryn Hodgins, J.S. Legare
 Modified work (c) 2020 Kathryn Hodgins, Julia Kreiner, Tom Booker
 
 Modified work (c) 2021 Tom Booker, Julia Kreiner
+
+Modified work (c) 2022 Tom Booker, Julia Kreiner
+
 
 This program is distributed under the MIT (X11) License, which should be distributed with the package.
 If not, it can be found here: http://www.opensource.org/licenses/mit-license.php
