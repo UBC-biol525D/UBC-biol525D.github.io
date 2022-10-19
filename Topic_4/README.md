@@ -13,13 +13,11 @@ topictitle: "Genome Assembly"
 * Slides 2020: [UBC - De novo Assembly 2021](https://github.com/UBC-biol525D/UBC-biol525D.github.io/blob/master/Topic_4/Assembly2021Julia%20%20-%20JK.pdf)
 * Background reading: The present and future of de novo whole-genome assembly [Paper](https://academic.oup.com/bib/article/19/1/23/2339783?login=true#119542667). 
 
-Programming Resources
-* [Flye Manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md)
-* Flye Paper. Assembly of Long Error-Prone Reads Using Repeat Graphs [Paper](https://doi.org/10.1038/s41587-019-0072-8).
-* [Hslr Manual](https://github.com/vpc-ccg/haslr)
-* Hslr Paper. HASLR: Fast Hybrid Assembly of Long Reads [Paper](https://www.cell.com/iscience/fulltext/S2589-0042(20)30577-0?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2589004220305770%3Fshowall%3Dtrue).
-* [Spades Manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md)
-* Spades Paper. A New Genome Assembly Algorithm and Its Applications to Single-Cell Sequencing [Paper](https://cab.spbu.ru/files/release3.15.3/manual.html).
+Programming Resources (in this tutorial or from lecture)
+* [Flye Manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md) and [Flye Paper](https://doi.org/10.1038/s41587-019-0072-8).
+* [Hslr Manual](https://github.com/vpc-ccg/haslr) and [Hslr Paper](https://www.cell.com/iscience/fulltext/S2589-0042(20)30577-0?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2589004220305770%3Fshowall%3Dtrue).
+* [Spades Manual](https://github.com/fenderglass/Flye/blob/flye/docs/USAGE.md) and [Spades Paper](https://cab.spbu.ru/files/release3.15.3/manual.html).
+* [HiFiASM manual](https://github.com/chhylp123/hifiasm) and [HiFiASM paper](https://www.nature.com/articles/s41592-020-01056-5)
 
 
 ## Code break questions
