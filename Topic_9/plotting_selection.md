@@ -78,7 +78,6 @@ fst_wide<-fst_wide[,-1]
 ```
 
 That took a good amount of work to get the pairwise Fst comparisons into matrix format. Now plotting is pretty simple...
-
 ```r
 install.packages("pheatmap")
 library(pheatmap)
