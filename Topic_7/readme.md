@@ -28,12 +28,12 @@ gatk=/mnt/software/gatk-package-4.2.2.0-local.jar
 picard=/mnt/software/picard.jar
 ```
 
-There are 4 different samples (2 individuals [i1, i2] each from 2 populations [p1,p10]), and for the purposes of this tutorial, we've also produced alignments resulting from different coverages of each sample (~8x and ~20x). 
+There are 4 different samples we will mapping today - 2 individuals [i1, i2] each, from 2 populations [p1,p10]) 
 
 We're going to have to run multiple steps on each sample, so to make this easier, we make a list of all the sample names.
 
 In case you didn't finish last tutorial, and since we have some extra bams you didn't generate, copy the \*bam files and their index (\*.bai) to your newly generated ~/bams directory 
-(`cp /mnt/data/bams/*r400000.rg.bam /mnt/data/bams/*r400000.rg.bam.bai ~/bams/`).
+(`cp /mnt/data/bams/Chinook.p[1,10].i[1-2].rg.bam ~/bams/`).
 
 ```bash
 ls bams/ | grep .rg.bam$ | sed s/.rg.bam//g  > samplelist.txt
@@ -41,7 +41,7 @@ ls bams/ | grep .rg.bam$ | sed s/.rg.bam//g  > samplelist.txt
 ```
 Lets break this down. 
 
-**ls bam** <= List all the files in the _bam_ directory
+**ls bams** <= List all the files in the _bams_ directory
 
 **\| grep .rg.bam$** <= Only keep the file names ending in _.sort.bam_.
 
@@ -75,7 +75,7 @@ java -jar $picard CreateSequenceDictionary \
   R=~/ref/SalmonReference.fasta \
   O=~/ref/SalmonReference.dict
 
-samtools faidx ~/ref/SalmonReference.fasta
+samtools faidx ~/ref/SalmonReference.fasta #column 1 = chromsome number, c2 = length, c3 = cumulative position where contig seq begins (i.e. is not missing)
 ```
 Take a look at the ref/SalmonReference.fasta.fai. How many chromosomes are there and how long is each? 
 
