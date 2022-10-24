@@ -32,7 +32,7 @@ Consult [Daily Assignments](resources/daily_assignments.md)
 
 There are two sessions a day, from 10am to Noon and from 2pm to 4pm.
 
-The course will be run in person on the UBC campus in the Darwin room in the Biodiversity Research Centre (Room 303 in the BRC).
+The course will be run in person on the UBC campus in room 435 of the Henry Angus Building.
 
 ## Basic course structure
 
