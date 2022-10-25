@@ -16,7 +16,7 @@ To start, make a local copy of the data files in your home directory. Run the fo
 ```
 cp /mnt/data/Tutorial_3_data.tar.gz ./ # Make a local copy of the sequence data
 
-tar -zxvf Tutorial_3_data.tar.gz ./ # Extract the data from the tarball that it was shipped in
+tar -zxvf Tutorial_3_data.tar.gz  # Extract the data from the tarball that it was shipped in
 
 ```
 
