@@ -182,7 +182,14 @@ cp /mnt/data/anno/SalmonAnnotations.gff ./
 ### If you don't know the commands, call one of the instructors over to walk through the steps you would take to complete the exercise
 
 
+
 <details>
-  <summary>Click for a hint! </summary>
-The program `bedtools` would come in handy to deal with duplicate entries
+<summary markdown="span">**Click for the solution!**
+</summary>
+```bash
+   > cat /mnt/data/anno/SalmonAnnotations.gff | awk 'BEGIN {OFS = "\t"};{if ($3=="gene") print  $1,$4-1,$5}'
+
+# The program `bedtools` would come in handy to deal with duplicate entries
+
+```
 </details>

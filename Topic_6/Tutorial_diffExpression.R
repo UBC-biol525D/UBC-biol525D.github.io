@@ -79,6 +79,7 @@ dds <- DESeq(ddsHTSeq)
 res <- results(dds)
 # Make a simple volcano plot
 plot(res$log2FoldChange, -log10(res$padj))
+
 library(ggplot2)
 
 res_DF <- data.frame(res)
