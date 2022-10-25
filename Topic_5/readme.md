@@ -94,7 +94,7 @@ less -S bam/Salmon.p1.3.i1.sam
 ### *Note*
 The option `-S` when running less chops lines that are longer than the page. This is normally just an aesthetic choice. When looking at SAM/BAM files this is quite necessary!
 
- 
+
 
 ### Questions:
 1. How are reads ordered in the SAM file?
@@ -151,7 +151,7 @@ Next we want to take a look at our aligned reads. First we index the file, then 
 
 ```bash
 samtools index bam/Salmon.p1.3.i1.sort.bam # build an index of a BAM file
-samtools tview bam/Salmon.p1.3.i1.sort.bam  --reference ref/approach_1.fasta
+samtools tview bam/Salmon.p1.3.i1.sort.bam  --reference fasta/SalmonReference.fasta
 
 #use ? to open the help menu. Scroll left and right with H and L.
 #Try to find positions where the sample doesn't have the reference allele.
@@ -164,7 +164,7 @@ You can jump to a specific location in a BAM file with `samtools tview` using th
 
 ```
 
-samtools tview bam/Salmon.p1.3.i1.sort.bam  --reference fasta/SalmonReference.fasta -p chr_1:80000 
+samtools tview bam/Salmon.p1.3.i1.sort.bam  --reference fasta/SalmonReference.fasta -p chr_1:80000
 
 ```
 The additional option ` -p chr_1:80000 ` tells `tview` to jump straight to chr_1 position 80000. Any valid location in the SAM/BAM can be referenced that way.
@@ -204,11 +204,11 @@ sh myScript.sh
 
 _____________________________
 
-Obviously that example is a little silly, but hopefully you can see how writing shell scripts is a very useful and efficient way of organising your work at the command line. 
+Obviously that example is a little silly, but hopefully you can see how writing shell scripts is a very useful and efficient way of organising your work at the command line.
 
 If you look in the `/mnt/data/fastq/GWAS_samples/` directory, you'll see that we have data here for 10 samples. It would be very tedious to align each one of these as we have for the single file above.
 
-For this exercise, try writing a bash script to produced a sorted BAM file for each sample as you have done for the single sample above. 
+For this exercise, try writing a bash script to produced a sorted BAM file for each sample as you have done for the single sample above.
 
 When writing a shell script, try to think of the steps that do not need to be repeated over and over again.
 
@@ -264,11 +264,11 @@ MORE HINTS:
     -t 1 > $bam/$name.sam;
 
     samtools view -bh $bam/$name.sam |\
-    samtools sort > $bam/$name.sort.bam; 
+    samtools sort > $bam/$name.sort.bam;
     samtools index $bam/$name.sort.bam
-    
+
     rm $bam/$name.sam # Remove intermediate file
-    
+
   done < $bam/samplelist.txt
 ```
 </details>
