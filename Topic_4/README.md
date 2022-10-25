@@ -272,7 +272,7 @@ head /mnt/data/gff/SalmonAnnotations_forIGV.gff
 cd /assemblies
 awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' /mnt/data/gff/SalmonAnnotations_forIGV.gff | sed 's/ID=//g' > SalmonReference.genes
 
-#what does $1 and $5 represent in the command above? What about a[1]?
+#what does $1 and $5 represent in the command above? Awk lets you manipulate columns in all sorts of ways - take note of "split". Here we're splitting column 9 by the delimiter ";" and save each index of the split to an array "a" (i.e. a[1], a[2], a[3], etc)
 
 #run quast on all 4 assemblies at once
 /mnt/software/quast-5.2.0/quast.py --help #check out the manual
