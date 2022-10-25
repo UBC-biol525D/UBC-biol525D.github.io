@@ -160,13 +160,12 @@ Since we are using simulated data, our data does not have adapters. But taking a
 
 A routine task in bioinformatics is to convert files from one form to another. In this exercise we'll use the Unix command line to take a file from one format and make the necessary changes to put it in another.
 
-For this exercise, pretend that a collaborator of yours has written a piece of analysis software. This analysis examines the total length of the coding portion of the genome and does a sophisticated evolutionary analysis with that information. However, your colleague was not very helpful and did not know that the data is currently in GFF format. The program they wrote only takes BED files. Here's the specification of the file format from your collaborator:
+For this exercise, pretend that a collaborator of yours has written a piece of analysis software. This analysis examines the total length of protiein-coding genes and does a sophisticated evolutionary analysis with that information. However, your colleague was not very helpful and did not know that the data is currently in GFF format. The program they wrote only takes BED files. Here's the specification of the file format from your collaborator:
 
 _ _ _ _ _ _ _ _ _ _
 *My new and improved algorithm for analysing selection in the genome requires, as input, a files with the following characteristics:*
 * *One file per chromosome*
 * *Chromosomes are referred to using a single integer name*
-* *Only the coordinates of the coding sequences (CDS) are allowed*
 * *The input **MUST** be in BED format*
 * *The program can detect when there is duplicate sequences, but it is **much** faster if it does not have to identify them*
 _ _ _ _ _ _ _ _ _ _
