@@ -14,7 +14,7 @@ In this exercise, let's pretend that you have been notified that your data is re
 
 To start, make a local copy of the data files in your home directory. Run the following:
 ```
-cp /mnt/data/fastq/Tutorial_3_data.tar.gz ./ # Make a local copy of the sequence data
+cp /mnt/data/Tutorial_3_data.tar.gz ./ # Make a local copy of the sequence data
 
 tar -zxvf Tutorial_3_data.tar.gz ./ # Extract the data from the tarball that it was shipped in
 
@@ -51,10 +51,10 @@ Now we've got our data, let's just make a couple of directories to tidy things u
 
 ```
 mkdir short_reads
-mv Salmon.Illumina.p1.i1.R?.fastq.gz short_reads/ # Note the use of the single character wildcard!
+mv Salmon.Illumina.R?.fastq.gz short_reads/ # Note the use of the single character wildcard!
 
 mkdir long_reads
-mv Salmon.PacBio.p1.i3.fastq.gz long_reads/
+mv Salmon.PacBio.fastq.gz long_reads/
 
 cd ../
 
