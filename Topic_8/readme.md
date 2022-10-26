@@ -40,7 +40,7 @@ tabix Chinook_GWAS_filtered.vcf.gz
 ##Coding challenge
 * How many sites remain in the filtered VCF? How many were removed? How many on each chromosome? Don't forget about `grep -v` ad `wc -l`!
 
-A common first pass analysis is to use structure to look at clustering in your data. Admixture is similar to STRUCTURE but orders of magnitude faster. We're going use that, but before that we have to convert our VCF to the bed format. We're going to use plink to do that. Plink is a large set of tools for manipulating genetic data, running GWAS and calculating various stats. It's geared towards human data, so sometimes you have to force it to work with non-human data. For example, it assumes you have human chromosomes (eg 23 of them) and will complain if it doesn't see them.
+A common first pass analysis is to use structure to look at clustering in your data. Admixture is similar to STRUCTURE but orders of magnitude faster. We're going use that, but before that we have to convert our VCF to the specialized format. We can do that with Plink - Plink is a large set of tools for manipulating genetic data, running GWAS and calculating various stats. It's geared towards human data, so sometimes you have to force it to work with non-human data. For example, it assumes you have human chromosomes (eg 23 of them) and will complain if it doesn't see them.
 
 
 ```bash
@@ -53,7 +53,7 @@ zgrep "#CHROM" vcf/Chinook_GWAS_filtered.vcf.gz
 #we could use a specialty software like bedtools reheader to fix this, but lets just use basic bash commands
 
 zcat vcf/Chinook_GWAS_filtered.vcf.gz | sed 's/-e Chinook/Chinook/g' | bgzip > vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
-#the key command here is the sed 's/find/replace/g'
+#the key command here is the sed 's/find/replace/g' , zcat is uncompression to standard out and bgzip is recompressing 
 
 plink=/mnt/software/plink
 $plink --make-bed \
@@ -76,8 +76,10 @@ $plink \
 	--out vcf/Chinook_GWAS_filtered_fixedsamps \
 	--make-founders \
 	--allow-extra-chr 
+#allow extra chromosome is another way we force plink to work with non-human data (i.e. allow chromosomes that don't have the typical human chr names)
 
 #this produces two files, .in (to include) and .out (to exclude) 
+#now lets actually extracts the snps that remain after LD pruning
 
 $plink \
 --bfile vcf/Chinook_GWAS_filtered_fixedsamps \
@@ -86,8 +88,7 @@ $plink \
 --out vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned \
 --allow-extra-chr 
 
-#this actually extracts the snps that remain after LD pruning
-
+#great! we have our files in the necessary format, now lets run admixture
 admixture=/mnt/software/admixture
 $admixture vcf/Chinook_GWAS_filtered_fixedsamps_LDpruned.bed 2
 ```
