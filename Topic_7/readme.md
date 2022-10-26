@@ -45,7 +45,7 @@ Lets break this down.
 
 **\| grep .rg.bam$** <= Only keep the file names ending in _.sort.bam_.
 
-**\| sed s/.rg.bam//g** <= Replace the string _.sort.bam_ with "", effectively leaving only the sample name.
+**\| sed s/.rg.bam//g** <= Replace the string .rg.bam_ with "", effectively leaving only the sample name.
 
 **> samplelist.txt** <= Save the result in a file named _samplelist.txt_
 
@@ -53,6 +53,9 @@ Lets break this down.
 The first step is to mark duplicate reads using picardtools - this is important because we wouldn't expect to find reads that are exactly identical (the same sequence, with the same start and end positions) unless it resulted from PCR amplification. We don't want to infer genome-wide variation with removing this pseudoreplicated data. If you were using GBS data you wouldn't want to do this step.
 
 ```bash
+#this program is sightly different than we've been working with. They are compiled with java code and contain many modules. 
+#we therefore need to 1) call java 2) point java to the executable 3) tell picard which module to run
+#remember that you can figure out a program's usage by running it without any options except --help (i.e. java -jar $picard MarkDuplicates --help)
 
 while read name; do
   java -jar $picard MarkDuplicates \
@@ -70,26 +73,29 @@ To use GATK, we have to index our reference genome. An index is a way to allow r
 
 
 ```bash
-cp /mnt/data/fasta/SalmonReference.fasta ~/ref/
+cp /mnt/data/fasta/SalmonReference.fasta ~/ref/ #copy the reference to our local folder
+
+#two types of references are needed - a sequence dictionary
 java -jar $picard CreateSequenceDictionary \
   R=~/ref/SalmonReference.fasta \
   O=~/ref/SalmonReference.dict
 
+#and a .fai file
 samtools faidx ~/ref/SalmonReference.fasta #column 1 = chromsome number, c2 = length, c3 = cumulative position where contig seq begins (i.e. is not missing)
 ```
 Take a look at the ref/SalmonReference.fasta.fai. How many chromosomes are there and how long is each? 
 
 
 
-The next step is to use GATK to create a GVCF file for each sample. This file summarizes support for reference or alternate alleles at all positions in the genome. It's an intermediate file we need to use before we create our final VCF file.
+The next step is to use GATK to create a GVCF file for each sample. This file summarizes support for reference or alternate alleles at all positions in the genome *for each individual*. It's an intermediate file we need to use before we create our final, population-level VCF file.
 
 This step can take a few minutes so lets first test it with a single sample to make sure it works.
 ```
-for name in `cat ~/samplelist.txt | head -n +1 ` 
+for name in `cat ~/samplelist.txt | head -n +1 `  #note this trick for specifying variables, where ` .. ` tells bash to take the output of this command (in this case to use as a values for "name" in the for loop)
 do 
 java -Xmx10g -jar $gatk HaplotypeCaller \
 -R ~/ref/SalmonReference.fasta \
---native-pair-hmm-threads 3 \
+--native-pair-hmm-threads 2 \
 -I ~/bams/$name.sort.dedup.bam \
 -ERC GVCF \
 -O ~/gvcf/$name.sort.dedup.g.vcf
