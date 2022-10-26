@@ -91,7 +91,10 @@ The next step is to use GATK to create a GVCF file for each sample. This file su
 
 This step can take a few minutes so lets first test it with a single sample to make sure it works.
 ```
-for name in `cat ~/samplelist.txt | head -n +1 `  #note this trick for specifying variables, where ` .. ` tells bash to take the output of this command (in this case to use as a values for "name" in the for loop)
+#note the approach we'll use for variable assignment in our for loop 
+#` .. ` tells bash to take the output of this command (in this case to use as a values for "name" in the for loop)
+
+for name in `cat ~/samplelist.txt | head -n +1 ` 
 do 
 java -Xmx10g -jar $gatk HaplotypeCaller \
 -R ~/ref/SalmonReference.fasta \
@@ -121,12 +124,13 @@ sample2 \t gvcf/sample2.g.vcf.gz
 sample3 \t gvcf/sample3.g.vcf.gz
 
 ```bash
-
 for i in `ls gvcf/*g.vcf | sed 's/.sort.dedup.g.vcf//g' | sed 's/gvcf\///g'`
 do
   echo -e "$i\tgvcf/$i.sort.dedup.g.vcf"
 done > ~/biol525d.sample_map
 
+#take a look
+cat ~/biol525d.sample_map
 ```
 
 Lets break down this loop to understand how its working 
@@ -160,12 +164,12 @@ With the genomicsDB created, we're finally ready to actually call variants and o
 java -Xmx10g -jar $gatk GenotypeGVCFs \
    -R ref/SalmonReference.fasta \
    -V gendb://db/Chinook_chr1 \
-   -O vcf/Chinook_p1p10_i1i2_chr1.vcf.gz
+   -O vcf/Chinook_p1_i12i89_chr1.vcf.gz
 ```
 Now we can actually look at the VCF file
 
 ```bash
-less -S vcf/Chinook_p1p10_i1i2_chr1.vcf.gz
+less -S vcf/Chinook_p1_i12i89_chr1.vcf.gz
 ```
 
 Try to find an indel. Do you see any sites with more than 1 alternate alleles? 
@@ -179,8 +183,8 @@ Once you have two VCF files, one for each chromosome, you can concatenate them t
 ```bash
 
 bcftools concat \
-  vcf/Chinook_p1p10_i1i2_chr1.vcf.gz \
-  vcf/Chinook_p1p10_i1i2_chr2.vcf.gz \
+  vcf/Chinook_p1_i12i89_chr1.vcf.gz \
+  vcf/Chinook_p1_i12i89_chr2.vcf.gz \
   -O z > vcf/full_genome.vcf.gz
 
 ```
