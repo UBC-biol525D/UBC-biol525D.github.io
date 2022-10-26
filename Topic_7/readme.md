@@ -28,12 +28,12 @@ gatk=/mnt/software/gatk-package-4.2.2.0-local.jar
 picard=/mnt/software/picard.jar
 ```
 
-There are 4 different samples we will mapping today - 2 individuals [i1, i2] each, from 2 populations [p1,p10]) 
+There are 4 different samples we will mapping today - 4 individuals [i1, i2, i8, i9] from 1 population [p1]) 
 
 We're going to have to run multiple steps on each sample, so to make this easier, we make a list of all the sample names.
 
 In case you didn't finish last tutorial, and since we have some extra bams you didn't generate, copy the \*bam files and their index (\*.bai) to your newly generated ~/bams directory 
-(`cp /mnt/data/bams/Chinook.p[1,10].i[1-2].rg.bam ~/bams/`).
+(`cp /mnt/data/bams/Chinook.p1.i[1-2,8-9].rg.bam ~/bams/`).
 
 ```bash
 ls bams/ | grep .rg.bam$ | sed s/.rg.bam//g  > samplelist.txt
@@ -45,7 +45,7 @@ Lets break this down.
 
 **\| grep .rg.bam$** <= Only keep the file names ending in _.sort.bam_.
 
-**\| sed s/.rg.bam//g** <= Replace the string _.sort.bam_ with "", effectively leaving only the sample name.
+**\| sed s/.rg.bam//g** <= Replace the string .rg.bam_ with "", effectively leaving only the sample name.
 
 **> samplelist.txt** <= Save the result in a file named _samplelist.txt_
 
@@ -53,6 +53,9 @@ Lets break this down.
 The first step is to mark duplicate reads using picardtools - this is important because we wouldn't expect to find reads that are exactly identical (the same sequence, with the same start and end positions) unless it resulted from PCR amplification. We don't want to infer genome-wide variation with removing this pseudoreplicated data. If you were using GBS data you wouldn't want to do this step.
 
 ```bash
+#this program is sightly different than we've been working with. They are compiled with java code and contain many modules. 
+#we therefore need to 1) call java 2) point java to the executable 3) tell picard which module to run
+#remember that you can figure out a program's usage by running it without any options except --help (i.e. java -jar $picard MarkDuplicates --help)
 
 while read name; do
   java -jar $picard MarkDuplicates \
@@ -70,26 +73,32 @@ To use GATK, we have to index our reference genome. An index is a way to allow r
 
 
 ```bash
-cp /mnt/data/fasta/SalmonReference.fasta ~/ref/
+cp /mnt/data/fasta/SalmonReference.fasta ~/ref/ #copy the reference to our local folder
+
+#two types of references are needed - a sequence dictionary:
 java -jar $picard CreateSequenceDictionary \
   R=~/ref/SalmonReference.fasta \
   O=~/ref/SalmonReference.dict
 
+#and a .fai file
 samtools faidx ~/ref/SalmonReference.fasta #column 1 = chromsome number, c2 = length, c3 = cumulative position where contig seq begins (i.e. is not missing)
 ```
 Take a look at the ref/SalmonReference.fasta.fai. How many chromosomes are there and how long is each? 
 
 
 
-The next step is to use GATK to create a GVCF file for each sample. This file summarizes support for reference or alternate alleles at all positions in the genome. It's an intermediate file we need to use before we create our final VCF file.
+The next step is to use GATK to create a GVCF file for each sample. This file summarizes support for reference or alternate alleles at all positions in the genome *for each individual*. It's an intermediate file we need to use before we create our final, population-level VCF file.
 
 This step can take a few minutes so lets first test it with a single sample to make sure it works.
 ```
+#note the approach we'll use for variable assignment in our for loop 
+#` .. ` tells bash to take the output of this command (in this case to use as a values for "name" in the for loop)
+
 for name in `cat ~/samplelist.txt | head -n +1 ` 
 do 
 java -Xmx10g -jar $gatk HaplotypeCaller \
 -R ~/ref/SalmonReference.fasta \
---native-pair-hmm-threads 3 \
+--native-pair-hmm-threads 2 \
 -I ~/bams/$name.sort.dedup.bam \
 -ERC GVCF \
 -O ~/gvcf/$name.sort.dedup.g.vcf
@@ -115,12 +124,13 @@ sample2 \t gvcf/sample2.g.vcf.gz
 sample3 \t gvcf/sample3.g.vcf.gz
 
 ```bash
-
 for i in `ls gvcf/*g.vcf | sed 's/.sort.dedup.g.vcf//g' | sed 's/gvcf\///g'`
 do
   echo -e "$i\tgvcf/$i.sort.dedup.g.vcf"
 done > ~/biol525d.sample_map
 
+#take a look
+cat ~/biol525d.sample_map
 ```
 
 Lets break down this loop to understand how its working 
@@ -154,12 +164,12 @@ With the genomicsDB created, we're finally ready to actually call variants and o
 java -Xmx10g -jar $gatk GenotypeGVCFs \
    -R ref/SalmonReference.fasta \
    -V gendb://db/Chinook_chr1 \
-   -O vcf/Chinook_p1p10_i1i2_chr1.vcf.gz
+   -O vcf/Chinook_p1_i12i89_chr1.vcf.gz
 ```
 Now we can actually look at the VCF file
 
 ```bash
-less -S vcf/Chinook_p1p10_i1i2_chr1.vcf.gz
+less -S vcf/Chinook_p1_i12i89_chr1.vcf.gz
 ```
 
 Try to find an indel. Do you see any sites with more than 1 alternate alleles? 
@@ -173,8 +183,8 @@ Once you have two VCF files, one for each chromosome, you can concatenate them t
 ```bash
 
 bcftools concat \
-  vcf/Chinook_p1p10_i1i2_chr1.vcf.gz \
-  vcf/Chinook_p1p10_i1i2_chr2.vcf.gz \
+  vcf/Chinook_p1_i12i89_chr1.vcf.gz \
+  vcf/Chinook_p1_i12i89_chr2.vcf.gz \
   -O z > vcf/full_genome.vcf.gz
 
 ```
