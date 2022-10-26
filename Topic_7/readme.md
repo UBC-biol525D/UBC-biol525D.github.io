@@ -28,12 +28,12 @@ gatk=/mnt/software/gatk-package-4.2.2.0-local.jar
 picard=/mnt/software/picard.jar
 ```
 
-There are 4 different samples we will mapping today - 2 individuals [i1, i2] each, from 2 populations [p1,p10]) 
+There are 4 different samples we will mapping today - 4 individuals [i1, i2, i8, i9] from 1 population [p1]) 
 
 We're going to have to run multiple steps on each sample, so to make this easier, we make a list of all the sample names.
 
 In case you didn't finish last tutorial, and since we have some extra bams you didn't generate, copy the \*bam files and their index (\*.bai) to your newly generated ~/bams directory 
-(`cp /mnt/data/bams/Chinook.p[1,10].i[1-2].rg.bam ~/bams/`).
+(`cp /mnt/data/bams/Chinook.p1.i[1-2,8-9].rg.bam ~/bams/`).
 
 ```bash
 ls bams/ | grep .rg.bam$ | sed s/.rg.bam//g  > samplelist.txt
@@ -75,7 +75,7 @@ To use GATK, we have to index our reference genome. An index is a way to allow r
 ```bash
 cp /mnt/data/fasta/SalmonReference.fasta ~/ref/ #copy the reference to our local folder
 
-#two types of references are needed - a sequence dictionary
+#two types of references are needed - a sequence dictionary:
 java -jar $picard CreateSequenceDictionary \
   R=~/ref/SalmonReference.fasta \
   O=~/ref/SalmonReference.dict
