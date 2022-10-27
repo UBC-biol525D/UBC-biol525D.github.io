@@ -117,8 +117,10 @@ By default, GEMMA knows to take the 6th column of the plink .fam file as the dep
 
 ```bash
 #modify the fam file, replacing the 6th column with our actual phenotypes
+#to do this, lets first make sure we the phenotype information we have is in the same order as our samples
 comm --help #make sure you know how to interpret the output!
-comm  <( cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam  ) <( cut -d"," -f-1 /mnt/data/vcf/phenos.txt ) #notice only column 2 prints
+comm  <( cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam  ) <( cut -d"," -f-1 /mnt/data/vcf/phenos.txt ) #notice only column 2 (rows in common between datasets) prints
+#we also did something new here - subprocessing! this is specified by <() which tells a command to use the output of the subcommand as input one (and input two in this case)
 
 #make modified fam file
 paste -d " "  <( cut -d" " -f1-5 vcf/Chinook_GWAS_filtered_fixedsamps.fam) <( cut -d"," -f2 /mnt/data/vcf/phenos.txt) > vcf/Chinook_GWAS_filtered_fixedsamps.fammod
