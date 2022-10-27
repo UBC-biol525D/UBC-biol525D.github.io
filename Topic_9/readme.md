@@ -100,7 +100,9 @@ Make a results file of the pairwise weighted fst estimates based on the grep com
 
 <details>
   <summary>Spoiler!!</summary>
+```
 grep "Weir and Cockerham weighted Fst estimate:" analysis/fst_comparisons/*.log | tr ":" "\t"  | sed 's|analysis/fst_comparisons/||g' | sed 's|_10kb.log||g' | cut -d$'\t' -f1,3 | tr "_" "\t" > analysis/fst_comparisons/weighted_fst_pairwise.txt
+```
 </details>
 
 
