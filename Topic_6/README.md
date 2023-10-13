@@ -70,7 +70,7 @@ Here's how you can do that:
 # navigate to home directory
 cd
 
-# open up your bash profile
+# open up your bash profile (in our home directory)
 emacs .bashrc  # I like emacs, but use whichever text editor you prefer
 
 ```
@@ -112,7 +112,7 @@ mkdir fasta/STAR_index/ ## This is a directory to hold the STAR reference genom
 STAR --runThreadN 2 \ # The number of threads to spawn this process on
                               --runMode genomeGenerate \ # The mode of operation for STAR
                               --genomeDir fasta/STAR_index/ \ # A place to store the index file
-                              --genomeFastaFiles SalmonReference.fasta \ # The location of the reference genome
+                              --genomeFastaFiles fasta/SalmonReference.fasta \ # The location of the reference genome
                               --sjdbGTFfile SalmonAnnotations.gff # The location of the genome annotations, in GFF format
 
 
@@ -160,7 +160,7 @@ We'll use STAR to map the reads too:
 ```sh
 
 STAR --genomeDir location_to_save_index/ \ # This tells STAR where we've put the reference genome - the place you specified above
-      --readFilesIn cold_sample_01_1.fq.gz cold_sample_01_2.fq.gz \ # Give the two FASTQ files for paired-end reads
+      --readFilesIn cold_sample_04_1.fq.gz cold_sample_04_2.fq.gz \ # Give the two FASTQ files for paired-end reads
       --outFileNamePrefix cold_sample_04. \ # Give a prefix for all of the output files
       --outSAMtype BAM SortedByCoordinate \ # This tells STAR to outut the alignments in BAM format and sorted by coordinate
       --outSAMunmapped Within \ # Puts the unmapped reads into the BAM file
@@ -199,8 +199,8 @@ htseq-count -s no \
             -t exon \ # What type of feature will our data have mapped to?
             -i gene \
             -f bam \
-            cold_sample_07.Aligned.sortedByCoord.out.bam \
-            /mnt/data/anno/SalmonAnnotations.gff  > cold_sample_07.read_counts.txt
+            cold_sample_04.Aligned.sortedByCoord.out.bam \
+            /mnt/data/anno/SalmonAnnotations.gff  > cold_sample_04.read_counts.txt
 ```
 
 Inspect the contents of `cold_sample_07.read_counts.txt`. It should be fairly obvious what this file contains.

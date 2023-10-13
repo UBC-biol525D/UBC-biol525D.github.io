@@ -8,7 +8,7 @@ menuPosition: 1
 <h1>{{ site.courseName }}</h1>
 
 ## Description
-The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic. The course will be presented as a series of short lectures and lab exercises over a one week period in October 2022.
+The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic. The course will be presented as a series of short lectures and lab exercises over a one week period in October 2023.
 
 ## Instructors
 Tom Booker, Julia Kreiner
@@ -28,11 +28,11 @@ Consult [Grading Information](resources/grading.md).
 Consult [Daily Assignments](resources/daily_assignments.md)
 
 ## Lectures/seminars
-24th October 2022 - 28th of October 2022.
+23rdt October 2023 - 27th of October 2023.
 
 There are two sessions a day, from 10am to Noon and from 2pm to 4pm.
 
-The course will be run in person on the UBC campus in room 435 of the Henry Angus Building.
+The course will be run in person on the UBC campus in Biological Sciences building Rm 2139.
 
 ## Basic course structure
 
