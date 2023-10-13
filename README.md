@@ -42,6 +42,8 @@ Modified work (c) 2019 Gregory Owens, Kathryn Hodgins, JS Legare
 
 Modified work (c) 2020 Kathryn Hodgins, Julia Kreiner, Tom Booker
 
+Modified work (c) 2021,2022,2023 Julia Kreiner, Tom Booker
+
 This program is distributed under the MIT (X11) License, which should
 be distributed with the package. If not, it can be found here:
 http://www.opensource.org/licenses/mit-license.php

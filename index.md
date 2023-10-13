@@ -10,35 +10,33 @@ menuPosition: 1
 ## Description
 The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic. The course will be presented as a series of short lectures and lab exercises over a one week period in October 2023.
 
+This year, the workshop runs from 23rd October 2023 - 27th of October. There are two sessions a day, from 10am to Noon and from 2pm to 4pm.
+
+**The course will be run in person on the UBC campus in Biological Sciences building Rm 2139.**
+
+
 ## Instructors
 Tom Booker, Julia Kreiner
 
 ## Format
 A mix of lecture and lab exercises, running in a 2-hour block.
 
+The course material is organized in several topics, with slides and coding examples given in each. Typically we have a lecture for the first half of each class and a practical session for the second.
+
 ## Prequisites
 Students should have basic knowledge in R and some command line knowledge (although the latter could be obtained during the course)
 
-## Evaluation
-Participation in discussions and lab exercises.
+To get up to speed on working with a Unix system, we recommend having taken the equivalent of [Introduction to the Command Line for Genomics](https://datacarpentry.org/shell-genomics/) from Data Carpentry.
 
-Consult [Grading Information](resources/grading.md).
+For a handy reference of common Unix commands check out the [unix help](resources/unix_ref.pdf) file. There are some resources there that will help you find the specific command you need for each task.
+
+## Evaluation
+
+Your mark will reflect participation in class (discussions and lab exercises etc) as well performance on a final assignment. The breakdown is 80% of your mark will come from participation and 20% from the assignment.
 
 ## Assignments
-Consult [Daily Assignments](resources/daily_assignments.md)
 
-## Lectures/seminars
-23rdt October 2023 - 27th of October 2023.
-
-There are two sessions a day, from 10am to Noon and from 2pm to 4pm.
-
-The course will be run in person on the UBC campus in Biological Sciences building Rm 2139.
-
-## Basic course structure
-
-The course material is organized in several topics, with slides and coding examples.
-
-To get up to speed on working with a Unix system, take a look at the [unix help](resources/unix_ref.pdf) file. There are some resources there that will help you find the specific command you need for each task.
+At the end of the week you will be given details of an assignment in class that combines different aspects of the work you'll do throughout the week.
 
 ## Syllabus
 1. [Topic 1](./Topic_1/) Broad introduction: Scope of course, goals, overview of technology and bioinformatics [Booker,T]
