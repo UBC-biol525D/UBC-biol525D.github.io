@@ -87,11 +87,9 @@ longreads="/home/tommyB/Tutorial_3_data/long_reads/"
 mkdir qualityControl
 cd qualityControl
 
-#The program is installed on the server so can be accessed as follows:
-fastqc ${shortreads}/*fastq.gz ${longreads}/*fastq.gz -o ./
 ```
 
-*Oh no!* `FastQC` threw an error. If you read the error message it looks like it uses Java and that Java has been updated since then. I guess this would be a good chance to try downloading a package from the internet.
+Most programs won't be install for you when you start analyzing your data. Its good practice to get a sense of how to do this!
 
 The first thing you need is the address of the most recent version of `fastqc`. If you navigate the program's website, you'll find several download links when you click "Download Now":
 [https://www.bioinformatics.babraham.ac.uk/projects/fastqc/](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
@@ -106,7 +104,7 @@ wget <insert copied link here>
 # This should have downloaded a zipped file called something like fastqc_v0.11.9.zip
 
 # To unzip just run:
-unzip fastqc_v0.11.9.zip
+unzip fastqc_v0.12.1.zip
 
 # This will have made a directory, go into it:
 cd FastQC
@@ -118,25 +116,30 @@ chmod 755 fastqc ## Add execute permissions for all users
 
 Phew, now we should have a happy version of fastqc that we can work with.
 
-### Now lets look at some properties of our reads
+### Now lets look at some properties of our reads. We're including read sets generated from different sequencing platforms resulting in different read lengths (Illumina/Pacbio), and also short reads from historical specimens.
 
 ```bash
 
-shortreads="~/Tutorial_3_data/short_reads/"
-longreads="~/Tutorial_3_data/long_reads/"
+shortreads=~/Tutorial_3_data/short_reads/
+historical_shortreads=~/Tutorial_3_data/historical_shortreads/
+longreads=~/Tutorial_3_data/long_reads/
 
 mkdir qualityControl
 cd qualityControl
 
 #fastqc is a widely used program for looking at read quality
- ~/FastQC/fastqc  ${shortreads}/*fastq.gz ${longreads}/*fastq.gz -o ./
+#You might be wondering how to run fastqc? How would you figure it out on your own? Remember that pretty much all programs have a manual, which can often be called by appending --help to the program name. Usually the most important information is at the top i.e. the recipe for running the program.
 
-# Now, we are referring to the version of FastQC that we just downloaded, and it should play nicely with the Java version we are working with.
+~/FastQC/fastqc --help
 
-#some programs allow you to input multiple files at once using wild cards. this is convenient.
-#otherwise we would have had to specify each file individually. Here's another way we could use wildcards here:
+#You'll note that fastqc is conveniently coded to allow inputting multiple input files at once, this isn't the case for alot of programs. Make sure to get into the habit of checking out the usage section of a program's manual before you run it.
 
-#fastqc ${shortreads}/*R?.fastq.gz ${longreads}/*fastq.gz -o ./ )
+#OK lets run fastqc
+ ~/FastQC/fastqc  ${shortreads}/*fastq.gz ${historical_shortreads}/*fastq.gz ${longreads}/*fastq.gz -o ./
+
+#Here's another couple of ways we could use wildcards here
+##~/FastQC/fastqc ${shortreads}/*R?.fastq.gz ${historical_shortreads}/*R?.fastq.gz ${longreads}/*fastq.gz -o ./ )
+##~/FastQC/fastqc ${shortreads}/*R[1,2].fastq.gz ${historical_shortreads}/*R[1,2].fastq.gz ${longreads}/*fastq.gz -o ./ )
 
 #summarise into a single report
 multiqc ./
@@ -150,9 +153,8 @@ scp <username@ip.address>:/home/<username>/assembly/multiqc_report.html <path on
 
 Open that file up in an internet browser and have a look.
 
-Since we are using simulated data, our data does not have adapters. But taking a look at the signatures of our highly quality reads can help you get a sense of what very high quality data might look like, and additionally,by comparing to your real data, how sequencing technology influences data quality.  
 
-**Discussion Question: our data effectively has had adapters removed from reads and already been trimmed for low quality BPs near the end of reads. what might be the cons of read trimming?**
+**Discussion: The "shortread" and "longread" data is simulated (with low error rates), whereas the "historical_shortread" is actually from DNA prepared from 100 year old samples. Historical sample preparation tends to use PCR amplification to maximize DNA yield and might show signals of degradation. Do you see signals of this?**
 
 
 
@@ -183,10 +185,12 @@ cp /mnt/data/anno/SalmonAnnotations.gff ./
 
 
 <details>
-<summary markdown="span">**Click for the solution!**
+<summary markdown="span">**Click for partial solution!**
 </summary>
 ```bash
    > cat /mnt/data/anno/SalmonAnnotations.gff | awk 'BEGIN {OFS = "\t"};{if ($3=="gene") print  $1,$4-1,$5}'
+
+#this gets you part of the way there, but the chromosome values (column 1) still aren't single integer. the command `tr` (stands for translate) could be useful for this, or `sed 's/find/replace/g'`
 
 # The program `bedtools` would come in handy to deal with duplicate entries
 
