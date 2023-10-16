@@ -24,7 +24,7 @@ We have data for 12 fish, 6 from each location in the river.
 FASTQ files containing RNA seq reads for the 12 fish are located at:
 
 ```
-/mnt/data/fastq/rna/
+/mnt/data/fastq/RNA/
 ```
 
 Let's set up our environment and make a local copy of the RNA data...
