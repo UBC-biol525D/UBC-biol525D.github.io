@@ -45,11 +45,11 @@ Using the approach 1 genome assembly:
 
 
 ```bash
-
-bwa mem \ # We have installed BWA on the VMs, but that might not always be the case
+# We have installed BWA on the VMs, but that might not always be the case
+bwa mem \
   fasta/SalmonReference.fasta \
-  GWAS_samples/Salmon.p1.3.i1.400000_R1.fastq.gz \
-  GWAS_samples/Salmon.p1.3.i1.400000_R2.fastq.gz \
+  GWAS_samples/SalmonSim.p1.3.i1.400000_R1.fastq.gz \
+  GWAS_samples/SalmonSim.p1.3.i1.400000_R2.fastq.gz \
   -t 2 \
   -R '@RG\tID:sample_1\tSM:1\tPL:illumina\tPU:biol525d\tLB:sample_1_library' \
   > bam/Salmon.p1.3.i1.sam
@@ -59,7 +59,7 @@ bwa mem \ # We have installed BWA on the VMs, but that might not always be the c
 
 
 Lets break this command down since it has several parts:
-**/usr/bin/bwa** <= We're calling the program _bwa_ from the directory _/usr/bin/_. This is the full path to that program so you can call this no matter where you are in the file system.
+**bwa** <= We're calling the program _bwa_ . We've install this globally, and through the magic of bash profiles that tell bash where to look for certain programs, here its fine to just type the name of the program and bash will find. if you want to know where its installed, you can type `whereis bwa`. This tells you the full path to the program.
 
 * **mem** <= This is the mode of bwa we are running. It is an option specific to bwa and not a Unix command.
 
@@ -71,13 +71,13 @@ Lets break this command down since it has several parts:
 
 * **GWAS_samples/Salmon.p1.3.i1.400000_R2.fastq.gz** <= This is the reverse read (e.g. read 2)  set for the first sample.
 
-* **-t 2** <= This is telling the program how many threads (i.e. cpus) to use. In this case we're only using two because we're sharing the machine with the other students.
+* **-t 2** <= This tells the program how many threads (i.e. cpus) to use. In this case we're only using two because we're sharing the machine with the other students.
 
 * **-R '@RG\tID:sample_1\tSM:1\tPL:illumina\tPU:biol525d\tLB:sample_1_library'** <= This is adding read group information to the resulting SAM file. Read group information lets other programs know what the sample name along with other factors. It is necessary for GATK to run later on.
 
 * **> bam/Salmon.p1.3.i1.sam** <= This is directing the output of the program into the file bam/Salmon.p1.3.i1.sam
 
-We now have our reads aligned to the genome in a human readable format (SAM) instead of binary format (bam) which we will use later. Generally we keep our data in BAM format because its more compressed but we can use this opportunity to better understand the format.
+We now have our reads aligned to the genome in a human-readable format (SAM) instead of binary format (bam) which we will use later. Generally, we keep our data in BAM format because it's more compressed but we can use this opportunity to better understand the format.
 
 
 Lets examine the SAM file. It contains all the information on the reads from the fastq file, but also alignment information.
@@ -103,7 +103,7 @@ The option `-S` when running less chops lines that are longer than the page. Thi
 
 ____________________________
 
-At this point we'll introduce a very useful - and incredibly widely used - piece of software called `samtools`. As the name suggests, `samtools` is a program for working with SAM/BAM files.
+At this point, we'll introduce a very useful - and incredibly widely used - piece of software called `samtools`. As the name suggests, `samtools` is a program for working with SAM/BAM files.
 
 ### *Note*
 `samtools` can produce very useful summaries of alignments - try running `samtools flagstat bam/Salmon.p1.3.i1.sam`.
@@ -117,8 +117,8 @@ samtools view -c bam/Salmon.p1.3.i1.sam
 
 ```
 
-Lets break this command down:
-* `samtools`  - the program tat we want to run
+Let's break this command down:
+* `samtools`  - the program that we want to run
 * `view` - the mode we want to run the program in
 * `-c` - this flag indicates that we want a count of reads
 * `bam/Salmon.p1.3.i1.sam` - The input file
@@ -145,7 +145,7 @@ Lets break this command down:
 * `> bam/Salmon.p1.3.i1.sort.bam` - the name you want to give to the output file
 
 
-With this command we're using the pipe "|" to pass data directly between commands without saving the intermediates. This makes the command faster since its not saving the intermediate file to hard disk (which is slower). It can be more risky though because if any steps fails you have to start from the beginning.
+With this command we're using the pipe "\|" to pass data directly between commands without saving the intermediates. This makes the command faster since its not saving the intermediate file to hard disk (which is slower). It can be more risky though because if any steps fails you have to start from the beginning.
 
 Next we want to take a look at our aligned reads. First we index the file, then we use samtools tview.
 
