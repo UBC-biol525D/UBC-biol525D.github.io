@@ -157,7 +157,7 @@ We'll use STAR to map the reads too:
 
 ```sh
 
-STAR --genomeDir location_to_save_index/ `# This tells STAR where we've put the reference genome - the place you specified above` \
+STAR --genomeDir <location_to_save_index>/ `# This tells STAR where we've put the reference genome - the place you specified above` \
       --readFilesIn ~/RNA/cold_sample_04_1.fq.gz ~/RNA/cold_sample_04_2.fq.gz `# Give the two FASTQ files for paired-end reads` \
       --outFileNamePrefix cold_sample_04. `# Give a prefix for all of the output files` \
       --outSAMtype BAM SortedByCoordinate `# This tells STAR to outut the alignments in BAM format and sorted by coordinate` \
