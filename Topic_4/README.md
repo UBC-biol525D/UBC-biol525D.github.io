@@ -275,10 +275,10 @@ awk 'split($9,a,";") {print $1 "\t" a[1] "\t" $5 "\t" $4}' /mnt/data/gff/SalmonA
 #what does $1 and $5 represent in the command above? Awk lets you manipulate columns in all sorts of ways - take note of "split". Here we're splitting column 9 by the delimiter ";" and save each index of the split to an array "a" (i.e. a[1], a[2], a[3], etc)
 
 #run quast on all 4 assemblies at once
-/mnt/software/quast-5.2.0/quast.py --help #check out the manual
+python3 /mnt/software/quast-5.2.0/quast.py --help #check out the manual
 #notice we're not going to worry about the advanced options 
 
-/mnt/software/quast-5.2.0/quast.py flye_longread.fasta haslr_hybrid.fasta spades_hybrid.fasta spades_shortreadonly.fasta \
+python3 /mnt/software/quast-5.2.0/quast.py flye_longread.fasta haslr_hybrid.fasta spades_hybrid.fasta spades_shortreadonly.fasta \
 	-r /mnt/data/fasta/SalmonReference.fasta \
 	-g SalmonReference.genes \
 	-o quast_out
@@ -292,7 +292,7 @@ Question: what new information does this report give us?
 
 
 
-## Review some important command line operations we used today.
+## Review some important command-line operations we used today.
 
 For loops - this can be a list of items seperated by spaces or you can specify of range numeric values to use a an iterator
 ```bash
