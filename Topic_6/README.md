@@ -44,7 +44,7 @@ cp -r /mnt/data/anno/SalmonAnnotations.gff  ./
 mkdir rna_bam
 ```
 
-We've got paired end reads, so there's two fastq files per sample. The samples are named in a pretty obvious way, but I'll let you see that for yourself.
+We've got paired-end reads, so there are two fastq files per sample. The samples are named in a pretty obvious way, but I'll let you see that for yourself.
 
 # 1. Aligning RNAseq data
 
@@ -56,7 +56,7 @@ We have preinstalled STAR on each of the servers, but if you were to do this you
 
 STAR is in the following location on each of the VMs:
 ```sh
-/mnt/software/STAR-2.7.10a_alpha_220818/source/STAR
+/mnt/software/STAR-2.7.11a/source/STAR
 ```
 
 It is a bit annoying to have to type that whole path in all the time, so let's add it to our PATH.
@@ -71,8 +71,8 @@ Here's how you can do that:
 cd
 
 # open up your bash profile (in our home directory)
-emacs .bashrc  # I like emacs, but use whichever text editor you prefer
-
+emacs .bashrc  # I like emacs, but use whichever text editor you prefer, like vim
+#vi .bashrc (i to insert text; esc key, :wq to save and quit)
 ```
 
 When in your text editor, add the following text and save the file:
@@ -96,7 +96,7 @@ Now check that it worked:
 STAR --help
 
 ```
-That should access the STAR executable and print a bunch of help text to the screen.
+That should access the STAR manual, printing it to screen
 
 ## Build a genome index
 
@@ -109,11 +109,11 @@ STAR, like many read aligners, has many modes of operation and building an index
 
 mkdir fasta/STAR_index/ ## This is a directory to hold the STAR reference genome index
 
-STAR --runThreadN 2 \ # The number of threads to spawn this process on
-                              --runMode genomeGenerate \ # The mode of operation for STAR
-                              --genomeDir fasta/STAR_index/ \ # A place to store the index file
-                              --genomeFastaFiles fasta/SalmonReference.fasta \ # The location of the reference genome
-                              --sjdbGTFfile SalmonAnnotations.gff # The location of the genome annotations, in GFF format
+STAR --runThreadN 2 `#The number of threads to spawn this process on` \
+                              --runMode genomeGenerate `#The mode of operation for STAR` \
+                              --genomeDir fasta/STAR_index/ `#A place to store the index file` \
+                              --genomeFastaFiles fasta/SalmonReference.fasta  `#The location of the reference genome` \
+                              --sjdbGTFfile SalmonAnnotations.gff `#the location of the genome annotations, in GFF format`
 
 
 ```
@@ -131,24 +131,22 @@ When I run this, I get the following error message in the output of the program:
 
 This is telling us that our genome is smaller than the program was anticipating so we should adjust a parameter of the suffix array.
 
-*This exact issue will probably not arise when you analyse your data, but we include it as a reminder to keep an eye of the program logs*
+*This exact issue will probably not arise when you analyze your data, but we include it as a reminder to keep an eye on the program logs*
 
 Let's re-run the program, adjusting this parameter:
 
 ```sh
-STAR --runThreadN 2 \ # The number of threads to spawn this process on
-                              --runMode genomeGenerate \ # The mode of operation for STAR
-                              --genomeDir fasta/STAR_index/ \ # A place to store the index file
-                              --genomeFastaFiles SalmonReference.fasta \ # The location of the reference genome
-                              --sjdbGTFfile SalmonAnnotations.gff \ # The location of the genome annotations, in GFF format
-                              --genomeSAindexNbases 10
-
-
+STAR --runThreadN 2 `#The number of threads to spawn this process on` \
+                              --runMode genomeGenerate `#The mode of operation for STAR` \
+                              --genomeDir fasta/STAR_index/ `#A place to store the index file` \
+                              --genomeFastaFiles fasta/SalmonReference.fasta  `#The location of the reference genome` \
+                              --sjdbGTFfile SalmonAnnotations.gff `#the location of the genome annotations, in GFF format` \
+                              --genomeSAindexNbases 10 
 
 ```
 
 
-That will have hopefully run with no issues!
+That will hopefully run with no issues!
 
 
 ## Map RNA-seq reads
@@ -159,15 +157,14 @@ We'll use STAR to map the reads too:
 
 ```sh
 
-STAR --genomeDir location_to_save_index/ \ # This tells STAR where we've put the reference genome - the place you specified above
-      --readFilesIn cold_sample_04_1.fq.gz cold_sample_04_2.fq.gz \ # Give the two FASTQ files for paired-end reads
-      --outFileNamePrefix cold_sample_04. \ # Give a prefix for all of the output files
-      --outSAMtype BAM SortedByCoordinate \ # This tells STAR to outut the alignments in BAM format and sorted by coordinate
-      --outSAMunmapped Within \ # Puts the unmapped reads into the BAM file
-      --outSAMattributes Standard \ # Use standard SAM formatting
-      --readFilesCommand zcat \ # This tells STAR that the fastq files were gzipped
-      --runThreadN 2
-
+STAR --genomeDir location_to_save_index/ `# This tells STAR where we've put the reference genome - the place you specified above` \
+      --readFilesIn ~/RNA/cold_sample_04_1.fq.gz ~/RNA/cold_sample_04_2.fq.gz `# Give the two FASTQ files for paired-end reads` \
+      --outFileNamePrefix cold_sample_04. `# Give a prefix for all of the output files` \
+      --outSAMtype BAM SortedByCoordinate `# This tells STAR to outut the alignments in BAM format and sorted by coordinate` \
+      --outSAMunmapped Within `# Puts the unmapped reads into the BAM file` \
+      --outSAMattributes Standard `# Use standard SAM formatting` \
+      --readFilesCommand zcat `# This tells STAR that the fastq files were gzipped` \
+      --runThreadN 2 
 ```
 You can use multiple threads when aligning reads with STAR too. When you're working with full sized datasets that will for sure come in handy, but with the data we are working with that's not a big issue. Mapping the reads using a two threads takes about a minute per sample.
 
@@ -194,21 +191,24 @@ To obtain counts of reads we will use the `htseq-count` tool. This is a popular 
 
 `htseq-count` sends its list of read counts to STDOUT, so you need to capture it with a redirect if you want to save the output
 ```
+#first we need to generate an index of the bam, for quick processin
+samtools index cold_sample_04.Aligned.sortedByCoord.out.bam #everytime you modify/make a bam file, you'll  need to index it like this
+
 htseq-count -s no \
             -r pos \
-            -t exon \ # What type of feature will our data have mapped to?
+            -t exon  `#What type of feature will our data have mapped to? ` \
             -i gene \
             -f bam \
             cold_sample_04.Aligned.sortedByCoord.out.bam \
             /mnt/data/anno/SalmonAnnotations.gff  > cold_sample_04.read_counts.txt
 ```
 
-Inspect the contents of `cold_sample_07.read_counts.txt`. It should be fairly obvious what this file contains.
+Inspect the contents of `cold_sample_[filenum].read_counts.txt`. It should be fairly obvious what this file contains.
 
 HTSeq-count also includes some summary stats at the bottom of the file. Let's clip those off before we move on...
 
 ```
-grep -v "^_" cold_sample_07.read_counts.txt > cold_sample_07.read_counts.clipped.txt
+grep "^LOC" cold_sample_[filenum].read_counts.txt > cold_sample_[filenum].read_counts.clipped.txt
 
 ```
 
