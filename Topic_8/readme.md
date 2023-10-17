@@ -40,32 +40,36 @@ tabix Chinook_GWAS_filtered.vcf.gz
 ##Coding challenge
 * How many sites remain in the filtered VCF? How many were removed? How many on each chromosome? Don't forget about `grep -v` ad `wc -l`!
 
-A common first pass analysis is to use structure to look at clustering in your data. Admixture is similar to STRUCTURE but orders of magnitude faster. We're going use that, but before that we have to convert our VCF to the specialized format. We can do that with Plink - Plink is a large set of tools for manipulating genetic data, running GWAS and calculating various stats. It's geared towards human data, so sometimes you have to force it to work with non-human data. For example, it assumes you have human chromosomes (eg 23 of them) and will complain if it doesn't see them.
+A common first-pass analysis is to use structure to look at clustering in your data. Admixture is similar to STRUCTURE but orders of magnitude faster. We're going use that, but before that we have to convert our VCF to the specialized format. We can do that with Plink - Plink is a large set of tools for manipulating genetic data, running GWAS and calculating various stats. It's geared towards human data, so sometimes you have to force it to work with non-human data. For example, it assumes you have human chromosomes (eg 23 of them) and will complain if it doesn't see them.
 
 
 ```bash
 cd ~/
 mkdir analysis
 
-#we had a bug in our pipeline that appended some extra characters to the beginning of sample names
 #you can check sample names by greping for "#CHROM", which is the first string of the sample header line
 zgrep "#CHROM" vcf/Chinook_GWAS_filtered.vcf.gz
-#we could use a specialty software like bedtools reheader to fix this, but lets just use basic bash commands
+#hmmm it looks like we had a bug in our pipeline that appended some extra characters to the beginning of sample names ("-e")
+#we could use specialty software like bedtools reheader to fix this, but lets just use basic bash commands
 
 zcat vcf/Chinook_GWAS_filtered.vcf.gz | sed 's/-e Chinook/Chinook/g' | bgzip > vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
-#the key command here is the sed 's/find/replace/g' , zcat is uncompression to standard out and bgzip is recompressing 
+#the key command here is the sed 's/find/replace/g' , zcat is uncompression to standard out and bgzip is recompressing
+#lets check again to make sure that did what we wanted
+zgrep "#CHROM" vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz
 
 plink=/mnt/software/plink
 $plink --make-bed \
 	--vcf vcf/Chinook_GWAS_filtered_fixedsamps.vcf.gz \
 	--out vcf/Chinook_GWAS_filtered_fixedsamps \
 	--set-missing-var-ids @:# \
-	--double-id \
-	--allow-extra-chr 
-```
-This produces files with the suffix .nosex, .log, .fam, .bim, .bed. We can use these in Admixture.
+	--double-id
 
-NOTE: When inferring patterns of population structure (i.e. admixture/pca) its good practice to filter your VCF for linkage (i.e. remove highly linked sites). If you can't filter for linkage, subsetting the site also helps (i.e. selecting every 10th site). Not only does this make your inference draw from independent data, but it also keeps run times down!
+#note the Error in the message printed to screen. it also tells you how to fix it! this happens because plink expected chromosome names to correspond with those from the human genome
+
+```
+When run correctly, this produces files with the suffix .nosex, .log, .fam, .bim, .bed. We can use these in Admixture.
+
+NOTE: When inferring patterns of population structure (i.e. admixture/pca) its good practice to filter your VCF for linkage (i.e. to maintain only independent information in these calculations). If you can't filter for linkage, subsetting the site also helps (i.e. selecting every 10th site). Not only does this make your inference draw from independent data, but it also keeps run times down!
 
 To prune for LD, we'll ask plink to slide across the genome (10 snps at a time),and in windows of 100snps, calculate LD between each snp, removing those with an LD (r2) > .5
 
@@ -76,7 +80,6 @@ $plink \
 	--out vcf/Chinook_GWAS_filtered_fixedsamps \
 	--make-founders \
 	--allow-extra-chr 
-#allow extra chromosome is another way we force plink to work with non-human data (i.e. allow chromosomes that don't have the typical human chr names)
 
 #this produces two files, .in (to include) and .out (to exclude) 
 #now lets actually extracts the snps that remain after LD pruning
@@ -145,7 +148,7 @@ $plink \
 	
 #run admixture
 $admixture --cv vcf/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.bed 2 |\
-tee analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.out; \
+tee analysis/Chinook_GWAS_filtered_fixedsamps_numericChr_LDpruned.2.out; 
 
 #NOTE: "tee" takes the output of a command and saves it to a file, while 
 # also printing letting it print to the screen. So we can watch the progress while also 
@@ -198,7 +201,7 @@ paste <(cut -d" " -f1 vcf/Chinook_GWAS_filtered_fixedsamps.fam) analysis/Chinook
 #Chinook.p10.i1	0.000010 0.999990
 #Chinook.p10.i2	0.000010 0.999990
 ```
-While K=1 has the lowest cross validation error, clearly we can see that individuals from population 1 and population 10 (furthest apart in sampling space) beling to different groupings. 
+While K=1 has the lowest cross validation error, clearly we can see that individuals from population 1 and population 10 (furthest apart in sampling space) belong to different groupings. 
 
 We're going to plot these results, but before we leave the command line, lets also one more analysis. Lets run a *PCA*. This is a very nice model free approach to visualizing population structure, and is a good complement to model based structure analyses, like admixture.
 
@@ -225,4 +228,4 @@ $plink \
 
 
 
-That's probably all we have time for in this tutorial, but next time lets get right into R to visualize our results from the admixture and PCA analyses.
+That's probably all we have time for in this tutorial, but next time let's get right into R to visualize our results from the admixture and PCA analyses.
