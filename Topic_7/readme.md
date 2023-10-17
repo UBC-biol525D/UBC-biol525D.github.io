@@ -28,24 +28,24 @@ gatk=/mnt/software/gatk-package-4.2.2.0-local.jar
 picard=/mnt/software/picard.jar
 ```
 
-There are 4 different samples we will mapping today - 4 individuals [i1, i2, i8, i9] from 1 population [p1]) 
+There are 4 different samples we will be mapping today - 4 individuals [i1, i2, i8, i9] from 1 population [p1]) 
 
 We're going to have to run multiple steps on each sample, so to make this easier, we make a list of all the sample names.
 
-In case you didn't finish last tutorial, and since we have some extra bams you didn't generate, copy the \*bam files and their index (\*.bai) to your newly generated ~/bams directory 
-(`cp /mnt/data/bams/Chinook.p1.i[1-2,8-9].rg.bam ~/bams/`).
+You should have generated these bams last tutorial, but if you had any problems and you can copy the \*bam files and their index (\*.bai) to your newly generated ~/bams directory 
+(`cp /mnt/data/bams/SalmonSim.p1.3.i[1-2,8-9].400000.sort.bam* ~/bams/`).
 
 ```bash
-ls bams/ | grep .rg.bam$ | sed s/.rg.bam//g  > samplelist.txt
+ls bams/ | grep .sort.bam$ | sed s/.400000.sort.bam//g  > samplelist.txt
 
 ```
 Lets break this down. 
 
 **ls bams** <= List all the files in the _bams_ directory
 
-**\| grep .rg.bam$** <= Only keep the file names ending in _.sort.bam_.
+**\| grep .sort.bam$** <= Only keep the file names ending ($) in _.sort.bam_.
 
-**\| sed s/.rg.bam//g** <= Replace the string .rg.bam_ with "", effectively leaving only the sample name.
+**\| sed s/.400000.sort.bam//g** <= Replace the string 400000.sort.bam_ with "", effectively leaving only the sample name.
 
 **> samplelist.txt** <= Save the result in a file named _samplelist.txt_
 
