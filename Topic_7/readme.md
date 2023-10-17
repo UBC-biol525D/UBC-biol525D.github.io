@@ -59,14 +59,14 @@ The first step is to mark duplicate reads using picardtools - this is important 
 
 while read name; do
   java -jar $picard MarkDuplicates \
-  I=~/bams/$name.rg.bam O=~/bams/$name.sort.dedup.bam \
+  I=~/bams/$name.400000.sort.bam O=~/bams/$name.sort.dedup.bam \
   M=log/$name.duplicateinfo.txt
   samtools index bams/$name.sort.dedup.bam
 done < samplelist.txt
 
 ```
 
-Now in the bam files duplicate reads are flagged. Take a look in the log directory, which sample has the highest number of duplicate reads?
+Now in the bam files duplicate reads are flagged. Take a look in the log directory, which sample has the highest number of duplicate reads? 
 
 
 To use GATK, we have to index our reference genome. An index is a way to allow rapid access to a very large file. For example, it can tell the program that the third chromosome starts at bit 100000, so when the program wants to access that chromosome it can jump directly there rather than scan the whole file (we've already done this for our bam files --> .bai) . Some index files are human readable (like .fai files) while others are not.
@@ -75,7 +75,7 @@ To use GATK, we have to index our reference genome. An index is a way to allow r
 ```bash
 cp /mnt/data/fasta/SalmonReference.fasta ~/ref/ #copy the reference to our local folder
 
-#two types of references are needed - a sequence dictionary:
+#two types of references are needed - a sequence dictionary, which you made in the RNAseq tutorial
 java -jar $picard CreateSequenceDictionary \
   R=~/ref/SalmonReference.fasta \
   O=~/ref/SalmonReference.dict
@@ -104,7 +104,8 @@ java -Xmx10g -jar $gatk HaplotypeCaller \
 -O ~/gvcf/$name.sort.dedup.g.vcf
 done
 ```
- Check your gvcf file to make sure it has a .idx index file. If the haplotypecaller crashes, it will produce a truncated gvcf file that will eventually crash the genotypegvcf step. Note that if you give genotypegvcf a truncated file without a idx file, it will produce an idx file itself, but it still won't work.
+
+Check your gvcf file to make sure it has a .idx index file. If the haplotypecaller crashes, it will produce a truncated gvcf file that will eventually crash the genotypegvcf step. Note that if you give genotypegvcf a truncated file without a idx file, it will produce an idx file itself, but it still won't work.
 
 We would run the HaplotypeCaller on the rest of the samples, but that will take too much time, so once you're satisfied that your script works, you can copy the rest of the gvcf files (+ idx files) from `/mnt/data/gvcf` into `~/gvcf`.
 
@@ -176,7 +177,7 @@ Try to find an indel. Do you see any sites with more than 1 alternate alleles?
 
 Pick a site and figure out, whats the minor allele frequency? How many samples were genotyped? 
 
-We've now called variants for a single chromosome, but there are other chromosomes. In this case there are only three, but for many genomes there will be thousands of contigs. Your next challenge is to write a loop to create the genomicsdb file and then VCF for each chromosome (...check out gatk's genomicsdb documentation... is there another way to create a db for multiple chromosomes more efficiently?) 
+We've now called variants for a single chromosome, but there are other chromosomes. In this case there are only two, but for many genomes there will be thousands of contigs. Your next challenge is to write a loop to create the genomicsdb file and then VCF for each chromosome (...check out gatk's genomicsdb documentation... is there another way to create a db for multiple chromosomes more efficiently?) 
 
 Once you have two VCF files, one for each chromosome, you can concatenate them together to make a single VCF file. We're going to use _bcftools_ which is a very fast program for manipulating vcfs as well as bcfs (the binary version of a vcf).
 
@@ -196,7 +197,7 @@ In the meantime, take a look at this. We've ran the exact same pipeline from rea
 ![](stats by coverage.jpeg)
 
 
-### Coding challenge
+### Coding Challenge
 * Use command line tools to extract a list of all the samples in your VCF file, from the vcf file itself. They should be one name per line.
 * Take the original vcf file produced and create a vcf of only biallelic SNPs for P1 samples. 
 * Use bcftools to filter your vcf file and select for sites with alternate allele frequencies > 0.01, including multi-allelic sites. 
