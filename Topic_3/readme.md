@@ -116,13 +116,11 @@ chmod 755 fastqc ## Add execute permissions for all users
 
 Phew, now we should have a happy version of fastqc that we can work with.
 
-### Now lets look at some properties of our reads. We're including read sets generated from different sequencing platforms resulting in different read lengths (Illumina/Pacbio), and also short reads from historical specimens.
+### Now lets look at some properties of our reads. We're including read sets generated from different sequencing platforms resulting in different read lengths (Illumina/Pacbio), but also short reads from historical specimens. We need to make a path to the historical read set, like we did above.
 
 ```bash
 
-shortreads=~/Tutorial_3_data/short_reads/
 historical_shortreads=~/Tutorial_3_data/historical_shortreads/
-longreads=~/Tutorial_3_data/long_reads/
 
 mkdir qualityControl
 cd qualityControl
