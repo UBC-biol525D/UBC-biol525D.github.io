@@ -118,26 +118,29 @@ Phew, now we should have a happy version of fastqc that we can work with.
 
 ### Now lets look at some properties of our reads. We're including read sets generated from different sequencing platforms resulting in different read lengths (Illumina/Pacbio), but also short reads from historical specimens. We need to make a path to the historical read set, like we did above.
 
+### We can also add a path to programs, so we can just type the program name
+
 ```bash
 
 historical_shortreads=~/Tutorial_3_data/historical_shortreads/
+fastqc=/home/ubuntu/Tutorial_3_data/qualityControl/FastQC/fastqc
 
-mkdir qualityControl
-cd qualityControl
+#OK lets run the quality control analysis now that we're all set
+cd ~/Tutorial_3_data/qualityControl
 
 #fastqc is a widely used program for looking at read quality
 #You might be wondering how to run fastqc? How would you figure it out on your own? Remember that pretty much all programs have a manual, which can often be called by appending --help to the program name. Usually the most important information is at the top i.e. the recipe for running the program.
 
-~/FastQC/fastqc --help
+$fastqc --help
 
 #You'll note that fastqc is conveniently coded to allow inputting multiple input files at once, this isn't the case for alot of programs. Make sure to get into the habit of checking out the usage section of a program's manual before you run it.
 
 #OK lets run fastqc
- ~/FastQC/fastqc  ${shortreads}/*fastq.gz ${historical_shortreads}/*fastq.gz ${longreads}/*fastq.gz -o ./
+$fastqc  ${shortreads}/*fastq.gz ${historical_shortreads}/*fastq.gz ${longreads}/*fastq.gz -o ./
 
 #Here's another couple of ways we could use wildcards here
-##~/FastQC/fastqc ${shortreads}/*R?.fastq.gz ${historical_shortreads}/*R?.fastq.gz ${longreads}/*fastq.gz -o ./ )
-##~/FastQC/fastqc ${shortreads}/*R[1,2].fastq.gz ${historical_shortreads}/*R[1,2].fastq.gz ${longreads}/*fastq.gz -o ./ )
+##$fastqc ${shortreads}/*R?.fastq.gz ${historical_shortreads}/*R?.fastq.gz ${longreads}/*fastq.gz -o ./ )
+##$fastqc ${shortreads}/*R[1,2].fastq.gz ${historical_shortreads}/*R[1,2].fastq.gz ${longreads}/*fastq.gz -o ./ )
 
 #summarise into a single report
 multiqc ./
