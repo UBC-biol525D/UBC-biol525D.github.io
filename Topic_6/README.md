@@ -78,7 +78,7 @@ emacs .bashrc  # I like emacs, but use whichever text editor you prefer, like vi
 When in your text editor, add the following text and save the file:
 ```
 echo "Hello, you are cool!"
-export PATH="/mnt/software/STAR-2.7.10a_alpha_220818/source/:$PATH"
+export PATH="/mnt/software/STAR-2.7.11a/source/:$PATH"
 ```
 
 To get your operating system to work with the new instructions you've given it you can refresh your terminal session using the following command:
