@@ -6,7 +6,7 @@ topictitle: "SNP Calling"
 ---
 
 ## Accompanying material
-* [Slides](./VariantCalling 2021.pdf)
+* [Slides](https://drive.google.com/file/d/1kNnEPzude1ydyLQpU85TW-ZvcAW9c-mU/view?usp=share_link)
 
 In this tutorial we're going to call SNPs with GATK.
 
