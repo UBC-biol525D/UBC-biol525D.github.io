@@ -6,7 +6,7 @@ topictitle: "Population genomics - Structure"
 ---
 
 ## Accompanying material
-* [Slides](https://github.com/UBC-biol525D/UBC-biol525D.github.io/blob/master/Topic_8/PopGen%202021.pdf)
+* [Slides](https://drive.google.com/file/d/16C-LrogY4HI3KEc2N5R6tBG7PQdMYEJK/view?usp=share_link)
 
 
 Last topic we called variants across the two chromosomes. If you look at the VCF, you'll notice there are a lot of sites only genotyped in a small subset of the samples. This can happen with lower overall read depth (in this case this is whole genome sequencing at ~8X depth), but can be due to other factors like divergence been sample and reference. We also have indels, and SNPs with more than two alleles. Many programs strictly require biallelic sites so lets first filter the VCF to a smaller set of usable sites.
