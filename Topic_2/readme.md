@@ -20,7 +20,7 @@ We have tried to focus on concepts rather than particular software packages in t
 
 ### Accompanying material
 
-* [Slides](./Topic_2.pdf)
+* [Slides](https://drive.google.com/file/d/1RqyOz0d8ourfP5RqY-5cmks34wZms7qN/view?usp=share_link)
 * [Software Carpentry Tutorial](http://swcarpentry.github.io/shell-novice/)
 
 # Part 0: Logging on to the servers:
