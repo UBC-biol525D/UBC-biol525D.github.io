@@ -7,7 +7,7 @@ topictitle: "Sequence Alignment"
 
 ### Accompanying material
 
-* [Slides](./Topic_5.pdf)
+* [Slides](https://drive.google.com/file/d/1ak5oNiUGYY8FFkxilKTnf5eZecAVQtwd/view?usp=share_link)
 
 
 Today we're going to align sequence data to a reference genome using BWA and explore what a BAM file is.
