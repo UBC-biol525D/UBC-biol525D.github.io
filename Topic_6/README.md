@@ -8,7 +8,7 @@ topictitle: "RNASeq Analysis"
 
 ### Accompanying material
 
-* [Slides](./Topic_6.pdf)
+* [Slides](https://drive.google.com/file/d/1PUIzqhp2Ke-xx8TrVIsp_L62swWOrHle/view?usp=share_link)
 
 __________________________________
 
