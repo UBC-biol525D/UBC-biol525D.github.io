@@ -283,7 +283,7 @@ ____________________
 
 ### Metacharacters
 
-Metacharacters are a class of characters that convey specific instructions to the operating system The pipe and redirect symbols ("|", "<" and ">") are examples of metacharacters.
+Metacharacters are a class of characters that convey specific instructions to the operating system The pipe and redirect symbols ("\|", "<" and ">") are examples of metacharacters.
 
 ### Wild cards
 
