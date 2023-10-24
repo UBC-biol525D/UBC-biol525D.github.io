@@ -6,7 +6,7 @@ topictitle: "Bioinformatic Gotchyas"
 ---
 
 ## Accompanying material
-[Lecture Slides]([./Topic_3.pdf](https://drive.google.com/file/d/1EkfhMAsj9vgr2wmgD1qrTOKgE7TKFArX/view?usp=share_link))
+[Lecture Notes](https://drive.google.com/file/d/1EkfhMAsj9vgr2wmgD1qrTOKgE7TKFArX/view?usp=share_link)
 
 # Part 1: Overview of sequence data
 
