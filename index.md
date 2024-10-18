@@ -7,6 +7,8 @@ menuPosition: 1
 
 <h1>{{ site.courseName }}</h1>
 
+### This is the old course website - all materials for the UBC Bioinformatics Workshop is now hosted at [https://ubcforestrybioinformatics.github.io/](https://ubcforestrybioinformatics.github.io/)
+
 ## Description
 The purpose of this course is to provide graduate students with the theoretical knowledge and practical skills for the evolutionary analysis of next generation sequence data. The course will entail data retrieval and assembly, alignment techniques, variant calling, gene expression analyses, hypothesis testing, and population genomic. The course will be presented as a series of short lectures and lab exercises over a one week period in October 2023.
 
